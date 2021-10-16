@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+
+    <style>
+        @font-face {
+            font-family: RobotoRegular;
+            src: url(fonts/Roboto-Regular.ttf);
+        }
+
+        * {
+            font-family: RobotoRegular;
+            font-weight: 300;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #111111;
+            overflow: hidden;
+        }
+
+        #outer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        #inner {
+            color: #b7b9b4;
+            display: flex;
+            flex-direction: column;
+            width: 800px;
+            height: 80%;
+            padding: 8px;
+        }
+
+        #scene-title {
+            font-size: 16pt;
+            font-weight: bold;
+            padding-top: 1em;
+            padding-bottom: 2em;
+        }
+
+        #scene-content {
+            padding: 8px;
+            overflow: auto;
+        }
+
+        .single-text {
+            padding-top: 2px;
+            line-height: 26px;
+        }
+
+        .person-text {
+            padding-top: 2px;
+            line-height: 26px;
+        }
+
+        .person-text .name {
+            color: #7faed0;
+        }
+
+        .person-text .name.you {
+            color: #ab6145;
+        }
+
+        .person-text .separator {
+            padding-left: 8px;
+            padding-right: 8px;
+            text-align: center;
+        }
+
+        .person-text .text {}
+
+        .choose-root {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 24px;
+        }
+
+        .choose-item {
+            color: #ab6145;
+            line-height: 24px;
+            padding-bottom: 4px;
+        }
+
+        .choose-item:hover {
+            color: #c4917f;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .continue-click {
+            color: #ab6145;
+            padding-top: 8px;
+        }
+
+        .continue-click:hover {
+            color: #c4917f;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="outer">
+        <div id="inner">
+            <div id="scene-title"></div>
+            <div id="scene-content"></div>
+        </div>
+    </div>
+</body>
+
+
+<script src="main.js"></script>
+
+</html>

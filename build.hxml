@@ -1,0 +1,3 @@
+--class-path src
+-m Main
+--js bin/main.js
