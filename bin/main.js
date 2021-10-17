@@ -238,11 +238,24 @@ common_interactive_InteractiveSystem.prototype = {
 		return element;
 	}
 	,addPersonText: function(parameters) {
-		var element = new common_interactive_PersonTextElement({ nameColor : parameters.isYou ? common_interactive_Color.Orange : common_interactive_Color.Blue, name : parameters.isYou ? "ВЫ" : parameters.personName, text : parameters.text});
-		this.addElement(element);
-		element.set_opacity(0);
-		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
-		this.updateScroll();
+		var _gthis = this;
+		var add = function() {
+			var element = new common_interactive_PersonTextElement({ nameColor : parameters.isYou ? common_interactive_Color.Orange : common_interactive_Color.Blue, name : parameters.isYou ? "ВЫ" : parameters.personName, text : parameters.text});
+			_gthis.addElement(element);
+			element.set_opacity(0);
+			motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
+			_gthis.updateScroll();
+		};
+		if(parameters.waitTime != null) {
+			this.addWaitPerson(parameters.waitTime,function() {
+				add();
+				if(parameters.onWaitComplete != null) {
+					parameters.onWaitComplete();
+				}
+			});
+		} else {
+			add();
+		}
 	}
 	,addChoose: function(parameters) {
 		var _gthis = this;
@@ -256,6 +269,16 @@ common_interactive_InteractiveSystem.prototype = {
 		}});
 		this.addElement(choose);
 		return choose;
+	}
+	,addWaitPerson: function(waitTime,onComplete) {
+		var _gthis = this;
+		var node = new common_interactive_WaitPersonElement(waitTime,function() {
+			onComplete();
+			_gthis.updateScroll();
+		});
+		this.addElement(node);
+		node.start();
+		return node;
 	}
 	,addContinue: function(onClick) {
 		var continueNode = window.document.createElement("div");
@@ -310,6 +333,58 @@ common_interactive_TextElement.prototype = $extend(common_interactive_Interactiv
 		return node;
 	}
 	,__class__: common_interactive_TextElement
+});
+var common_interactive_WaitPersonElement = function(waitTime,onComplete) {
+	this.tickId = 0;
+	common_interactive_InteractiveElement.call(this);
+	this.waitTime = waitTime;
+	this.onComplete = onComplete;
+};
+common_interactive_WaitPersonElement.__name__ = true;
+common_interactive_WaitPersonElement.__super__ = common_interactive_InteractiveElement;
+common_interactive_WaitPersonElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
+	update: function() {
+		switch(this.tickId) {
+		case 0:
+			this.rootNode.innerText = ":--";
+			break;
+		case 1:
+			this.rootNode.innerText = "-:-";
+			break;
+		case 2:
+			this.rootNode.innerText = "--:";
+			break;
+		}
+		this.tickId += 1;
+		if(this.tickId > 2) {
+			this.tickId = 0;
+		}
+	}
+	,render: function() {
+		var mainNode = window.document.createElement("div");
+		mainNode.innerText = "---";
+		return mainNode;
+	}
+	,start: function() {
+		var _gthis = this;
+		var totalTime = 0.0;
+		var intervalId = 0;
+		var time = 0.0;
+		var tickValue = 100;
+		intervalId = window.setInterval(function() {
+			totalTime += tickValue;
+			time += tickValue;
+			if(totalTime >= _gthis.waitTime) {
+				window.clearInterval(intervalId);
+				_gthis.onComplete();
+				_gthis.remove();
+			} else if(time >= 300) {
+				time = 0;
+				_gthis.update();
+			}
+		},tickValue);
+	}
+	,__class__: common_interactive_WaitPersonElement
 });
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = true;
@@ -2000,14 +2075,36 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 	enter: function() {
 		var _gthis = this;
 		this.interactive.setSceneTitle("Часть 1. Пробуждение");
-		this.interactive.addText("Привет. Что тут?");
-		this.interactive.addChoose({ select : ["Кто Вы?","Где я?"], onSelect : function(index) {
-		}, onBeforeSelect : function(index) {
-			_gthis.interactive.addText("Отлично. Всё прекрасно");
+		this.interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Он спокойный и не несёт в себе угрозы.");
+		this.interactive.addPersonText({ personName : "Неизвестный женский голос", text : "Пожалуйста, просыпайся."});
+		this.interactive.addChoose({ select : ["Кто вы?","Уходите, я хочу спать","Промолчать"], onSelect : $bind(this,this.processAnswer), onBeforeSelect : function(_) {
+			_gthis.interactive.addText("Вы с трудом открываете глаза. Сонными глазами пытаетесь разглядеть своего собеседника. Перед Вами стоят две женщины. Их одежда очень похожа на больничные халаты. Возможно это они и есть.");
 		}});
+	}
+	,processAnswer: function(index) {
+		var _gthis = this;
+		switch(index) {
+		case 0:
+			break;
+		case 1:
+			this.interactive.addPersonText({ personName : "Неизвестный женский голос", text : "Извини, но тебе придётся проснутся.", waitTime : 1300, onWaitComplete : function() {
+				_gthis.interactive.addChoose({ select : ["Кто Вы?","Не хочу, уходите.","[Зло] Отвалите от меня."], onSelect : function(index) {
+				}});
+			}});
+			break;
+		case 2:
+			this.interactive.addText("Вы слышите как женщины переговариваются между собой.");
+			this.interactive.addPersonText({ personName : "Неизвестный женский голос", text : "Вы уверены, что пациентка в сознании?"});
+			this.interactive.addPersonText({ personName : "Другой женский голос", text : "Да. Думаю она притворяется."});
+			this.interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");
+			this.interactive.addChoose({ select : ["Ну ладно, я не сплю. Кто Вы?","[Раздражённо] Отстаньте, я сплю","Промолчать"], onSelect : function(index) {
+			}});
+			break;
+		}
 	}
 	,__class__: scenes_Scene1_$Awake
 });
+function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
 	HxOverrides.now = performance.now.bind(performance);

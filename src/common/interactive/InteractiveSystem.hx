@@ -5,10 +5,15 @@ import motion.easing.Linear;
 import common.interactive.InteractiveElement;
 import js.Browser;
 
+// Параметры добавления текста персонажа
 typedef AddPersonTextParameters = {
+	text:String,
 	?isYou:Bool,
 	?personName:String,
-	text:String
+	// Время ожидания перед выводом текста
+	?waitTime:Float,
+	// Обработчик после завершения ожидания
+	?onWaitComplete:Void->Void
 }
 
 // Параметры для метода добавления элемента выбора
@@ -82,16 +87,28 @@ class InteractiveSystem {
 
 	// Добавляет прямую речь персонажа
 	public function addPersonText(parameters:AddPersonTextParameters) {
-		final element = new PersonTextElement({
-			nameColor: parameters.isYou ? Color.Orange : Color.Blue,
-			name: parameters.isYou ? "ВЫ" : parameters.personName,
-			text: parameters.text
-		});
+		function add() {
+			final element = new PersonTextElement({
+				nameColor: parameters.isYou ? Color.Orange : Color.Blue,
+				name: parameters.isYou ? "ВЫ" : parameters.personName,
+				text: parameters.text
+			});
 
-		addElement(element);
-		element.opacity = 0;
-		Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
-		updateScroll();
+			addElement(element);
+			element.opacity = 0;
+			Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
+			updateScroll();
+		}
+
+		if (parameters.waitTime != null) {
+			addWaitPerson(parameters.waitTime, () -> {
+				add();
+				if (parameters.onWaitComplete != null)
+					parameters.onWaitComplete();
+			});
+		} else {
+			add();
+		}
 	}
 
 	// Добавляет выбор
@@ -114,6 +131,17 @@ class InteractiveSystem {
 
 		addElement(choose);
 		return choose;
+	}
+
+	// Добавляет ожидание действия персонажа
+	public function addWaitPerson(waitTime:Float, onComplete:Void->Void):WaitPersonElement {
+		final node = new WaitPersonElement(waitTime, () -> {
+			onComplete();
+			updateScroll();
+		});
+		addElement(node);
+		node.start();
+		return node;
 	}
 
 	// Добавляет кнопку "Продолжить"
