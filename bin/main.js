@@ -1,4 +1,5 @@
 (function ($global) { "use strict";
+var $estr = function() { return js_Boot.__string_rec(this,''); },$hxEnums = $hxEnums || {},$_;
 function $extend(from, fields) {
 	var proto = Object.create(from);
 	for (var name in fields) proto[name] = fields[name];
@@ -184,7 +185,20 @@ common_interactive_ChooseElement.prototype = $extend(common_interactive_Interact
 	}
 	,__class__: common_interactive_ChooseElement
 });
+var common_interactive_Color = $hxEnums["common.interactive.Color"] = { __ename__:true,__constructs__:null
+	,Red: {_hx_name:"Red",_hx_index:0,__enum__:"common.interactive.Color",toString:$estr}
+	,Orange: {_hx_name:"Orange",_hx_index:1,__enum__:"common.interactive.Color",toString:$estr}
+	,Blue: {_hx_name:"Blue",_hx_index:2,__enum__:"common.interactive.Color",toString:$estr}
+	,Grey: {_hx_name:"Grey",_hx_index:3,__enum__:"common.interactive.Color",toString:$estr}
+};
+common_interactive_Color.__constructs__ = [common_interactive_Color.Red,common_interactive_Color.Orange,common_interactive_Color.Blue,common_interactive_Color.Grey];
+var common_interactive_ColorHelper = function() { };
+common_interactive_ColorHelper.__name__ = true;
+common_interactive_ColorHelper.getColorCss = function(color) {
+	return $hxEnums[color.__enum__].__constructs__[color._hx_index]._hx_name.toLowerCase() + "-color";
+};
 var common_interactive_InteractiveSystem = function() {
+	this.newElements = [];
 	this.sceneTitle = window.document.querySelector("#scene-title");
 	this.sceneContent = window.document.querySelector("#scene-content");
 };
@@ -196,7 +210,18 @@ common_interactive_InteractiveSystem.prototype = {
 	,addElement: function(element) {
 		var node = element.renderInternal();
 		this.sceneContent.appendChild(node);
+		this.newElements.push(element);
 		this.updateScroll();
+	}
+	,makeElementsOld: function() {
+		var _g = 0;
+		var _g1 = this.newElements;
+		while(_g < _g1.length) {
+			var element = _g1[_g];
+			++_g;
+			motion_Actuate.tween(element,0.3,{ opacity : 0.6}).ease(motion_easing_Linear.get_easeNone());
+		}
+		this.newElements = [];
 	}
 	,clear: function() {
 		this.sceneContent.innerHTML = "";
@@ -209,35 +234,20 @@ common_interactive_InteractiveSystem.prototype = {
 		var element = new common_interactive_TextElement(text);
 		this.addElement(element);
 		element.set_opacity(0);
-		motion_Actuate.tween(element,0.7,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
+		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
 		return element;
 	}
 	,addPersonText: function(parameters) {
-		var rootNode = window.document.createElement("div");
-		var nameNode = window.document.createElement("span");
-		var textNode = window.document.createElement("span");
-		var sepNode = window.document.createElement("span");
-		rootNode.className = "person-text";
-		if(parameters.isYou) {
-			nameNode.className = "name you";
-			nameNode.innerText = "ВЫ";
-		} else {
-			nameNode.innerText = parameters.personName.toUpperCase();
-			nameNode.className = "name";
-		}
-		sepNode.className = "separator";
-		sepNode.innerText = "-";
-		textNode.innerText = "\"" + parameters.text + "\"";
-		textNode.className = "text";
-		rootNode.appendChild(nameNode);
-		rootNode.appendChild(sepNode);
-		rootNode.appendChild(textNode);
-		this.sceneContent.appendChild(rootNode);
+		var element = new common_interactive_PersonTextElement({ nameColor : parameters.isYou ? common_interactive_Color.Orange : common_interactive_Color.Blue, name : parameters.isYou ? "ВЫ" : parameters.personName, text : parameters.text});
+		this.addElement(element);
+		element.set_opacity(0);
+		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
 		this.updateScroll();
 	}
 	,addChoose: function(parameters) {
 		var _gthis = this;
 		var choose = new common_interactive_ChooseElement({ select : parameters.select, onSelect : function(index) {
+			_gthis.makeElementsOld();
 			if(parameters.onBeforeSelect != null) {
 				parameters.onBeforeSelect(index);
 			}
@@ -259,6 +269,33 @@ common_interactive_InteractiveSystem.prototype = {
 	}
 	,__class__: common_interactive_InteractiveSystem
 };
+var common_interactive_PersonTextElement = function(parameters) {
+	common_interactive_InteractiveElement.call(this);
+	this.parameters = parameters;
+};
+common_interactive_PersonTextElement.__name__ = true;
+common_interactive_PersonTextElement.__super__ = common_interactive_InteractiveElement;
+common_interactive_PersonTextElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
+	render: function() {
+		var mainNode = window.document.createElement("div");
+		var nameNode = window.document.createElement("span");
+		var textNode = window.document.createElement("span");
+		var sepNode = window.document.createElement("span");
+		mainNode.className = "person-text";
+		var color = common_interactive_ColorHelper.getColorCss(this.parameters.nameColor);
+		nameNode.innerText = this.parameters.name.toUpperCase();
+		nameNode.className = "name " + color;
+		sepNode.className = "separator";
+		sepNode.innerText = "-";
+		textNode.innerText = "\"" + this.parameters.text + "\"";
+		textNode.className = "text";
+		mainNode.appendChild(nameNode);
+		mainNode.appendChild(sepNode);
+		mainNode.appendChild(textNode);
+		return mainNode;
+	}
+	,__class__: common_interactive_PersonTextElement
+});
 var common_interactive_TextElement = function(text) {
 	common_interactive_InteractiveElement.call(this);
 	this.text = text;
@@ -401,6 +438,34 @@ js_Boot.__string_rec = function(o,s) {
 	case "function":
 		return "<function>";
 	case "object":
+		if(o.__enum__) {
+			var e = $hxEnums[o.__enum__];
+			var con = e.__constructs__[o._hx_index];
+			var n = con._hx_name;
+			if(con.__params__) {
+				s = s + "\t";
+				return n + "(" + ((function($this) {
+					var $r;
+					var _g = [];
+					{
+						var _g1 = 0;
+						var _g2 = con.__params__;
+						while(true) {
+							if(!(_g1 < _g2.length)) {
+								break;
+							}
+							var p = _g2[_g1];
+							_g1 = _g1 + 1;
+							_g.push(js_Boot.__string_rec(o[p],s));
+						}
+					}
+					$r = _g;
+					return $r;
+				}(this))).join(",") + ")";
+			} else {
+				return n;
+			}
+		}
 		if(((o) instanceof Array)) {
 			var str = "[";
 			s += "\t";
@@ -513,7 +578,7 @@ js_Boot.__instanceof = function(o,cl) {
 		if(cl == Enum ? o.__ename__ != null : false) {
 			return true;
 		}
-		return false;
+		return o.__enum__ != null ? $hxEnums[o.__enum__] == cl : false;
 	}
 };
 js_Boot.__downcastCheck = function(o,cl) {

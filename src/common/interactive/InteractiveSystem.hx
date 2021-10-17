@@ -29,6 +29,9 @@ class InteractiveSystem {
 	// Главный контент
 	final sceneContent:js.html.Element;
 
+	// Список новых элементов
+	var newElements = new Array<InteractiveElement>();
+
 	// Обнавляет скроллинг что бы читалось
 	private function updateScroll() {
 		sceneContent.scrollTop = sceneContent.scrollHeight;
@@ -38,7 +41,17 @@ class InteractiveSystem {
 	private function addElement(element:InteractiveElement) {
 		final node = element.renderInternal();
 		sceneContent.appendChild(node);
+		newElements.push(element);
 		updateScroll();
+	}
+
+	// Делает элементы старыми, что бы новые
+	private function makeElementsOld() {
+		for (element in newElements) {
+			Actuate.tween(element, 0.3, {opacity: 0.6}).ease(Linear.easeNone);
+		}
+
+		newElements = new Array<InteractiveElement>();
 	}
 
 	// Конструктор
@@ -63,38 +76,21 @@ class InteractiveSystem {
 		var element = new TextElement(text);
 		addElement(element);
 		element.opacity = 0;
-        Actuate.tween(element, 0.7, {opacity: 1.0}).ease(Linear.easeNone);
+		Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
 		return element;
 	}
 
 	// Добавляет прямую речь персонажа
 	public function addPersonText(parameters:AddPersonTextParameters) {
-		var rootNode = Browser.document.createDivElement();
-		var nameNode = Browser.document.createSpanElement();
-		var textNode = Browser.document.createSpanElement();
-		var sepNode = Browser.document.createSpanElement();
+		final element = new PersonTextElement({
+			nameColor: parameters.isYou ? Color.Orange : Color.Blue,
+			name: parameters.isYou ? "ВЫ" : parameters.personName,
+			text: parameters.text
+		});
 
-		rootNode.className = "person-text";
-
-		if (parameters.isYou) {
-			nameNode.className = "name you";
-			nameNode.innerText = "ВЫ";
-		} else {
-			nameNode.innerText = parameters.personName.toUpperCase();
-			nameNode.className = "name";
-		}
-
-		sepNode.className = "separator";
-		sepNode.innerText = "-";
-
-		textNode.innerText = '"' + parameters.text + '"';
-		textNode.className = "text";
-
-		rootNode.appendChild(nameNode);
-		rootNode.appendChild(sepNode);
-		rootNode.appendChild(textNode);
-		sceneContent.appendChild(rootNode);
-
+		addElement(element);
+		element.opacity = 0;
+		Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
 		updateScroll();
 	}
 
@@ -103,6 +99,8 @@ class InteractiveSystem {
 		final choose = new ChooseElement({
 			select: parameters.select,
 			onSelect: (index) -> {
+				makeElementsOld();
+
 				if (parameters.onBeforeSelect != null)
 					parameters.onBeforeSelect(index);
 

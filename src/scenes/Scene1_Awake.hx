@@ -13,7 +13,7 @@ class Scene1_Awake extends Scene {
 		interactive.setSceneTitle("Часть 1. Пробуждение");
 		interactive.addText("Привет. Что тут?");
 
-		interactive.addChoose({
+		interactive.addChoose({            
 			select: ["Кто Вы?", "Где я?"],
 			onSelect: (index) -> {},
 			onBeforeSelect: (index) -> {
