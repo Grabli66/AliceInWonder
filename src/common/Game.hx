@@ -1,5 +1,7 @@
 package common;
 
+import common.interactive.InteractiveSystem;
+
 // Базовый класс игры
 abstract class Game {
 	// Система для взаимодействия с игроком
@@ -20,9 +22,6 @@ abstract class Game {
 	public function setScene(scene:Scene) {     
 		scene.interactive = interactive;
 		scene.game = this;
-		
-		if (currentScene != null)
-			currentScene.leave();
 
 		// Очищает
 		scene.interactive.clear();		

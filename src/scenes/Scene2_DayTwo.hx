@@ -9,6 +9,4 @@ class Scene2_DayTwo extends Scene {
 		interactive.setSceneTitle("Часть 2. День второй");
         interactive.addText("В разработке.");
 	}
-
-	public function leave() {}
 }

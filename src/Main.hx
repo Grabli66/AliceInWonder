@@ -1,4 +1,3 @@
-import common.InteractiveSystem;
 import scenes.Scene1_Awake;
 
 // Основной класс

@@ -1,5 +1,7 @@
 package common;
 
+import common.interactive.InteractiveSystem;
+
 // Класс сцены
 abstract class Scene {
 	// Основной класс игры
@@ -15,7 +17,4 @@ abstract class Scene {
 
 	// Обрабатывает вход в сцену
 	public abstract function enter():Void;
-
-	// Обрабатывает выход со сцены
-	public abstract function leave():Void;
 }

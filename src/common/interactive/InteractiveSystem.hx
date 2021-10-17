@@ -1,11 +1,24 @@
-package common;
+package common.interactive;
 
+import motion.Actuate;
+import motion.easing.Linear;
+import common.interactive.InteractiveElement;
 import js.Browser;
 
 typedef AddPersonTextParameters = {
 	?isYou:Bool,
 	?personName:String,
 	text:String
+}
+
+// Параметры для метода добавления элемента выбора
+typedef ChooseMethodParameters = {
+	// Варианты выбора
+	select:Array<String>,
+	// Обработчик выбора
+	onSelect:Int->Void,
+	// Обработчик перед добавлением выбора
+	?onBeforeSelect:Int->Void
 }
 
 // Взаимодействия с игроком
@@ -19,6 +32,13 @@ class InteractiveSystem {
 	// Обнавляет скроллинг что бы читалось
 	private function updateScroll() {
 		sceneContent.scrollTop = sceneContent.scrollHeight;
+	}
+
+	// Добавляет элемент
+	private function addElement(element:InteractiveElement) {
+		final node = element.renderInternal();
+		sceneContent.appendChild(node);
+		updateScroll();
 	}
 
 	// Конструктор
@@ -39,12 +59,12 @@ class InteractiveSystem {
 	}
 
 	// Добавляет текст
-	public function addText(text:String) {
-		var node = Browser.document.createDivElement();
-		node.innerText = text;
-		node.className = "single-text";
-		sceneContent.appendChild(node);
-		updateScroll();
+	public function addText(text:String):TextElement {
+		var element = new TextElement(text);
+		addElement(element);
+		element.opacity = 0;
+        Actuate.tween(element, 0.7, {opacity: 1.0}).ease(Linear.easeNone);
+		return element;
 	}
 
 	// Добавляет прямую речь персонажа
@@ -79,29 +99,23 @@ class InteractiveSystem {
 	}
 
 	// Добавляет выбор
-	public function addChoose(variants:Array<String>, onClick:Int->Void) {
-		var chooseNode = Browser.document.createDivElement();
-		chooseNode.className = "choose-root";
-		sceneContent.appendChild(chooseNode);
+	public function addChoose(parameters:ChooseMethodParameters):ChooseElement {
+		final choose = new ChooseElement({
+			select: parameters.select,
+			onSelect: (index) -> {
+				if (parameters.onBeforeSelect != null)
+					parameters.onBeforeSelect(index);
 
-		var i = 1;
-		for (variant in variants) {
-			var node = Browser.document.createDivElement();
-			node.innerText = '${i}. ${variant}';
-			node.className = "choose-item";
-			node.onclick = () -> {
-				chooseNode.remove();
 				addPersonText({
 					isYou: true,
-					text: variant
+					text: parameters.select[index]
 				});
-				onClick(variants.indexOf(variant));
-			};
-			chooseNode.appendChild(node);
-			i += 1;
-		}
+				parameters.onSelect(index);
+			}
+		});
 
-		updateScroll();
+		addElement(choose);
+		return choose;
 	}
 
 	// Добавляет кнопку "Продолжить"
