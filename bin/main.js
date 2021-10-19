@@ -118,6 +118,14 @@ Type.createInstance = function(cl,args) {
 	var ctor = Function.prototype.bind.apply(cl,[null].concat(args));
 	return new (ctor);
 };
+var common_Person = function(name,portraitImage) {
+	this.name = name;
+	this.portraitImage = portraitImage;
+};
+common_Person.__name__ = true;
+common_Person.prototype = {
+	__class__: common_Person
+};
 var common_Scene = function() {
 };
 common_Scene.__name__ = true;
@@ -200,16 +208,17 @@ common_interactive_ColorHelper.getColorCss = function(color) {
 var common_interactive_InteractiveSystem = function() {
 	this.newElements = [];
 	this.sceneTitle = window.document.querySelector("#scene-title");
-	this.sceneContent = window.document.querySelector("#scene-content");
+	this.sceneContentNode = window.document.querySelector("#scene-content");
+	this.leftPageNode = window.document.querySelector("#left-page-panel");
 };
 common_interactive_InteractiveSystem.__name__ = true;
 common_interactive_InteractiveSystem.prototype = {
 	updateScroll: function() {
-		this.sceneContent.scrollTop = this.sceneContent.scrollHeight;
+		this.sceneContentNode.scrollTop = this.sceneContentNode.scrollHeight;
 	}
 	,addElement: function(element) {
 		var node = element.renderInternal();
-		this.sceneContent.appendChild(node);
+		this.sceneContentNode.appendChild(node);
 		this.newElements.push(element);
 		this.updateScroll();
 	}
@@ -224,7 +233,7 @@ common_interactive_InteractiveSystem.prototype = {
 		this.newElements = [];
 	}
 	,clear: function() {
-		this.sceneContent.innerHTML = "";
+		this.sceneContentNode.innerHTML = "";
 		this.setSceneTitle("");
 	}
 	,setSceneTitle: function(title) {
@@ -237,10 +246,17 @@ common_interactive_InteractiveSystem.prototype = {
 		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
 		return element;
 	}
+	,addPlayerText: function(text) {
+		var element = new common_interactive_PersonTextElement({ nameColor : common_interactive_Color.Orange, name : "ВЫ", text : text});
+		this.addElement(element);
+		element.set_opacity(0);
+		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
+		this.updateScroll();
+	}
 	,addPersonText: function(parameters) {
 		var _gthis = this;
 		var add = function() {
-			var element = new common_interactive_PersonTextElement({ nameColor : parameters.isYou ? common_interactive_Color.Orange : common_interactive_Color.Blue, name : parameters.isYou ? "ВЫ" : parameters.personName, text : parameters.text});
+			var element = new common_interactive_PersonTextElement({ nameColor : common_interactive_Color.Blue, name : parameters.person.name, text : parameters.text});
 			_gthis.addElement(element);
 			element.set_opacity(0);
 			motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
@@ -264,11 +280,17 @@ common_interactive_InteractiveSystem.prototype = {
 			if(parameters.onBeforeSelect != null) {
 				parameters.onBeforeSelect(index);
 			}
-			_gthis.addPersonText({ isYou : true, text : parameters.select[index]});
+			_gthis.addPlayerText(parameters.select[index]);
 			parameters.onSelect(index);
 		}});
 		this.addElement(choose);
 		return choose;
+	}
+	,addPersonPortrait: function(person) {
+		var element = new common_interactive_PersonPortraitElement(person);
+		var node = element.render();
+		this.leftPageNode.appendChild(node);
+		return element;
 	}
 	,addWaitPerson: function(waitTime,onComplete) {
 		var _gthis = this;
@@ -287,11 +309,33 @@ common_interactive_InteractiveSystem.prototype = {
 		continueNode.onclick = function() {
 			onClick();
 		};
-		this.sceneContent.appendChild(continueNode);
+		this.sceneContentNode.appendChild(continueNode);
 		this.updateScroll();
 	}
 	,__class__: common_interactive_InteractiveSystem
 };
+var common_interactive_PersonPortraitElement = function(person) {
+	common_interactive_InteractiveElement.call(this);
+	this.person = person;
+};
+common_interactive_PersonPortraitElement.__name__ = true;
+common_interactive_PersonPortraitElement.__super__ = common_interactive_InteractiveElement;
+common_interactive_PersonPortraitElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
+	render: function() {
+		var mainNode = window.document.createElement("div");
+		mainNode.className = "person-portrait-conatiner";
+		var portraitNode = window.document.createElement("div");
+		portraitNode.className = "portrait";
+		portraitNode.style.backgroundImage = "url(images/" + this.person.portraitImage + ")";
+		var nameNode = window.document.createElement("div");
+		nameNode.className = "name grey-color";
+		nameNode.innerText = this.person.name.toUpperCase();
+		mainNode.appendChild(portraitNode);
+		mainNode.appendChild(nameNode);
+		return mainNode;
+	}
+	,__class__: common_interactive_PersonPortraitElement
+});
 var common_interactive_PersonTextElement = function(parameters) {
 	common_interactive_InteractiveElement.call(this);
 	this.parameters = parameters;
@@ -2067,6 +2111,8 @@ motion_easing_LinearEaseNone.prototype = {
 	,__class__: motion_easing_LinearEaseNone
 };
 var scenes_Scene1_$Awake = function() {
+	this.unknownPerson2 = new common_Person("МЕДСЕСТРА АГАТА СВИФТ","agata-portrait.jpg");
+	this.unknownPerson1 = new common_Person("ДОКТОР ЭЛИЗАБЕТ ТОМПСОН","doctor-elizabeth.jpg");
 	common_Scene.call(this);
 };
 scenes_Scene1_$Awake.__name__ = true;
@@ -2076,7 +2122,9 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 		var _gthis = this;
 		this.interactive.setSceneTitle("Часть 1. Пробуждение");
 		this.interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Он спокойный и не несёт в себе угрозы.");
-		this.interactive.addPersonText({ personName : "Неизвестный женский голос", text : "Пожалуйста, просыпайся."});
+		this.interactive.addPersonPortrait(this.unknownPerson1);
+		this.interactive.addPersonPortrait(this.unknownPerson2);
+		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, просыпайся."});
 		this.interactive.addChoose({ select : ["Кто вы?","Уходите, я хочу спать","Промолчать"], onSelect : $bind(this,this.processAnswer), onBeforeSelect : function(_) {
 			_gthis.interactive.addText("Вы с трудом открываете глаза. Сонными глазами пытаетесь разглядеть своего собеседника. Перед Вами стоят две женщины. Их одежда очень похожа на больничные халаты. Возможно это они и есть.");
 		}});
@@ -2087,15 +2135,15 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 		case 0:
 			break;
 		case 1:
-			this.interactive.addPersonText({ personName : "Неизвестный женский голос", text : "Извини, но тебе придётся проснутся.", waitTime : 1300, onWaitComplete : function() {
+			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Извини, но тебе придётся проснутся.", waitTime : 1300, onWaitComplete : function() {
 				_gthis.interactive.addChoose({ select : ["Кто Вы?","Не хочу, уходите.","[Зло] Отвалите от меня."], onSelect : function(index) {
 				}});
 			}});
 			break;
 		case 2:
 			this.interactive.addText("Вы слышите как женщины переговариваются между собой.");
-			this.interactive.addPersonText({ personName : "Неизвестный женский голос", text : "Вы уверены, что пациентка в сознании?"});
-			this.interactive.addPersonText({ personName : "Другой женский голос", text : "Да. Думаю она притворяется."});
+			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Вы уверены, что пациентка в сознании?"});
+			this.interactive.addPersonText({ person : this.unknownPerson2, text : "Да. Думаю она притворяется."});
 			this.interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");
 			this.interactive.addChoose({ select : ["Ну ладно, я не сплю. Кто Вы?","[Раздражённо] Отстаньте, я сплю","Промолчать"], onSelect : function(index) {
 			}});

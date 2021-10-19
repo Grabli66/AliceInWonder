@@ -1,5 +1,6 @@
 package common.interactive;
 
+import common.Person;
 import motion.Actuate;
 import motion.easing.Linear;
 import common.interactive.InteractiveElement;
@@ -7,9 +8,10 @@ import js.Browser;
 
 // Параметры добавления текста персонажа
 typedef AddPersonTextParameters = {
+	// Речь персонажа
 	text:String,
-	?isYou:Bool,
-	?personName:String,
+	// Данные персонажа
+	person:Person,
 	// Время ожидания перед выводом текста
 	?waitTime:Float,
 	// Обработчик после завершения ожидания
@@ -32,20 +34,23 @@ class InteractiveSystem {
 	final sceneTitle:js.html.Element;
 
 	// Главный контент
-	final sceneContent:js.html.Element;
+	final sceneContentNode:js.html.Element;
+
+	// Нода где хранятся портреты
+	final leftPageNode:js.html.Element;
 
 	// Список новых элементов
 	var newElements = new Array<InteractiveElement>();
 
 	// Обнавляет скроллинг что бы читалось
 	private function updateScroll() {
-		sceneContent.scrollTop = sceneContent.scrollHeight;
+		sceneContentNode.scrollTop = sceneContentNode.scrollHeight;
 	}
 
 	// Добавляет элемент
 	private function addElement(element:InteractiveElement) {
 		final node = element.renderInternal();
-		sceneContent.appendChild(node);
+		sceneContentNode.appendChild(node);
 		newElements.push(element);
 		updateScroll();
 	}
@@ -62,12 +67,13 @@ class InteractiveSystem {
 	// Конструктор
 	public function new() {
 		sceneTitle = Browser.document.querySelector("#scene-title");
-		sceneContent = Browser.document.querySelector("#scene-content");
+		sceneContentNode = Browser.document.querySelector("#scene-content");
+		leftPageNode = Browser.document.querySelector("#left-page-panel");
 	}
 
 	// Очищает
 	public function clear() {
-		sceneContent.innerHTML = "";
+		sceneContentNode.innerHTML = "";
 		setSceneTitle("");
 	}
 
@@ -85,12 +91,26 @@ class InteractiveSystem {
 		return element;
 	}
 
-	// Добавляет прямую речь персонажа
+	// Добавляет речь игрока
+	public function addPlayerText(text:String) {
+		final element = new PersonTextElement({
+			nameColor: Color.Orange,
+			name: "ВЫ",
+			text: text
+		});
+
+		addElement(element);
+		element.opacity = 0;
+		Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
+		updateScroll();
+	}
+
+	// Добавляет прямую речь NPC
 	public function addPersonText(parameters:AddPersonTextParameters) {
 		function add() {
 			final element = new PersonTextElement({
-				nameColor: parameters.isYou ? Color.Orange : Color.Blue,
-				name: parameters.isYou ? "ВЫ" : parameters.personName,
+				nameColor: Color.Blue,
+				name: parameters.person.name,
 				text: parameters.text
 			});
 
@@ -121,16 +141,21 @@ class InteractiveSystem {
 				if (parameters.onBeforeSelect != null)
 					parameters.onBeforeSelect(index);
 
-				addPersonText({
-					isYou: true,
-					text: parameters.select[index]
-				});
+				addPlayerText(parameters.select[index]);
 				parameters.onSelect(index);
 			}
 		});
 
 		addElement(choose);
 		return choose;
+	}
+
+	// Добавляет портрет NPC с которым ведётся разговор
+	public function addPersonPortrait(person:Person):PersonPortraitElement {
+		final element = new PersonPortraitElement(person);
+		final node = element.render();
+		leftPageNode.appendChild(node);
+		return element;
 	}
 
 	// Добавляет ожидание действия персонажа
@@ -153,7 +178,7 @@ class InteractiveSystem {
 			onClick();
 		};
 
-		sceneContent.appendChild(continueNode);
+		sceneContentNode.appendChild(continueNode);
 		updateScroll();
 	}
 }

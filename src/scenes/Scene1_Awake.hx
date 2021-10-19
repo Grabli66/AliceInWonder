@@ -1,5 +1,6 @@
 package scenes;
 
+import common.Person;
 import haxe.Template;
 import motion.easing.Linear;
 import motion.Actuate;
@@ -8,12 +9,22 @@ import common.Scene;
 
 // Сцена 1. Пробуждение
 class Scene1_Awake extends Scene {
+	// Первая неизвестная
+	final unknownPerson1 = new Person("ДОКТОР ЭЛИЗАБЕТ ТОМПСОН", "doctor-elizabeth.jpg");
+
+	// Вторая неизвестная
+	final unknownPerson2 = new Person("МЕДСЕСТРА АГАТА СВИФТ", "agata-portrait.jpg");
+
 	// Обрабатывает вход в сцену
 	public function enter() {
 		interactive.setSceneTitle("Часть 1. Пробуждение");
 		interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Он спокойный и не несёт в себе угрозы.");
+
+		interactive.addPersonPortrait(unknownPerson1);
+		interactive.addPersonPortrait(unknownPerson2);
+
 		interactive.addPersonText({
-			personName: "Неизвестный женский голос",
+			person: unknownPerson1,
 			text: "Пожалуйста, просыпайся.",
 		});
 
@@ -35,7 +46,7 @@ class Scene1_Awake extends Scene {
 			// "Уходите, я хочу спать"
 			case 1:
 				interactive.addPersonText({
-					personName: "Неизвестный женский голос",
+					person: unknownPerson1,
 					text: "Извини, но тебе придётся проснутся.",
 					waitTime: 1300,
 					onWaitComplete: () -> {
@@ -49,11 +60,11 @@ class Scene1_Awake extends Scene {
 			case 2:
 				interactive.addText("Вы слышите как женщины переговариваются между собой.");
 				interactive.addPersonText({
-					personName: "Неизвестный женский голос",
+					person: unknownPerson1,
 					text: "Вы уверены, что пациентка в сознании?"
 				});
 				interactive.addPersonText({
-					personName: "Другой женский голос",
+					person: unknownPerson2,
 					text: "Да. Думаю она притворяется."
 				});
 				interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");

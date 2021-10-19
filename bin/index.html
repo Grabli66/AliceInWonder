@@ -60,6 +60,39 @@
             padding: 8px;
         }
 
+        #scene-page {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #left-page-panel {
+            padding-right: 24px;
+            padding-top: 80px;
+        }
+
+        .person-portrait-conatiner {
+            display: flex;
+            flex-direction: column;
+            width: 170px;
+            height: 200px;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a1b1d;            
+        }
+
+        .person-portrait-conatiner .portrait {
+            width: 100px;
+            height: 100px;
+            border: 6px solid #2e2e38;
+            background-repeat: round;
+        }
+
+        .person-portrait-conatiner .name {
+            text-align: center;
+            padding-top: 16px;
+            font-size: 10pt;
+        }
+
         #scene-title {
             font-size: 16pt;
             font-weight: bold;
@@ -123,8 +156,14 @@
 <body>
     <div id="outer">
         <div id="inner">
-            <div id="scene-title"></div>
-            <div id="scene-content"></div>
+            <div id="scene-page">
+                <div id="left-page-panel">                    
+                </div>
+                <div id="right-page-panel">
+                    <div id="scene-title"></div>
+                    <div id="scene-content"></div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
