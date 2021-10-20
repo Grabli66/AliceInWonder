@@ -110,7 +110,7 @@ class InteractiveSystem {
 		function add() {
 			final element = new PersonTextElement({
 				nameColor: Color.Blue,
-				name: parameters.person.name,
+				name: parameters.person.fullNameWithPosition,
 				text: parameters.text
 			});
 
@@ -153,7 +153,7 @@ class InteractiveSystem {
 	// Добавляет портрет NPC с которым ведётся разговор
 	public function addPersonPortrait(person:Person):PersonPortraitElement {
 		final element = new PersonPortraitElement(person);
-		final node = element.render();
+		final node = element.renderInternal();
 		leftPageNode.appendChild(node);
 		return element;
 	}

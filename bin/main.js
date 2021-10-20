@@ -118,13 +118,30 @@ Type.createInstance = function(cl,args) {
 	var ctor = Function.prototype.bind.apply(cl,[null].concat(args));
 	return new (ctor);
 };
-var common_Person = function(name,portraitImage) {
+var common_Person = function(name,portraitImage,optional) {
 	this.name = name;
 	this.portraitImage = portraitImage;
+	if(optional != null) {
+		this.surname = optional.surname;
+		this.position = optional.position;
+	}
 };
 common_Person.__name__ = true;
 common_Person.prototype = {
-	__class__: common_Person
+	get_fullName: function() {
+		if(this.surname != null) {
+			return "" + this.name + " " + this.surname;
+		}
+		return this.name;
+	}
+	,get_fullNameWithPosition: function() {
+		if(this.position != null) {
+			return "" + this.position + " " + this.get_fullName();
+		}
+		return this.get_fullName();
+	}
+	,__class__: common_Person
+	,__properties__: {get_fullNameWithPosition:"get_fullNameWithPosition",get_fullName:"get_fullName"}
 };
 var common_Scene = function() {
 };
@@ -256,7 +273,7 @@ common_interactive_InteractiveSystem.prototype = {
 	,addPersonText: function(parameters) {
 		var _gthis = this;
 		var add = function() {
-			var element = new common_interactive_PersonTextElement({ nameColor : common_interactive_Color.Blue, name : parameters.person.name, text : parameters.text});
+			var element = new common_interactive_PersonTextElement({ nameColor : common_interactive_Color.Blue, name : parameters.person.get_fullNameWithPosition(), text : parameters.text});
 			_gthis.addElement(element);
 			element.set_opacity(0);
 			motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
@@ -288,7 +305,7 @@ common_interactive_InteractiveSystem.prototype = {
 	}
 	,addPersonPortrait: function(person) {
 		var element = new common_interactive_PersonPortraitElement(person);
-		var node = element.render();
+		var node = element.renderInternal();
 		this.leftPageNode.appendChild(node);
 		return element;
 	}
@@ -316,25 +333,40 @@ common_interactive_InteractiveSystem.prototype = {
 };
 var common_interactive_PersonPortraitElement = function(person) {
 	common_interactive_InteractiveElement.call(this);
-	this.person = person;
+	this._person = person;
 };
 common_interactive_PersonPortraitElement.__name__ = true;
 common_interactive_PersonPortraitElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_PersonPortraitElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
-	render: function() {
+	get_person: function() {
+		return this._person;
+	}
+	,set_person: function(value) {
+		this._person = value;
+		console.log("src/common/interactive/PersonPortraitElement.hx:19:",this._person);
+		if(this.rootNode != null) {
+			var tmp = "url(images/" + this.get_person().portraitImage;
+			this.portraitNode.style.backgroundImage = tmp + ")";
+			this.nameNode.innerText = this.get_person().get_fullNameWithPosition().toUpperCase();
+		}
+		return this._person;
+	}
+	,render: function() {
 		var mainNode = window.document.createElement("div");
 		mainNode.className = "person-portrait-conatiner";
-		var portraitNode = window.document.createElement("div");
-		portraitNode.className = "portrait";
-		portraitNode.style.backgroundImage = "url(images/" + this.person.portraitImage + ")";
-		var nameNode = window.document.createElement("div");
-		nameNode.className = "name grey-color";
-		nameNode.innerText = this.person.name.toUpperCase();
-		mainNode.appendChild(portraitNode);
-		mainNode.appendChild(nameNode);
+		this.portraitNode = window.document.createElement("div");
+		this.portraitNode.className = "portrait";
+		var tmp = "url(images/" + this.get_person().portraitImage;
+		this.portraitNode.style.backgroundImage = tmp + ")";
+		this.nameNode = window.document.createElement("div");
+		this.nameNode.className = "name grey-color";
+		this.nameNode.innerText = this.get_person().get_fullNameWithPosition().toUpperCase();
+		mainNode.appendChild(this.portraitNode);
+		mainNode.appendChild(this.nameNode);
 		return mainNode;
 	}
 	,__class__: common_interactive_PersonPortraitElement
+	,__properties__: $extend(common_interactive_InteractiveElement.prototype.__properties__,{set_person:"set_person",get_person:"get_person"})
 });
 var common_interactive_PersonTextElement = function(parameters) {
 	common_interactive_InteractiveElement.call(this);
@@ -458,20 +490,6 @@ haxe_Exception.prototype = $extend(Error.prototype,{
 	,__class__: haxe_Exception
 	,__properties__: {get_native:"get_native"}
 });
-var haxe_iterators_ArrayIterator = function(array) {
-	this.current = 0;
-	this.array = array;
-};
-haxe_iterators_ArrayIterator.__name__ = true;
-haxe_iterators_ArrayIterator.prototype = {
-	hasNext: function() {
-		return this.current < this.array.length;
-	}
-	,next: function() {
-		return this.array[this.current++];
-	}
-	,__class__: haxe_iterators_ArrayIterator
-};
 var haxe_ValueException = function(value,previous,native) {
 	haxe_Exception.call(this,String(value),previous,native);
 	this.value = value;
@@ -522,6 +540,20 @@ haxe_ds_ObjectMap.prototype = {
 		}};
 	}
 	,__class__: haxe_ds_ObjectMap
+};
+var haxe_iterators_ArrayIterator = function(array) {
+	this.current = 0;
+	this.array = array;
+};
+haxe_iterators_ArrayIterator.__name__ = true;
+haxe_iterators_ArrayIterator.prototype = {
+	hasNext: function() {
+		return this.current < this.array.length;
+	}
+	,next: function() {
+		return this.array[this.current++];
+	}
+	,__class__: haxe_iterators_ArrayIterator
 };
 var js_Boot = function() { };
 js_Boot.__name__ = true;
@@ -2111,8 +2143,11 @@ motion_easing_LinearEaseNone.prototype = {
 	,__class__: motion_easing_LinearEaseNone
 };
 var scenes_Scene1_$Awake = function() {
-	this.unknownPerson2 = new common_Person("МЕДСЕСТРА АГАТА СВИФТ","agata-portrait.jpg");
-	this.unknownPerson1 = new common_Person("ДОКТОР ЭЛИЗАБЕТ ТОМПСОН","doctor-elizabeth.jpg");
+	this.agataPerson = new common_Person("Агата","agata-portrait.jpg",{ surname : "Стоун", position : "медсестра"});
+	this.elizabetPerson = new common_Person("Элизабет","doctor-elizabeth.jpg",{ surname : "Томпсон", position : "доктор"});
+	this.unknownPerson2 = new common_Person("НЕИЗВЕСТНАЯ","agata-portrait.jpg");
+	this.unknownPerson1 = new common_Person("НЕИЗВЕСТНАЯ","doctor-elizabeth.jpg");
+	this.defaultWait = 1300;
 	common_Scene.call(this);
 };
 scenes_Scene1_$Awake.__name__ = true;
@@ -2121,18 +2156,28 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 	enter: function() {
 		var _gthis = this;
 		this.interactive.setSceneTitle("Часть 1. Пробуждение");
-		this.interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Он спокойный и не несёт в себе угрозы.");
-		this.interactive.addPersonPortrait(this.unknownPerson1);
-		this.interactive.addPersonPortrait(this.unknownPerson2);
+		this.interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Голос спокойный и не несёт в себе угрозы.");
+		this.elizabethPortrait = this.interactive.addPersonPortrait(this.unknownPerson1);
 		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, просыпайся."});
 		this.interactive.addChoose({ select : ["Кто вы?","Уходите, я хочу спать","Промолчать"], onSelect : $bind(this,this.processAnswer), onBeforeSelect : function(_) {
-			_gthis.interactive.addText("Вы с трудом открываете глаза. Сонными глазами пытаетесь разглядеть своего собеседника. Перед Вами стоят две женщины. Их одежда очень похожа на больничные халаты. Возможно это они и есть.");
+			_gthis.interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
+			_gthis.agataPortrait = _gthis.interactive.addPersonPortrait(_gthis.unknownPerson2);
+		}});
+	}
+	,actionDoctorHello: function() {
+		var _gthis = this;
+		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Я " + this.elizabetPerson.get_fullNameWithPosition() + ". Это " + this.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты знаешь, где находишься?", waitTime : this.defaultWait, onWaitComplete : function() {
+			_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
+			_gthis.agataPortrait.set_person(_gthis.agataPerson);
+			_gthis.interactive.addChoose({ select : ["[Удивлённо] Доктор? Я что, в больнице?","[Интеллект] Элизабет и Агата? Мы что в Англии? (Усмехнутся)","Дома, дайте отдохнуть","На работе. Я всегда сплю на работе","На луне. А Вы как меня нашли?","Если Вы доктор, то я Папа Римский","[Засмеятся] В дурдоме"], onSelect : function(index) {
+			}});
 		}});
 	}
 	,processAnswer: function(index) {
 		var _gthis = this;
 		switch(index) {
 		case 0:
+			this.actionDoctorHello();
 			break;
 		case 1:
 			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Извини, но тебе придётся проснутся.", waitTime : 1300, onWaitComplete : function() {

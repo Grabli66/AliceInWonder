@@ -18,7 +18,30 @@
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="drawing.svg">
   <defs
-     id="defs2" />
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1054">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop1050" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop1052" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1054"
+       id="linearGradient1056"
+       x1="85.161209"
+       y1="357.19519"
+       x2="85.161209"
+       y2="340.6557"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1,0,0,3.4444446,17.10525,-789.0162)" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -27,8 +50,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497475"
-     inkscape:cx="231.09558"
-     inkscape:cy="368.59779"
+     inkscape:cx="196.43791"
+     inkscape:cy="355.51553"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -38,7 +61,8 @@
      inkscape:window-height="1017"
      inkscape:window-x="0"
      inkscape:window-y="30"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:snap-global="false" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -2559,118 +2583,53 @@ D6C2PfwwZcVrAAAAAElFTkSuQmCC
          x="-44.366741"
          y="24.919619"
          style="fill:#bfbfbf;stroke-width:0.26458332">Часть 1. Пробуждение</tspan></text>
-    <rect
-       style="fill:#19181e;fill-opacity:1;stroke:none;stroke-width:0.50838804;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect875"
-       width="60.402908"
-       height="61.444019"
-       x="-44.366745"
-       y="293.79276"
-       ry="0.24898246" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425;"
-       x="-37.385315"
-       y="307.9216"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425"
+       x="40.122841"
+       y="310.05975"
        id="text879"><tspan
          sodipodi:role="line"
          id="tspan877"
-         x="-37.385315"
-         y="307.9216"
-         style="font-size:6.53718805px;fill:#bfbfbf;stroke-width:0.40857425;-inkscape-font-specification:Roboto;font-family:Roboto;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;fill-opacity:1;">Голод</tspan></text>
+         x="40.122841"
+         y="310.05975"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#bfbfbf;fill-opacity:1;stroke-width:0.40857425">Голод</tspan></text>
     <text
        id="text883"
-       y="319.63885"
-       x="-37.385315"
-       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425;"
+       y="321.77701"
+       x="40.122841"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425"
        xml:space="preserve"><tspan
-         style="font-size:6.53718805px;fill:#bfbfbf;stroke-width:0.40857425;-inkscape-font-specification:Roboto;font-family:Roboto;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;fill-opacity:1;"
-         y="319.63885"
-         x="-37.385315"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#bfbfbf;fill-opacity:1;stroke-width:0.40857425"
+         y="321.77701"
+         x="40.122841"
          id="tspan881"
          sodipodi:role="line">Жажда</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425;"
-       x="-37.385315"
-       y="331.7341"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425"
+       x="40.122841"
+       y="333.87225"
        id="text887"><tspan
          sodipodi:role="line"
          id="tspan885"
-         x="-37.385315"
-         y="331.7341"
-         style="font-size:6.53718805px;fill:#bfbfbf;stroke-width:0.40857425;-inkscape-font-specification:Roboto;font-family:Roboto;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;fill-opacity:1;">Нужда</tspan></text>
+         x="40.122841"
+         y="333.87225"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#bfbfbf;fill-opacity:1;stroke-width:0.40857425">Нужда</tspan></text>
     <text
        id="text891"
-       y="342.6954"
-       x="-37.385315"
-       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425;"
+       y="344.83356"
+       x="40.122841"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425"
        xml:space="preserve"><tspan
-         style="font-size:6.53718805px;fill:#bfbfbf;stroke-width:0.40857425;-inkscape-font-specification:Roboto;font-family:Roboto;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;fill-opacity:1;"
-         y="342.6954"
-         x="-37.385315"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#bfbfbf;fill-opacity:1;stroke-width:0.40857425"
+         y="344.83356"
+         x="40.122841"
          id="tspan889"
          sodipodi:role="line">Мораль</tspan></text>
-    <rect
-       ry="0.24898246"
-       y="293.79276"
-       x="16.036163"
-       height="61.444019"
-       width="228.24817"
-       id="rect893"
-       style="fill:#19181e;fill-opacity:1;stroke:none;stroke-width:0.98825735;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <rect
-       ry="0.75595164"
-       y="110.51073"
-       x="-1.525341"
-       height="34.745037"
-       width="160.36172"
-       id="rect895"
-       style="fill:#111111;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.82149744px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:Roboto;letter-spacing:0px;word-spacing:0px;fill:#b05c44;fill-opacity:1;stroke:none;stroke-width:0.17053743"
-       x="33.913769"
-       y="306.63217"
-       id="text899"><tspan
-         sodipodi:role="line"
-         id="tspan897"
-         x="33.913769"
-         y="306.63217"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#b05c44;fill-opacity:1;stroke-width:0.17053743">1. Кто Вы?</tspan></text>
-    <text
-       id="text903"
-       y="315.93915"
-       x="33.913769"
-       style="font-style:normal;font-weight:normal;font-size:6.82149744px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#b05c44;fill-opacity:1;stroke:none;stroke-width:0.17053743"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#b05c44;fill-opacity:1;stroke-width:0.17053743"
-         y="315.93915"
-         x="33.913769"
-         id="tspan901"
-         sodipodi:role="line">2. Идите к чёрту</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:6.82149744px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#b05c44;fill-opacity:1;stroke:none;stroke-width:0.17053743"
-       x="33.913769"
-       y="325.64795"
-       id="text907"><tspan
-         sodipodi:role="line"
-         id="tspan905"
-         x="33.913769"
-         y="325.64795"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#b05c44;fill-opacity:1;stroke-width:0.17053743">3. Промолчать</tspan></text>
-    <rect
-       style="fill:#111111;fill-opacity:1;stroke:none;stroke-width:0.42052558;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect912"
-       width="2.4054174"
-       height="61.444031"
-       x="13.630746"
-       y="293.79276"
-       ry="0.18590704" />
     <image
-       y="304.5181"
-       x="200.10873"
+       y="302.91449"
+       x="-21.190435"
        id="image992"
        xlink:href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsK
 CwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQU
@@ -3509,14 +3468,106 @@ XL0CTiqEiamMaQPkUjtipuUIx4qJjzQ0ophOeRTA/9k=
        width="32.51091" />
     <text
        id="text997"
-       y="349.121"
-       x="201.11766"
+       y="347.5174"
+       x="-20.181509"
        style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#bfbfbf;fill-opacity:1;stroke:none;stroke-width:0.40857425"
        xml:space="preserve"><tspan
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#bfbfbf;fill-opacity:1;stroke-width:0.40857425"
-         y="349.121"
-         x="201.11766"
+         y="347.5174"
+         x="-20.181509"
          id="tspan995"
          sodipodi:role="line">Элис Вайт</tspan></text>
+    <text
+       id="text1020"
+       y="310.05975"
+       x="88.231354"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#00cc00;fill-opacity:1;stroke:none;stroke-width:0.40857425"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#00cc00;fill-opacity:1;stroke-width:0.40857425"
+         y="310.05975"
+         x="88.231354"
+         id="tspan1018"
+         sodipodi:role="line">100</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#00cc00;fill-opacity:1;stroke:none;stroke-width:0.40857425"
+       x="88.231354"
+       y="320.75055"
+       id="text1024"><tspan
+         sodipodi:role="line"
+         id="tspan1022"
+         x="88.231354"
+         y="320.75055"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#00cc00;fill-opacity:1;stroke-width:0.40857425">100</tspan></text>
+    <text
+       id="text1028"
+       y="333.5795"
+       x="88.231354"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#cc0000;fill-opacity:1;stroke:none;stroke-width:0.40857425;"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#cc0000;fill-opacity:1;stroke-width:0.40857425;"
+         y="333.5795"
+         x="88.231354"
+         id="tspan1026"
+         sodipodi:role="line">30</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:6.53718805px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#00cc00;fill-opacity:1;stroke:none;stroke-width:0.40857425"
+       x="88.231354"
+       y="344.27029"
+       id="text1032"><tspan
+         sodipodi:role="line"
+         id="tspan1030"
+         x="88.231354"
+         y="344.27029"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.53718805px;font-family:Roboto;-inkscape-font-specification:Roboto;fill:#00cc00;fill-opacity:1;stroke-width:0.40857425">100</tspan></text>
+    <rect
+       style="fill:#272723;fill-opacity:1;stroke:#2d2d2d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1036"
+       width="19.777945"
+       height="19.777945"
+       x="133.10022"
+       y="301.27631"
+       ry="0.24898243" />
+    <rect
+       ry="0.24898243"
+       y="301.27631"
+       x="159.40335"
+       height="19.777945"
+       width="19.777945"
+       id="rect1038"
+       style="fill:#272723;fill-opacity:1;stroke:#2d2d2d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#272723;fill-opacity:1;stroke:#2d2d2d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1040"
+       width="19.777945"
+       height="19.777945"
+       x="186.68777"
+       y="301.27631"
+       ry="0.24898243" />
+    <rect
+       ry="0.24898243"
+       y="329.75421"
+       x="133.10022"
+       height="19.777945"
+       width="19.777945"
+       id="rect1042"
+       style="fill:#272723;fill-opacity:1;stroke:#2d2d2d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <rect
+       style="fill:#272723;fill-opacity:1;stroke:#2d2d2d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1044"
+       width="19.777945"
+       height="19.777945"
+       x="159.40335"
+       y="329.75421"
+       ry="0.24898243" />
+    <rect
+       ry="0.24898243"
+       y="329.75421"
+       x="186.68777"
+       height="19.777945"
+       width="19.777945"
+       id="rect1046"
+       style="fill:#272723;fill-opacity:1;stroke:#2d2d2d;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   </g>
 </svg>
