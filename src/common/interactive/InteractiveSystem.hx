@@ -150,6 +150,8 @@ class InteractiveSystem {
 		final element = new PersonPortraitElement(person);
 		final node = element.renderInternal();
 		leftPageNode.appendChild(node);
+		element.opacity = 0;
+		Actuate.tween(element, 1.0, {opacity: 1.0}).ease(Linear.easeNone);
 		return element;
 	}
 
