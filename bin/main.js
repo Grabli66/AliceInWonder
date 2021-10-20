@@ -280,7 +280,7 @@ common_interactive_InteractiveSystem.prototype = {
 			_gthis.updateScroll();
 		};
 		if(parameters.waitTime != null) {
-			this.addWaitPerson(parameters.waitTime,function() {
+			this.addWait(parameters.waitTime,function() {
 				add();
 				if(parameters.onWaitComplete != null) {
 					parameters.onWaitComplete();
@@ -294,11 +294,7 @@ common_interactive_InteractiveSystem.prototype = {
 		var _gthis = this;
 		var choose = new common_interactive_ChooseElement({ select : parameters.select, onSelect : function(index) {
 			_gthis.makeElementsOld();
-			if(parameters.onBeforeSelect != null) {
-				parameters.onBeforeSelect(index);
-			}
-			_gthis.addPlayerText(parameters.select[index]);
-			parameters.onSelect(index);
+			parameters.onSelect(parameters.select,index);
 		}});
 		this.addElement(choose);
 		return choose;
@@ -309,7 +305,7 @@ common_interactive_InteractiveSystem.prototype = {
 		this.leftPageNode.appendChild(node);
 		return element;
 	}
-	,addWaitPerson: function(waitTime,onComplete) {
+	,addWait: function(waitTime,onComplete) {
 		var _gthis = this;
 		var node = new common_interactive_WaitPersonElement(waitTime,function() {
 			onComplete();
@@ -2147,53 +2143,54 @@ var scenes_Scene1_$Awake = function() {
 	this.elizabetPerson = new common_Person("Элизабет","doctor-elizabeth.jpg",{ surname : "Томпсон", position : "доктор"});
 	this.unknownPerson2 = new common_Person("НЕИЗВЕСТНАЯ","agata-portrait.jpg");
 	this.unknownPerson1 = new common_Person("НЕИЗВЕСТНАЯ","doctor-elizabeth.jpg");
-	this.defaultWait = 1300;
+	this.defaultWait = 2000;
 	common_Scene.call(this);
 };
 scenes_Scene1_$Awake.__name__ = true;
 scenes_Scene1_$Awake.__super__ = common_Scene;
 scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 	enter: function() {
-		var _gthis = this;
 		this.interactive.setSceneTitle("Часть 1. Пробуждение");
 		this.interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Голос спокойный и не несёт в себе угрозы.");
 		this.elizabethPortrait = this.interactive.addPersonPortrait(this.unknownPerson1);
 		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, просыпайся."});
-		this.interactive.addChoose({ select : ["Кто вы?","Уходите, я хочу спать","Промолчать"], onSelect : $bind(this,this.processAnswer), onBeforeSelect : function(_) {
-			_gthis.interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
-			_gthis.agataPortrait = _gthis.interactive.addPersonPortrait(_gthis.unknownPerson2);
-		}});
+		this.interactive.addChoose({ select : ["Кто вы?","Уходите, я хочу спать","Промолчать"], onSelect : $bind(this,this.processAnswer)});
 	}
 	,actionDoctorHello: function() {
 		var _gthis = this;
 		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Я " + this.elizabetPerson.get_fullNameWithPosition() + ". Это " + this.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты знаешь, где находишься?", waitTime : this.defaultWait, onWaitComplete : function() {
 			_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
 			_gthis.agataPortrait.set_person(_gthis.agataPerson);
-			_gthis.interactive.addChoose({ select : ["[Удивлённо] Доктор? Я что, в больнице?","[Интеллект] Элизабет и Агата? Мы что в Англии? (Усмехнутся)","Дома, дайте отдохнуть","На работе. Я всегда сплю на работе","На луне. А Вы как меня нашли?","Если Вы доктор, то я Папа Римский","[Засмеятся] В дурдоме"], onSelect : function(index) {
+			_gthis.interactive.addChoose({ select : ["[Удивлённо] Доктор? Я что, в больнице?","[Интеллект] Элизабет и Агата? Мы что в Англии? (Усмехнутся)","Дома, дайте отдохнуть","На работе. Я всегда сплю на работе","На луне. А Вы как меня нашли?","Если Вы доктор, то я Папа Римский","[Засмеятся] В дурдоме"], onSelect : function(_,index) {
 			}});
 		}});
 	}
-	,processAnswer: function(index) {
+	,processAnswer: function(select,index) {
 		var _gthis = this;
-		switch(index) {
-		case 0:
-			this.actionDoctorHello();
-			break;
-		case 1:
-			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Извини, но тебе придётся проснутся.", waitTime : 1300, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Кто Вы?","Не хочу, уходите.","[Зло] Отвалите от меня."], onSelect : function(index) {
+		this.interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
+		this.agataPortrait = this.interactive.addPersonPortrait(this.unknownPerson2);
+		this.interactive.addWait(5000,function() {
+			_gthis.interactive.addPlayerText(select[index]);
+			switch(index) {
+			case 0:
+				_gthis.actionDoctorHello();
+				break;
+			case 1:
+				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson1, text : "Извини, но тебе придётся проснутся.", waitTime : 1300, onWaitComplete : function() {
+					_gthis.interactive.addChoose({ select : ["Кто Вы?","Не хочу, уходите.","[Зло] Отвалите от меня."], onSelect : function(_,index) {
+					}});
 				}});
-			}});
-			break;
-		case 2:
-			this.interactive.addText("Вы слышите как женщины переговариваются между собой.");
-			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Вы уверены, что пациентка в сознании?"});
-			this.interactive.addPersonText({ person : this.unknownPerson2, text : "Да. Думаю она притворяется."});
-			this.interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");
-			this.interactive.addChoose({ select : ["Ну ладно, я не сплю. Кто Вы?","[Раздражённо] Отстаньте, я сплю","Промолчать"], onSelect : function(index) {
-			}});
-			break;
-		}
+				break;
+			case 2:
+				_gthis.interactive.addText("Вы слышите как женщины переговариваются между собой.");
+				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson1, text : "Вы уверены, что пациентка в сознании?"});
+				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson2, text : "Да. Думаю она притворяется."});
+				_gthis.interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");
+				_gthis.interactive.addChoose({ select : ["Ну ладно, я не сплю. Кто Вы?","[Раздражённо] Отстаньте, я сплю","Промолчать"], onSelect : function(_,index) {
+				}});
+				break;
+			}
+		});
 	}
 	,__class__: scenes_Scene1_$Awake
 });

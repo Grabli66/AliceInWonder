@@ -7,7 +7,7 @@ import common.Scene;
 // Сцена 1. Пробуждение
 class Scene1_Awake extends Scene {
 	// Стандартное время ожидания перед выводом речи
-	final defaultWait = 1300;
+	final defaultWait = 2000;
 
 	// Первая неизвестная
 	final unknownPerson1 = new Person("НЕИЗВЕСТНАЯ", "doctor-elizabeth.jpg");
@@ -48,10 +48,6 @@ class Scene1_Awake extends Scene {
 		interactive.addChoose({
 			select: ["Кто вы?", "Уходите, я хочу спать", "Промолчать"],
 			onSelect: processAnswer,
-			onBeforeSelect: (_) -> {
-				interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
-				agataPortrait = interactive.addPersonPortrait(unknownPerson2);
-			}
 		});
 	}
 
@@ -75,47 +71,54 @@ class Scene1_Awake extends Scene {
 						"Если Вы доктор, то я Папа Римский",
 						"[Засмеятся] В дурдоме"
 					],
-					onSelect: (index) -> {}
+					onSelect: (_, index) -> {}
 				});
 			}
 		});
 	}
 
 	// Обрабатывает ответы
-	private function processAnswer(index:Int) {
-		switch (index) {
-			// "Кто вы?"
-			case 0:
-				actionDoctorHello();
-			// "Уходите, я хочу спать"
-			case 1:
-				interactive.addPersonText({
-					person: unknownPerson1,
-					text: "Извини, но тебе придётся проснутся.",
-					waitTime: 1300,
-					onWaitComplete: () -> {
-						interactive.addChoose({
-							select: ["Кто Вы?", "Не хочу, уходите.", "[Зло] Отвалите от меня."],
-							onSelect: (index) -> {}
-						});
-					}
-				});
-			// "Промолчать"
-			case 2:
-				interactive.addText("Вы слышите как женщины переговариваются между собой.");
-				interactive.addPersonText({
-					person: unknownPerson1,
-					text: "Вы уверены, что пациентка в сознании?"
-				});
-				interactive.addPersonText({
-					person: unknownPerson2,
-					text: "Да. Думаю она притворяется."
-				});
-				interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");
-				interactive.addChoose({
-					select: ["Ну ладно, я не сплю. Кто Вы?", "[Раздражённо] Отстаньте, я сплю", "Промолчать"],
-					onSelect: (index) -> {}
-				});
-		}
+	private function processAnswer(select:Array<String>, index:Int) {
+		interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
+		agataPortrait = interactive.addPersonPortrait(unknownPerson2);
+
+		interactive.addWait(5000, () -> {
+			interactive.addPlayerText(select[index]);
+
+			switch (index) {
+				// "Кто вы?"
+				case 0:
+					actionDoctorHello();
+				// "Уходите, я хочу спать"
+				case 1:
+					interactive.addPersonText({
+						person: unknownPerson1,
+						text: "Извини, но тебе придётся проснутся.",
+						waitTime: 1300,
+						onWaitComplete: () -> {
+							interactive.addChoose({
+								select: ["Кто Вы?", "Не хочу, уходите.", "[Зло] Отвалите от меня."],
+								onSelect: (_, index) -> {}
+							});
+						}
+					});
+				// "Промолчать"
+				case 2:
+					interactive.addText("Вы слышите как женщины переговариваются между собой.");
+					interactive.addPersonText({
+						person: unknownPerson1,
+						text: "Вы уверены, что пациентка в сознании?"
+					});
+					interactive.addPersonText({
+						person: unknownPerson2,
+						text: "Да. Думаю она притворяется."
+					});
+					interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");
+					interactive.addChoose({
+						select: ["Ну ладно, я не сплю. Кто Вы?", "[Раздражённо] Отстаньте, я сплю", "Промолчать"],
+						onSelect: (_, index) -> {}
+					});
+			}
+		});
 	}
 }

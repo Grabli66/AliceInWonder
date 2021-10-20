@@ -23,9 +23,7 @@ typedef ChooseMethodParameters = {
 	// Варианты выбора
 	select:Array<String>,
 	// Обработчик выбора
-	onSelect:Int->Void,
-	// Обработчик перед добавлением выбора
-	?onBeforeSelect:Int->Void
+	onSelect:(Array<String>, Int) -> Void,
 }
 
 // Взаимодействия с игроком
@@ -121,7 +119,7 @@ class InteractiveSystem {
 		}
 
 		if (parameters.waitTime != null) {
-			addWaitPerson(parameters.waitTime, () -> {
+			addWait(parameters.waitTime, () -> {
 				add();
 				if (parameters.onWaitComplete != null)
 					parameters.onWaitComplete();
@@ -137,12 +135,7 @@ class InteractiveSystem {
 			select: parameters.select,
 			onSelect: (index) -> {
 				makeElementsOld();
-
-				if (parameters.onBeforeSelect != null)
-					parameters.onBeforeSelect(index);
-
-				addPlayerText(parameters.select[index]);
-				parameters.onSelect(index);
+				parameters.onSelect(parameters.select, index);
 			}
 		});
 
@@ -159,7 +152,7 @@ class InteractiveSystem {
 	}
 
 	// Добавляет ожидание действия персонажа
-	public function addWaitPerson(waitTime:Float, onComplete:Void->Void):WaitPersonElement {
+	public function addWait(waitTime:Float, onComplete:Void->Void):WaitPersonElement {
 		final node = new WaitPersonElement(waitTime, () -> {
 			onComplete();
 			updateScroll();
