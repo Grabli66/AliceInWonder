@@ -43,11 +43,24 @@ class Scene1_Awake extends Scene {
 		interactive.addPersonText({
 			person: unknownPerson1,
 			text: "Пожалуйста, просыпайся.",
-		});
+			waitTime: defaultWait,
+			onWaitComplete: () -> {
+				interactive.addWait(defaultWait, () -> {
+					interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
 
-		interactive.addChoose({
-			select: ["Кто вы?", "Уходите, я хочу спать", "Промолчать"],
-			onSelect: processAnswer,
+					interactive.addWait(10000, () -> {
+						agataPortrait = interactive.addPersonPortrait(unknownPerson2);
+						interactive.addChoose({
+							select: [
+								"Кто вы?",
+								"Уходите, я хочу спать",
+								"[Раздражённо] Проваливайте, что Вы делаете у меня дома?"
+							],
+							onSelect: processAnswer,
+						});
+					});
+				});
+			}
 		});
 	}
 
@@ -66,9 +79,6 @@ class Scene1_Awake extends Scene {
 						"[Удивлённо] Доктор? Я что, в больнице?",
 						"[Интеллект] Элизабет и Агата? Мы что в Англии? (Усмехнутся)",
 						"Дома, дайте отдохнуть",
-						"На работе. Я всегда сплю на работе",
-						"На луне. А Вы как меня нашли?",
-						"Если Вы доктор, то я Папа Римский",
 						"[Засмеятся] В дурдоме"
 					],
 					onSelect: (_, index) -> {}
@@ -79,46 +89,27 @@ class Scene1_Awake extends Scene {
 
 	// Обрабатывает ответы
 	private function processAnswer(select:Array<String>, index:Int) {
-		interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
-		agataPortrait = interactive.addPersonPortrait(unknownPerson2);
-
-		interactive.addWait(5000, () -> {
-			interactive.addPlayerText(select[index]);
-
-			switch (index) {
-				// "Кто вы?"
-				case 0:
-					actionDoctorHello();
-				// "Уходите, я хочу спать"
-				case 1:
-					interactive.addPersonText({
-						person: unknownPerson1,
-						text: "Извини, но тебе придётся проснутся.",
-						waitTime: 1300,
-						onWaitComplete: () -> {
-							interactive.addChoose({
-								select: ["Кто Вы?", "Не хочу, уходите.", "[Зло] Отвалите от меня."],
-								onSelect: (_, index) -> {}
-							});
-						}
-					});
-				// "Промолчать"
-				case 2:
-					interactive.addText("Вы слышите как женщины переговариваются между собой.");
-					interactive.addPersonText({
-						person: unknownPerson1,
-						text: "Вы уверены, что пациентка в сознании?"
-					});
-					interactive.addPersonText({
-						person: unknownPerson2,
-						text: "Да. Думаю она притворяется."
-					});
-					interactive.addText("Вы чуствуете как чья-то рука ложится Вам на плечё и пытается Вас разбудить.");
-					interactive.addChoose({
-						select: ["Ну ладно, я не сплю. Кто Вы?", "[Раздражённо] Отстаньте, я сплю", "Промолчать"],
-						onSelect: (_, index) -> {}
-					});
-			}
-		});
+		switch (index) {
+			// "Кто вы?"
+			case 0:
+				interactive.addPlayerText(select[index]);
+				actionDoctorHello();
+			// "Уходите, я хочу спать"
+			case 1:
+				interactive.addPlayerText(select[index]);
+				interactive.addPersonText({
+					person: unknownPerson1,
+					text: "Не переживай, мы не надолго. Узнаем как ты себя чувствуешь и уйдём.",
+					waitTime: 1300,
+					onWaitComplete: () -> {
+						interactive.addChoose({
+							select: ["Кто Вы?"],
+							onSelect: (_, index) -> {}
+						});
+					}
+				});
+			// "[Раздражённо] Проваливайте, что Вы делаете у меня дома?"
+			case 2:
+		}
 	}
 }

@@ -131,7 +131,7 @@ class InteractiveSystem {
 
 	// Добавляет выбор
 	public function addChoose(parameters:ChooseMethodParameters):ChooseElement {
-		final choose = new ChooseElement({
+		final element = new ChooseElement({
 			select: parameters.select,
 			onSelect: (index) -> {
 				makeElementsOld();
@@ -139,8 +139,10 @@ class InteractiveSystem {
 			}
 		});
 
-		addElement(choose);
-		return choose;
+		addElement(element);
+		element.opacity = 0;
+		Actuate.tween(element, 1.0, {opacity: 1.0}).ease(Linear.easeNone);
+		return element;
 	}
 
 	// Добавляет портрет NPC с которым ведётся разговор
