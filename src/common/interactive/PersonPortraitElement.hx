@@ -16,7 +16,6 @@ class PersonPortraitElement extends InteractiveElement {
 
 	function set_person(value:Person):Person {
 		_person = value;
-		trace(_person);
 		if (rootNode != null) {
 			portraitNode.style.backgroundImage = 'url(images/${person.portraitImage})';
 			nameNode.innerText = person.fullNameWithPosition.toUpperCase();

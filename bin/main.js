@@ -343,7 +343,6 @@ common_interactive_PersonPortraitElement.prototype = $extend(common_interactive_
 	}
 	,set_person: function(value) {
 		this._person = value;
-		console.log("src/common/interactive/PersonPortraitElement.hx:19:",this._person);
 		if(this.rootNode != null) {
 			var tmp = "url(images/" + this.get_person().portraitImage;
 			this.portraitNode.style.backgroundImage = tmp + ")";
@@ -2157,10 +2156,10 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 		this.interactive.setSceneTitle("Часть 1. Пробуждение");
 		this.interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Голос спокойный и не несёт в себе угрозы.");
 		this.elizabethPortrait = this.interactive.addPersonPortrait(this.unknownPerson1);
-		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, просыпайся.", waitTime : 0, onWaitComplete : function() {
-			_gthis.interactive.addWait(0,function() {
+		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, просыпайся.", waitTime : 100, onWaitComplete : function() {
+			_gthis.interactive.addWait(100,function() {
 				_gthis.interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
-				_gthis.interactive.addWait(0,function() {
+				_gthis.interactive.addWait(100,function() {
 					_gthis.agataPortrait = _gthis.interactive.addPersonPortrait(_gthis.unknownPerson2);
 					_gthis.interactive.addChoose({ select : ["Кто вы?","Что с моими руками и ногами? Они не двигаются.","Уходите, я хочу спать","[Раздражённо] Проваливайте! Что Вы делаете у меня дома?"], onSelect : $bind(_gthis,_gthis.processAnswer)});
 				});
@@ -2169,10 +2168,16 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 	}
 	,actionDoctorHello: function() {
 		var _gthis = this;
-		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Я " + this.elizabetPerson.get_fullNameWithPosition() + ". Это " + this.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты знаешь, где находишься?", waitTime : 0, onWaitComplete : function() {
+		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Я " + this.elizabetPerson.get_fullNameWithPosition() + ". Это " + this.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты знаешь, где находишься?", waitTime : 100, onWaitComplete : function() {
 			_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
 			_gthis.agataPortrait.set_person(_gthis.agataPerson);
 			_gthis.interactive.addChoose({ select : ["[Удивлённо] Доктор? Я что, в больнице?","[Интеллект] Элизабет и Агата? Мы что в Англии? (Усмехнутся)","Дома, дайте отдохнуть.","[Засмеятся] В дурдоме."], onSelect : $bind(_gthis,_gthis.processDoctorHello)});
+		}});
+	}
+	,actionWhatAboutMyArmsAndLegs: function() {
+		var _gthis = this;
+		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Элис, ты не помнишь что было вчера? Нам пришлось привязать тебя к больничной койке и вколоть транквилизаторы, что бы ты успокоилась.", waitTime : 100, onWaitComplete : function() {
+			_gthis.interactive.addChoose({ select : ["Кто Вы?","[Испугано] Привязать? Транквилизаторы? Где я? Это похищение?","[Удивлённо] Кто такая Элис?","[Кричать] Отвяжите меня немедленно!"], onSelect : $bind(_gthis,_gthis.processAnswer_1)});
 		}});
 	}
 	,processAnswer: function(select,index) {
@@ -2183,29 +2188,131 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 			this.actionDoctorHello();
 			break;
 		case 1:
-			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Элис, ты не помнишь что было вчера? Нам пришлось привязать тебя к больничной койке и вколоть транквилизаторы, что бы ты успокоилась.", waitTime : 0, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Кто Вы?","Привязать? Транквилизаторы? Где я? Это похищение?","Кто такая Элис?","[Кричать] Отвяжите меня немедленно!"], onSelect : function(_,index) {
-				}});
-			}});
+			this.actionWhatAboutMyArmsAndLegs();
 			break;
 		case 2:
-			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Не переживай, мы не надолго. Узнаем как ты себя чувствуешь и уйдём.", waitTime : 0, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Кто Вы?","Что с моими руками и ногами? Они не двигаются."], onSelect : function(_,index) {
-				}});
+			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Не переживай, мы не надолго. Узнаем как ты себя чувствуешь и уйдём.", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addChoose({ select : ["Кто Вы?","Что с моими руками и ногами? Они не двигаются.","[Кричать] Убирайтесь из моего дома!"], onSelect : $bind(_gthis,_gthis.processAnswer_2)});
 			}});
 			break;
 		case 3:
-			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, не нервничай. Мы зададим несколько вопросов и уйдём.", waitTime : 0, onWaitComplete : function() {
-				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson2, text : "Ты действительно думаешь что находишься дома?.", waitTime : 0, onWaitComplete : function() {
-					_gthis.interactive.addChoose({ select : ["Кто Вы?","Что с моими руками и ногами? Они не двигаются."], onSelect : function(_,index) {
-					}});
+			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, не нервничай. Мы зададим несколько вопросов и уйдём.", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson2, text : "Ты действительно думаешь что находишься дома?.", waitTime : 100, onWaitComplete : function() {
+					_gthis.interactive.addChoose({ select : ["Кто Вы?","Что с моими руками и ногами? Они не двигаются.","[Раздражённо] Конечно я дома, где же мне ещё быть?"], onSelect : $bind(_gthis,_gthis.processAnswer_3)});
 				}});
 			}});
 			break;
 		}
 	}
 	,processDoctorHello: function(select,index) {
+		var _gthis = this;
 		this.interactive.addPlayerText(select[index]);
+		switch(index) {
+		case 0:
+			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Элис, ты в психиатрической больнице, в отделении интенсивной терапии. Я твой лечащий врач.", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addChoose({ select : ["Кто такая Элис?","Что я делаю в психиатрической больнице?","Почему я не могу пошевелится?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : $bind(_gthis,_gthis.processDoctorHello_0)});
+			}});
+			break;
+		case 1:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		}
+	}
+	,processDoctorHello_0: function(select,index) {
+		var _gthis = this;
+		this.interactive.addPlayerText(select[index]);
+		switch(index) {
+		case 0:
+			this.interactive.addPersonText({ person : this.agataPerson, text : "Ты не помнишь как тебя зовут?", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addText("Доктор некоторое время в замешательстве смотрит на медсестру, потом её взгляд возвращается к Вам. В руках доктора планшет, видимо в нём информация с Вашей медицинской картой.");
+				_gthis.interactive.addWait(100,function() {
+					_gthis.interactive.addPersonText({ person : _gthis.elizabetPerson, text : "Элис Вайт. 23 года. Родилась в Саттон-Колфилд в 1998 году. Родители...", waitTime : 100, onWaitComplete : function() {
+						_gthis.interactive.addChoose({ select : [], onSelect : $bind(_gthis,_gthis.processDoctorHello_0)});
+					}});
+				});
+			}});
+			break;
+		case 1:
+			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Прохожие нашли тебя стоящую на краю моста. Ты кричала, что \"дьявол хочет забрать твою душу\". Бригада скорой помощи сняла тебя с моста и привезла к нам в отделение.", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addPersonText({ person : _gthis.agataPerson, text : "Когда тебя доставили к нам в состоянии психоза, ты пыталась ударить меня ногой.", waitTime : 100, onWaitComplete : function() {
+					_gthis.interactive.addPersonText({ person : _gthis.elizabetPerson, text : "" + _gthis.agataPerson.name + ", не надо пока об этом. Это мы обсудим на сеансах терапии.", waitTime : 100, onWaitComplete : function() {
+						_gthis.interactive.addChoose({ select : ["Кто такая Элис?","Но я не больна.","Почему я не могу пошевелится?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : function(_,_1) {
+						}});
+					}});
+				}});
+			}});
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		}
+	}
+	,processAnswer_1: function(select,index) {
+		var _gthis = this;
+		this.interactive.addPlayerText(select[index]);
+		switch(index) {
+		case 0:
+			this.actionDoctorHello();
+			break;
+		case 1:
+			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Нет, что ты. Элис, ты в психиатрической больнице, в отделении интенсивной терапии. Я твой лечащий врач, " + this.elizabetPerson.get_fullName() + ". (Показывает на женщину рядом с собой) Это " + this.agataPerson.get_fullNameWithPosition() + ". Ты представляла опасность себе и окружающим. Нам пришлось тебя обездвижить.", waitTime : 100, onWaitComplete : function() {
+				_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
+				_gthis.agataPortrait.set_person(_gthis.agataPerson);
+				_gthis.interactive.addPersonText({ person : _gthis.agataPerson, text : "Не волнуйся, если будешь вести себя спокойно, то завтра мы тебя отвяжем.", waitTime : 100, onWaitComplete : function() {
+					_gthis.interactive.addChoose({ select : ["Кто такая Элис?","Я спокойна, пожалуйста, отвяжите меня!","[Раздражённо] Я спокойна, вашу мать! Отвяжите меня."], onSelect : function(_,index) {
+					}});
+				}});
+			}});
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		}
+	}
+	,processAnswer_2: function(select,index) {
+		var _gthis = this;
+		this.interactive.addPlayerText(select[index]);
+		switch(index) {
+		case 0:
+			this.actionDoctorHello();
+			break;
+		case 1:
+			this.actionWhatAboutMyArmsAndLegs();
+			break;
+		case 2:
+			this.interactive.addPersonText({ person : this.agataPerson, text : "[Сердито] Элис, перестань. Или мне придётся тебя успокоить.", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addChoose({ select : ["Кто Вы?","Кто такая Элис?","[Кричать] Вон из моего дома!"], onSelect : function(_,index) {
+				}});
+			}});
+			break;
+		}
+	}
+	,processAnswer_3: function(select,index) {
+		var _gthis = this;
+		this.interactive.addPlayerText(select[index]);
+		switch(index) {
+		case 0:
+			this.actionDoctorHello();
+			break;
+		case 1:
+			this.actionWhatAboutMyArmsAndLegs();
+			break;
+		case 2:
+			this.interactive.addPersonText({ person : this.unknownPerson2, text : "Ты не помнишь что было вчера?", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson1, text : "К сожалению ты не дома. Я " + _gthis.elizabetPerson.get_fullNameWithPosition() + ". Это " + _gthis.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты находишься в психиатрической больнице.", waitTime : 100, onWaitComplete : function() {
+					_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
+					_gthis.agataPortrait.set_person(_gthis.agataPerson);
+					_gthis.interactive.addChoose({ select : ["Почему я в психиатрической больнице?"], onSelect : function(_,index) {
+					}});
+				}});
+			}});
+			break;
+		}
 	}
 	,__class__: scenes_Scene1_$Awake
 });
@@ -2234,7 +2341,7 @@ motion_easing_Expo.easeOut = new motion_easing__$Expo_ExpoEaseOut();
 motion_Actuate.defaultActuator = motion_actuators_SimpleActuator;
 motion_Actuate.defaultEase = motion_easing_Expo.easeOut;
 motion_Actuate.targetLibraries = new haxe_ds_ObjectMap();
-scenes_Scene1_$Awake.PERSON_WAIT = 0;
-scenes_Scene1_$Awake.LONG_WAIT = 0;
+scenes_Scene1_$Awake.PERSON_WAIT = 100;
+scenes_Scene1_$Awake.LONG_WAIT = 100;
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

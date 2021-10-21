@@ -56,13 +56,14 @@
             display: flex;
             flex-direction: column;
             width: 800px;
-            height: 80%;
+            height: 100%;
             padding: 8px;
         }
 
         #scene-page {
             display: flex;
             flex-direction: row;
+            height: 100%;
         }
 
         #left-page-panel {
@@ -105,6 +106,10 @@
         #scene-content {
             padding: 8px;
             overflow: auto;
+        }
+
+        #bottom-panel {
+            flex: 1;
         }
 
         .single-text {
@@ -165,6 +170,9 @@
                     <div id="scene-title"></div>
                     <div id="scene-content"></div>
                 </div>
+            </div>
+            <div id="bottom-panel">
+
             </div>
         </div>
     </div>
