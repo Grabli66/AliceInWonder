@@ -1,5 +1,6 @@
 package common.interactive;
 
+import haxe.CallStack;
 import common.Person;
 import motion.Actuate;
 import motion.easing.Linear;
@@ -135,6 +136,9 @@ class InteractiveSystem {
 			select: parameters.select,
 			onSelect: (index) -> {
 				makeElementsOld();
+				#if debug
+				trace(parameters);
+				#end
 				parameters.onSelect(parameters.select, index);
 			}
 		});

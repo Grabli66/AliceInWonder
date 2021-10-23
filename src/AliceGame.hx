@@ -2,7 +2,7 @@ import scenes.Scene1_Awake;
 import common.Game;
 
 // Основной класс игры
-class AliceGame extends Game {
+class AliceGame extends Game {	
 	// Конструктор
 	public function new() {
 		super();
