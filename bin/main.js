@@ -2280,12 +2280,28 @@ scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
 		switch(index) {
 		case 0:
 			this.interactive.addPersonText({ person : this.agataPerson, text : "Ты представляла опасность для себя и окружающих. Нам пришлось обездвижить тебя. Будешь хорошо себя вести и я отвяжу тебя завтра.", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addChoose({ select : ["Но я не опасна.","Можно меня отвязать?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0_0_0)});
 			}});
 			break;
 		case 1:
 			this.actionWhyHospital(function() {
 				_gthis.interactive.addChoose({ select : ["Но я не больна.","Почему я не могу пошевелить руками и ногами?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0_0_1)});
 			});
+			break;
+		case 2:
+			break;
+		}
+	}
+	,processDoctorHello_0_0_0_0: function(select,index) {
+		var _gthis = this;
+		this.interactive.addPlayerText(select[index]);
+		switch(index) {
+		case 0:
+			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Время покажет. На сегодня хватит. Сестра Агата даст тебе успокоительное и ты поспишь. Увидимся завтра.", waitTime : 100, onWaitComplete : function() {
+				_gthis.interactive.addChoose({ select : ["Пожалуйста, постойте. Можно мне в туалет? И ещё я хочу пить."], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0_0)});
+			}});
+			break;
+		case 1:
 			break;
 		case 2:
 			break;
