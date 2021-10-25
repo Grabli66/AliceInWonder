@@ -1,5 +1,3 @@
-import scenes.Scene1_Awake;
-
 // Основной класс
 class Main {
 	// Точка входа

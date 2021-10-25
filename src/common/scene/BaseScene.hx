@@ -1,9 +1,9 @@
-package common;
+package common.scene;
 
 import common.interactive.InteractiveSystem;
 
-// Класс сцены
-abstract class Scene {
+// Базовый класс класс сцены
+abstract class BaseScene {
 	// Основной класс игры
 	@:allow(common.Game)
 	private var game:Game;

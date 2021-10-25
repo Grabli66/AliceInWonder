@@ -13,10 +13,6 @@ typedef AddPersonTextParameters = {
 	text:String,
 	// Данные персонажа
 	person:Person,
-	// Время ожидания перед выводом текста
-	?waitTime:Float,
-	// Обработчик после завершения ожидания
-	?onWaitComplete:Void->Void
 }
 
 // Параметры для метода добавления элемента выбора
@@ -87,11 +83,12 @@ class InteractiveSystem {
 		addElement(element);
 		element.opacity = 0;
 		Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
+		updateScroll();
 		return element;
 	}
 
 	// Добавляет речь игрока
-	public function addPlayerText(text:String) {
+	public function addPlayerText(text:String):PersonTextElement {
 		final element = new PersonTextElement({
 			nameColor: Color.Orange,
 			name: "ВЫ",
@@ -102,32 +99,24 @@ class InteractiveSystem {
 		element.opacity = 0;
 		Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
 		updateScroll();
+
+		return element;
 	}
 
 	// Добавляет прямую речь NPC
-	public function addPersonText(parameters:AddPersonTextParameters) {
-		function add() {
-			final element = new PersonTextElement({
-				nameColor: Color.Blue,
-				name: parameters.person.fullNameWithPosition,
-				text: parameters.text
-			});
+	public function addPersonText(person:Person, text:String):PersonTextElement {
+		final element = new PersonTextElement({
+			nameColor: Color.Blue,
+			name: person.fullNameWithPosition,
+			text: text
+		});
 
-			addElement(element);
-			element.opacity = 0;
-			Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
-			updateScroll();
-		}
+		addElement(element);
+		element.opacity = 0;
+		Actuate.tween(element, 0.5, {opacity: 1.0}).ease(Linear.easeNone);
+		updateScroll();
 
-		if (parameters.waitTime != null) {
-			addWait(parameters.waitTime, () -> {
-				add();
-				if (parameters.onWaitComplete != null)
-					parameters.onWaitComplete();
-			});
-		} else {
-			add();
-		}
+		return element;
 	}
 
 	// Добавляет выбор

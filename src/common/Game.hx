@@ -1,5 +1,6 @@
 package common;
 
+import common.scene.BaseScene;
 import common.interactive.InteractiveSystem;
 
 // Базовый класс игры
@@ -8,7 +9,7 @@ abstract class Game {
 	final interactive:InteractiveSystem;
 
 	// Текущая сцена
-	private var currentScene:Scene;
+	private var currentScene:BaseScene;
 
 	// Конструктор
 	public function new() {
@@ -19,7 +20,7 @@ abstract class Game {
 	public abstract function start():Void;
 
 	// Устанавливает сцену
-	public function setScene(scene:Scene) {     
+	public function setScene(scene:BaseScene) {     
 		scene.interactive = interactive;
 		scene.game = this;
 

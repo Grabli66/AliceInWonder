@@ -9,7 +9,7 @@ function $extend(from, fields) {
 var common_Game = function() {
 	this.interactive = new common_interactive_InteractiveSystem();
 };
-common_Game.__name__ = true;
+common_Game.__name__ = "common.Game";
 common_Game.prototype = {
 	setScene: function(scene) {
 		scene.interactive = this.interactive;
@@ -23,17 +23,53 @@ common_Game.prototype = {
 var AliceGame = function() {
 	common_Game.call(this);
 };
-AliceGame.__name__ = true;
+AliceGame.__name__ = "AliceGame";
 AliceGame.__super__ = common_Game;
 AliceGame.prototype = $extend(common_Game.prototype,{
 	start: function() {
-		var scene1 = new scenes_Scene1_$Awake();
-		this.setScene(scene1);
+		var _gthis = this;
+		common_scene_XmlScene.load("scenes/scene_1.xml",function(scene) {
+			_gthis.setScene(scene);
+		});
 	}
 	,__class__: AliceGame
 });
+var EReg = function(r,opt) {
+	this.r = new RegExp(r,opt.split("u").join(""));
+};
+EReg.__name__ = "EReg";
+EReg.prototype = {
+	match: function(s) {
+		if(this.r.global) {
+			this.r.lastIndex = 0;
+		}
+		this.r.m = this.r.exec(s);
+		this.r.s = s;
+		return this.r.m != null;
+	}
+	,__class__: EReg
+};
 var HxOverrides = function() { };
-HxOverrides.__name__ = true;
+HxOverrides.__name__ = "HxOverrides";
+HxOverrides.cca = function(s,index) {
+	var x = s.charCodeAt(index);
+	if(x != x) {
+		return undefined;
+	}
+	return x;
+};
+HxOverrides.substr = function(s,pos,len) {
+	if(len == null) {
+		len = s.length;
+	} else if(len < 0) {
+		if(pos == 0) {
+			len = s.length + len;
+		} else {
+			return "";
+		}
+	}
+	return s.substr(pos,len);
+};
 HxOverrides.remove = function(a,obj) {
 	var i = a.indexOf(obj);
 	if(i == -1) {
@@ -45,15 +81,27 @@ HxOverrides.remove = function(a,obj) {
 HxOverrides.now = function() {
 	return Date.now();
 };
+var Lambda = function() { };
+Lambda.__name__ = "Lambda";
+Lambda.exists = function(it,f) {
+	var x = $getIterator(it);
+	while(x.hasNext()) {
+		var x1 = x.next();
+		if(f(x1)) {
+			return true;
+		}
+	}
+	return false;
+};
 var Main = function() { };
-Main.__name__ = true;
+Main.__name__ = "Main";
 Main.main = function() {
 	var game = new AliceGame();
 	game.start();
 };
-Math.__name__ = true;
+Math.__name__ = "Math";
 var Reflect = function() { };
-Reflect.__name__ = true;
+Reflect.__name__ = "Reflect";
 Reflect.field = function(o,field) {
 	try {
 		return o[field];
@@ -107,16 +155,329 @@ Reflect.fields = function(o) {
 	}
 	return a;
 };
+Reflect.isFunction = function(f) {
+	if(typeof(f) == "function") {
+		return !(f.__name__ || f.__ename__);
+	} else {
+		return false;
+	}
+};
+Reflect.compareMethods = function(f1,f2) {
+	if(f1 == f2) {
+		return true;
+	}
+	if(!Reflect.isFunction(f1) || !Reflect.isFunction(f2)) {
+		return false;
+	}
+	if(f1.scope == f2.scope && f1.method == f2.method) {
+		return f1.method != null;
+	} else {
+		return false;
+	}
+};
 var Std = function() { };
-Std.__name__ = true;
+Std.__name__ = "Std";
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+Std.parseInt = function(x) {
+	if(x != null) {
+		var _g = 0;
+		var _g1 = x.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var c = x.charCodeAt(i);
+			if(c <= 8 || c >= 14 && c != 32 && c != 45) {
+				var nc = x.charCodeAt(i + 1);
+				var v = parseInt(x,nc == 120 || nc == 88 ? 16 : 10);
+				if(isNaN(v)) {
+					return null;
+				} else {
+					return v;
+				}
+			}
+		}
+	}
+	return null;
+};
+var StringBuf = function() {
+	this.b = "";
+};
+StringBuf.__name__ = "StringBuf";
+StringBuf.prototype = {
+	__class__: StringBuf
+};
+var StringTools = function() { };
+StringTools.__name__ = "StringTools";
+StringTools.htmlEscape = function(s,quotes) {
+	var buf_b = "";
+	var _g_offset = 0;
+	var _g_s = s;
+	while(_g_offset < _g_s.length) {
+		var s = _g_s;
+		var index = _g_offset++;
+		var c = s.charCodeAt(index);
+		if(c >= 55296 && c <= 56319) {
+			c = c - 55232 << 10 | s.charCodeAt(index + 1) & 1023;
+		}
+		var c1 = c;
+		if(c1 >= 65536) {
+			++_g_offset;
+		}
+		var code = c1;
+		switch(code) {
+		case 34:
+			if(quotes) {
+				buf_b += "&quot;";
+			} else {
+				buf_b += String.fromCodePoint(code);
+			}
+			break;
+		case 38:
+			buf_b += "&amp;";
+			break;
+		case 39:
+			if(quotes) {
+				buf_b += "&#039;";
+			} else {
+				buf_b += String.fromCodePoint(code);
+			}
+			break;
+		case 60:
+			buf_b += "&lt;";
+			break;
+		case 62:
+			buf_b += "&gt;";
+			break;
+		default:
+			buf_b += String.fromCodePoint(code);
+		}
+	}
+	return buf_b;
+};
+StringTools.isSpace = function(s,pos) {
+	var c = HxOverrides.cca(s,pos);
+	if(!(c > 8 && c < 14)) {
+		return c == 32;
+	} else {
+		return true;
+	}
+};
+StringTools.ltrim = function(s) {
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,r)) ++r;
+	if(r > 0) {
+		return HxOverrides.substr(s,r,l - r);
+	} else {
+		return s;
+	}
+};
+StringTools.rtrim = function(s) {
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,l - r - 1)) ++r;
+	if(r > 0) {
+		return HxOverrides.substr(s,0,l - r);
+	} else {
+		return s;
+	}
+};
+StringTools.trim = function(s) {
+	return StringTools.ltrim(StringTools.rtrim(s));
+};
 var Type = function() { };
-Type.__name__ = true;
+Type.__name__ = "Type";
 Type.createInstance = function(cl,args) {
 	var ctor = Function.prototype.bind.apply(cl,[null].concat(args));
 	return new (ctor);
+};
+var XmlType = {};
+XmlType.toString = function(this1) {
+	switch(this1) {
+	case 0:
+		return "Element";
+	case 1:
+		return "PCData";
+	case 2:
+		return "CData";
+	case 3:
+		return "Comment";
+	case 4:
+		return "DocType";
+	case 5:
+		return "ProcessingInstruction";
+	case 6:
+		return "Document";
+	}
+};
+var Xml = function(nodeType) {
+	this.nodeType = nodeType;
+	this.children = [];
+	this.attributeMap = new haxe_ds_StringMap();
+};
+Xml.__name__ = "Xml";
+Xml.parse = function(str) {
+	return haxe_xml_Parser.parse(str);
+};
+Xml.createElement = function(name) {
+	var xml = new Xml(Xml.Element);
+	if(xml.nodeType != Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, expected Element but found " + (xml.nodeType == null ? "null" : XmlType.toString(xml.nodeType)));
+	}
+	xml.nodeName = name;
+	return xml;
+};
+Xml.createPCData = function(data) {
+	var xml = new Xml(Xml.PCData);
+	if(xml.nodeType == Xml.Document || xml.nodeType == Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, unexpected " + (xml.nodeType == null ? "null" : XmlType.toString(xml.nodeType)));
+	}
+	xml.nodeValue = data;
+	return xml;
+};
+Xml.createCData = function(data) {
+	var xml = new Xml(Xml.CData);
+	if(xml.nodeType == Xml.Document || xml.nodeType == Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, unexpected " + (xml.nodeType == null ? "null" : XmlType.toString(xml.nodeType)));
+	}
+	xml.nodeValue = data;
+	return xml;
+};
+Xml.createComment = function(data) {
+	var xml = new Xml(Xml.Comment);
+	if(xml.nodeType == Xml.Document || xml.nodeType == Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, unexpected " + (xml.nodeType == null ? "null" : XmlType.toString(xml.nodeType)));
+	}
+	xml.nodeValue = data;
+	return xml;
+};
+Xml.createDocType = function(data) {
+	var xml = new Xml(Xml.DocType);
+	if(xml.nodeType == Xml.Document || xml.nodeType == Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, unexpected " + (xml.nodeType == null ? "null" : XmlType.toString(xml.nodeType)));
+	}
+	xml.nodeValue = data;
+	return xml;
+};
+Xml.createProcessingInstruction = function(data) {
+	var xml = new Xml(Xml.ProcessingInstruction);
+	if(xml.nodeType == Xml.Document || xml.nodeType == Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, unexpected " + (xml.nodeType == null ? "null" : XmlType.toString(xml.nodeType)));
+	}
+	xml.nodeValue = data;
+	return xml;
+};
+Xml.createDocument = function() {
+	return new Xml(Xml.Document);
+};
+Xml.prototype = {
+	get: function(att) {
+		if(this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		return this.attributeMap.h[att];
+	}
+	,set: function(att,value) {
+		if(this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		this.attributeMap.h[att] = value;
+	}
+	,exists: function(att) {
+		if(this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		return Object.prototype.hasOwnProperty.call(this.attributeMap.h,att);
+	}
+	,attributes: function() {
+		if(this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		return new haxe_ds__$StringMap_StringMapKeyIterator(this.attributeMap.h);
+	}
+	,elements: function() {
+		if(this.nodeType != Xml.Document && this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		var _g = [];
+		var _g1 = 0;
+		var _g2 = this.children;
+		while(_g1 < _g2.length) {
+			var child = _g2[_g1];
+			++_g1;
+			if(child.nodeType == Xml.Element) {
+				_g.push(child);
+			}
+		}
+		var ret = _g;
+		return new haxe_iterators_ArrayIterator(ret);
+	}
+	,elementsNamed: function(name) {
+		if(this.nodeType != Xml.Document && this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		var _g = [];
+		var _g1 = 0;
+		var _g2 = this.children;
+		while(_g1 < _g2.length) {
+			var child = _g2[_g1];
+			++_g1;
+			var tmp;
+			if(child.nodeType == Xml.Element) {
+				if(child.nodeType != Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, expected Element but found " + (child.nodeType == null ? "null" : XmlType.toString(child.nodeType)));
+				}
+				tmp = child.nodeName == name;
+			} else {
+				tmp = false;
+			}
+			if(tmp) {
+				_g.push(child);
+			}
+		}
+		var ret = _g;
+		return new haxe_iterators_ArrayIterator(ret);
+	}
+	,firstElement: function() {
+		if(this.nodeType != Xml.Document && this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		var _g = 0;
+		var _g1 = this.children;
+		while(_g < _g1.length) {
+			var child = _g1[_g];
+			++_g;
+			if(child.nodeType == Xml.Element) {
+				return child;
+			}
+		}
+		return null;
+	}
+	,addChild: function(x) {
+		if(this.nodeType != Xml.Document && this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		if(x.parent != null) {
+			x.parent.removeChild(x);
+		}
+		this.children.push(x);
+		x.parent = this;
+	}
+	,removeChild: function(x) {
+		if(this.nodeType != Xml.Document && this.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (this.nodeType == null ? "null" : XmlType.toString(this.nodeType)));
+		}
+		if(HxOverrides.remove(this.children,x)) {
+			x.parent = null;
+			return true;
+		}
+		return false;
+	}
+	,toString: function() {
+		return haxe_xml_Printer.print(this);
+	}
+	,__class__: Xml
 };
 var common_Person = function(name,portraitImage,optional) {
 	this.name = name;
@@ -126,7 +487,7 @@ var common_Person = function(name,portraitImage,optional) {
 		this.position = optional.position;
 	}
 };
-common_Person.__name__ = true;
+common_Person.__name__ = "common.Person";
 common_Person.prototype = {
 	get_fullName: function() {
 		if(this.surname != null) {
@@ -143,16 +504,10 @@ common_Person.prototype = {
 	,__class__: common_Person
 	,__properties__: {get_fullNameWithPosition:"get_fullNameWithPosition",get_fullName:"get_fullName"}
 };
-var common_Scene = function() {
-};
-common_Scene.__name__ = true;
-common_Scene.prototype = {
-	__class__: common_Scene
-};
 var common_interactive_InteractiveElement = function() {
 	this._opacity = 1.0;
 };
-common_interactive_InteractiveElement.__name__ = true;
+common_interactive_InteractiveElement.__name__ = "common.interactive.InteractiveElement";
 common_interactive_InteractiveElement.prototype = {
 	set_opacity: function(value) {
 		this._opacity = value;
@@ -181,7 +536,7 @@ var common_interactive_ChooseElement = function(parameters) {
 	this.onSelect = parameters.onSelect;
 	this.select = parameters.select;
 };
-common_interactive_ChooseElement.__name__ = true;
+common_interactive_ChooseElement.__name__ = "common.interactive.ChooseElement";
 common_interactive_ChooseElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_ChooseElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
 	render: function() {
@@ -218,7 +573,7 @@ var common_interactive_Color = $hxEnums["common.interactive.Color"] = { __ename_
 };
 common_interactive_Color.__constructs__ = [common_interactive_Color.Red,common_interactive_Color.Orange,common_interactive_Color.Blue,common_interactive_Color.Grey];
 var common_interactive_ColorHelper = function() { };
-common_interactive_ColorHelper.__name__ = true;
+common_interactive_ColorHelper.__name__ = "common.interactive.ColorHelper";
 common_interactive_ColorHelper.getColorCss = function(color) {
 	return $hxEnums[color.__enum__].__constructs__[color._hx_index]._hx_name.toLowerCase() + "-color";
 };
@@ -228,7 +583,7 @@ var common_interactive_InteractiveSystem = function() {
 	this.sceneContentNode = window.document.querySelector("#scene-content");
 	this.leftPageNode = window.document.querySelector("#left-page-panel");
 };
-common_interactive_InteractiveSystem.__name__ = true;
+common_interactive_InteractiveSystem.__name__ = "common.interactive.InteractiveSystem";
 common_interactive_InteractiveSystem.prototype = {
 	updateScroll: function() {
 		this.sceneContentNode.scrollTop = this.sceneContentNode.scrollHeight;
@@ -261,6 +616,7 @@ common_interactive_InteractiveSystem.prototype = {
 		this.addElement(element);
 		element.set_opacity(0);
 		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
+		this.updateScroll();
 		return element;
 	}
 	,addPlayerText: function(text) {
@@ -269,32 +625,21 @@ common_interactive_InteractiveSystem.prototype = {
 		element.set_opacity(0);
 		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
 		this.updateScroll();
+		return element;
 	}
-	,addPersonText: function(parameters) {
-		var _gthis = this;
-		var add = function() {
-			var element = new common_interactive_PersonTextElement({ nameColor : common_interactive_Color.Blue, name : parameters.person.get_fullNameWithPosition(), text : parameters.text});
-			_gthis.addElement(element);
-			element.set_opacity(0);
-			motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
-			_gthis.updateScroll();
-		};
-		if(parameters.waitTime != null) {
-			this.addWait(parameters.waitTime,function() {
-				add();
-				if(parameters.onWaitComplete != null) {
-					parameters.onWaitComplete();
-				}
-			});
-		} else {
-			add();
-		}
+	,addPersonText: function(person,text) {
+		var element = new common_interactive_PersonTextElement({ nameColor : common_interactive_Color.Blue, name : person.get_fullNameWithPosition(), text : text});
+		this.addElement(element);
+		element.set_opacity(0);
+		motion_Actuate.tween(element,0.5,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
+		this.updateScroll();
+		return element;
 	}
 	,addChoose: function(parameters) {
 		var _gthis = this;
 		var element = new common_interactive_ChooseElement({ select : parameters.select, onSelect : function(index) {
 			_gthis.makeElementsOld();
-			console.log("src/common/interactive/InteractiveSystem.hx:140:",parameters);
+			console.log("src/common/interactive/InteractiveSystem.hx:129:",parameters);
 			parameters.onSelect(parameters.select,index);
 		}});
 		this.addElement(element);
@@ -336,7 +681,7 @@ var common_interactive_PersonPortraitElement = function(person) {
 	common_interactive_InteractiveElement.call(this);
 	this._person = person;
 };
-common_interactive_PersonPortraitElement.__name__ = true;
+common_interactive_PersonPortraitElement.__name__ = "common.interactive.PersonPortraitElement";
 common_interactive_PersonPortraitElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_PersonPortraitElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
 	get_person: function() {
@@ -372,7 +717,7 @@ var common_interactive_PersonTextElement = function(parameters) {
 	common_interactive_InteractiveElement.call(this);
 	this.parameters = parameters;
 };
-common_interactive_PersonTextElement.__name__ = true;
+common_interactive_PersonTextElement.__name__ = "common.interactive.PersonTextElement";
 common_interactive_PersonTextElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_PersonTextElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
 	render: function() {
@@ -399,7 +744,7 @@ var common_interactive_TextElement = function(text) {
 	common_interactive_InteractiveElement.call(this);
 	this.text = text;
 };
-common_interactive_TextElement.__name__ = true;
+common_interactive_TextElement.__name__ = "common.interactive.TextElement";
 common_interactive_TextElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_TextElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
 	render: function() {
@@ -416,7 +761,7 @@ var common_interactive_WaitPersonElement = function(waitTime,onComplete) {
 	this.waitTime = waitTime;
 	this.onComplete = onComplete;
 };
-common_interactive_WaitPersonElement.__name__ = true;
+common_interactive_WaitPersonElement.__name__ = "common.interactive.WaitPersonElement";
 common_interactive_WaitPersonElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_WaitPersonElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
 	update: function() {
@@ -462,8 +807,135 @@ common_interactive_WaitPersonElement.prototype = $extend(common_interactive_Inte
 	}
 	,__class__: common_interactive_WaitPersonElement
 });
+var common_scene_BaseScene = function() {
+};
+common_scene_BaseScene.__name__ = "common.scene.BaseScene";
+common_scene_BaseScene.prototype = {
+	__class__: common_scene_BaseScene
+};
+var common_scene_XmlScene = function(access) {
+	this.persons = new haxe_ds_StringMap();
+	this.parts = new haxe_ds_StringMap();
+	common_scene_BaseScene.call(this);
+	this.enterPartName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(access,"enter"));
+	var _g = 0;
+	var _g1 = haxe_xml__$Access_NodeListAccess.resolve(haxe_xml__$Access_NodeAccess.resolve(access,"persons"),"person");
+	while(_g < _g1.length) {
+		var person = _g1[_g];
+		++_g;
+		var surname = null;
+		var position = null;
+		if(haxe_xml__$Access_HasNodeAccess.resolve(person,"surname")) {
+			surname = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(person,"surname"));
+		}
+		if(haxe_xml__$Access_HasNodeAccess.resolve(person,"surname")) {
+			position = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(person,"position"));
+		}
+		var this1 = this.persons;
+		var k = haxe_xml__$Access_AttribAccess.resolve(person,"id");
+		var v = new common_Person(haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(person,"name")),haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(person,"portrait")),{ surname : surname, position : position});
+		this1.h[k] = v;
+	}
+	var _g = 0;
+	var _g1 = haxe_xml__$Access_NodeListAccess.resolve(haxe_xml__$Access_NodeAccess.resolve(access,"parts"),"part");
+	while(_g < _g1.length) {
+		var part = _g1[_g];
+		++_g;
+		var partId = haxe_xml__$Access_AttribAccess.resolve(part,"id");
+		this.parts.h[partId] = part;
+	}
+};
+common_scene_XmlScene.__name__ = "common.scene.XmlScene";
+common_scene_XmlScene.load = function(path,onComplete) {
+	var req = new haxe_http_HttpJs(path);
+	req.onData = function(data) {
+		var xml = Xml.parse(data);
+		var x = xml.firstElement();
+		if(x.nodeType != Xml.Document && x.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Invalid nodeType " + (x.nodeType == null ? "null" : XmlType.toString(x.nodeType)));
+		}
+		var this1 = x;
+		var access = this1;
+		var scene = new common_scene_XmlScene(access);
+		onComplete(scene);
+	};
+	req.request();
+};
+common_scene_XmlScene.__super__ = common_scene_BaseScene;
+common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
+	getPersonById: function(id) {
+		return this.persons.h[id];
+	}
+	,getPartById: function(id) {
+		return this.parts.h[id];
+	}
+	,getTextWait: function(text) {
+		return 0;
+	}
+	,addPartItem: function(items,prevWait) {
+		var _gthis = this;
+		if(!items.hasNext()) {
+			return;
+		}
+		var item = items.next();
+		var _g;
+		if(item.nodeType == Xml.Document) {
+			_g = "Document";
+		} else {
+			if(item.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (item.nodeType == null ? "null" : XmlType.toString(item.nodeType)));
+			}
+			_g = item.nodeName;
+		}
+		switch(_g) {
+		case "choose":
+			var items1 = [];
+			var ids = [];
+			var _g = 0;
+			var _g1 = haxe_xml__$Access_NodeListAccess.resolve(item,"item");
+			while(_g < _g1.length) {
+				var item1 = _g1[_g];
+				++_g;
+				items1.push(haxe_xml_Access.get_innerData(item1));
+				ids.push(haxe_xml__$Access_AttribAccess.resolve(item1,"link"));
+			}
+			this.interactive.addChoose({ select : items1, onSelect : function(select,index) {
+				_gthis.interactive.addPlayerText(select[index]);
+				var partId = ids[index];
+				var part = _gthis.getPartById(partId);
+				_gthis.addScenePart(part);
+			}});
+			break;
+		case "personText":
+			var text = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"text"));
+			var wait = this.getTextWait(text);
+			this.interactive.addWait(wait,function() {
+				var text = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"text"));
+				_gthis.interactive.addPersonText(_gthis.getPersonById(haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"person"))),text);
+				_gthis.addPartItem(items,wait);
+			});
+			break;
+		case "text":
+			this.interactive.addWait(prevWait,function() {
+				var text = haxe_xml_Access.get_innerData(item);
+				_gthis.interactive.addText(text);
+				var wait = _gthis.getTextWait(text);
+				_gthis.addPartItem(items,wait);
+			});
+			break;
+		}
+	}
+	,addScenePart: function(part) {
+		this.addPartItem(part.elements(),0);
+	}
+	,enter: function() {
+		var part = this.getPartById(this.enterPartName);
+		this.addScenePart(part);
+	}
+	,__class__: common_scene_XmlScene
+});
 var haxe_IMap = function() { };
-haxe_IMap.__name__ = true;
+haxe_IMap.__name__ = "haxe.IMap";
 haxe_IMap.__isInterface__ = true;
 var haxe_Exception = function(message,previous,native) {
 	Error.call(this,message);
@@ -471,7 +943,16 @@ var haxe_Exception = function(message,previous,native) {
 	this.__previousException = previous;
 	this.__nativeException = native != null ? native : this;
 };
-haxe_Exception.__name__ = true;
+haxe_Exception.__name__ = "haxe.Exception";
+haxe_Exception.caught = function(value) {
+	if(((value) instanceof haxe_Exception)) {
+		return value;
+	} else if(((value) instanceof Error)) {
+		return new haxe_Exception(value.message,null,value);
+	} else {
+		return new haxe_ValueException(value,null,value);
+	}
+};
 haxe_Exception.thrown = function(value) {
 	if(((value) instanceof haxe_Exception)) {
 		return value.get_native();
@@ -484,7 +965,10 @@ haxe_Exception.thrown = function(value) {
 };
 haxe_Exception.__super__ = Error;
 haxe_Exception.prototype = $extend(Error.prototype,{
-	get_native: function() {
+	unwrap: function() {
+		return this.__nativeException;
+	}
+	,get_native: function() {
 		return this.__nativeException;
 	}
 	,__class__: haxe_Exception
@@ -494,15 +978,18 @@ var haxe_ValueException = function(value,previous,native) {
 	haxe_Exception.call(this,String(value),previous,native);
 	this.value = value;
 };
-haxe_ValueException.__name__ = true;
+haxe_ValueException.__name__ = "haxe.ValueException";
 haxe_ValueException.__super__ = haxe_Exception;
 haxe_ValueException.prototype = $extend(haxe_Exception.prototype,{
-	__class__: haxe_ValueException
+	unwrap: function() {
+		return this.value;
+	}
+	,__class__: haxe_ValueException
 });
 var haxe_ds_ObjectMap = function() {
 	this.h = { __keys__ : { }};
 };
-haxe_ds_ObjectMap.__name__ = true;
+haxe_ds_ObjectMap.__name__ = "haxe.ds.ObjectMap";
 haxe_ds_ObjectMap.__interfaces__ = [haxe_IMap];
 haxe_ds_ObjectMap.prototype = {
 	set: function(key,value) {
@@ -541,11 +1028,287 @@ haxe_ds_ObjectMap.prototype = {
 	}
 	,__class__: haxe_ds_ObjectMap
 };
+var haxe_ds_StringMap = function() {
+	this.h = Object.create(null);
+};
+haxe_ds_StringMap.__name__ = "haxe.ds.StringMap";
+haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
+haxe_ds_StringMap.prototype = {
+	__class__: haxe_ds_StringMap
+};
+var haxe_ds__$StringMap_StringMapKeyIterator = function(h) {
+	this.h = h;
+	this.keys = Object.keys(h);
+	this.length = this.keys.length;
+	this.current = 0;
+};
+haxe_ds__$StringMap_StringMapKeyIterator.__name__ = "haxe.ds._StringMap.StringMapKeyIterator";
+haxe_ds__$StringMap_StringMapKeyIterator.prototype = {
+	hasNext: function() {
+		return this.current < this.length;
+	}
+	,next: function() {
+		return this.keys[this.current++];
+	}
+	,__class__: haxe_ds__$StringMap_StringMapKeyIterator
+};
+var haxe_http_HttpBase = function(url) {
+	this.url = url;
+	this.headers = [];
+	this.params = [];
+	this.emptyOnData = $bind(this,this.onData);
+};
+haxe_http_HttpBase.__name__ = "haxe.http.HttpBase";
+haxe_http_HttpBase.prototype = {
+	onData: function(data) {
+	}
+	,onBytes: function(data) {
+	}
+	,onError: function(msg) {
+	}
+	,onStatus: function(status) {
+	}
+	,hasOnData: function() {
+		return !Reflect.compareMethods($bind(this,this.onData),this.emptyOnData);
+	}
+	,success: function(data) {
+		this.responseBytes = data;
+		this.responseAsString = null;
+		if(this.hasOnData()) {
+			this.onData(this.get_responseData());
+		}
+		this.onBytes(this.responseBytes);
+	}
+	,get_responseData: function() {
+		if(this.responseAsString == null && this.responseBytes != null) {
+			this.responseAsString = this.responseBytes.getString(0,this.responseBytes.length,haxe_io_Encoding.UTF8);
+		}
+		return this.responseAsString;
+	}
+	,__class__: haxe_http_HttpBase
+	,__properties__: {get_responseData:"get_responseData"}
+};
+var haxe_http_HttpJs = function(url) {
+	this.async = true;
+	this.withCredentials = false;
+	haxe_http_HttpBase.call(this,url);
+};
+haxe_http_HttpJs.__name__ = "haxe.http.HttpJs";
+haxe_http_HttpJs.__super__ = haxe_http_HttpBase;
+haxe_http_HttpJs.prototype = $extend(haxe_http_HttpBase.prototype,{
+	request: function(post) {
+		var _gthis = this;
+		this.responseAsString = null;
+		this.responseBytes = null;
+		var r = this.req = js_Browser.createXMLHttpRequest();
+		var onreadystatechange = function(_) {
+			if(r.readyState != 4) {
+				return;
+			}
+			var s;
+			try {
+				s = r.status;
+			} catch( _g ) {
+				s = null;
+			}
+			if(s == 0 && js_Browser.get_supported() && $global.location != null) {
+				var protocol = $global.location.protocol.toLowerCase();
+				var rlocalProtocol = new EReg("^(?:about|app|app-storage|.+-extension|file|res|widget):$","");
+				var isLocal = rlocalProtocol.match(protocol);
+				if(isLocal) {
+					s = r.response != null ? 200 : 404;
+				}
+			}
+			if(s == undefined) {
+				s = null;
+			}
+			if(s != null) {
+				_gthis.onStatus(s);
+			}
+			if(s != null && s >= 200 && s < 400) {
+				_gthis.req = null;
+				_gthis.success(haxe_io_Bytes.ofData(r.response));
+			} else if(s == null || s == 0 && r.response == null) {
+				_gthis.req = null;
+				_gthis.onError("Failed to connect or resolve host");
+			} else if(s == null) {
+				_gthis.req = null;
+				var onreadystatechange = r.response != null ? haxe_io_Bytes.ofData(r.response) : null;
+				_gthis.responseBytes = onreadystatechange;
+				_gthis.onError("Http Error #" + r.status);
+			} else {
+				switch(s) {
+				case 12007:
+					_gthis.req = null;
+					_gthis.onError("Unknown host");
+					break;
+				case 12029:
+					_gthis.req = null;
+					_gthis.onError("Failed to connect to host");
+					break;
+				default:
+					_gthis.req = null;
+					var onreadystatechange = r.response != null ? haxe_io_Bytes.ofData(r.response) : null;
+					_gthis.responseBytes = onreadystatechange;
+					_gthis.onError("Http Error #" + r.status);
+				}
+			}
+		};
+		if(this.async) {
+			r.onreadystatechange = onreadystatechange;
+		}
+		var uri;
+		var _g = this.postData;
+		var _g1 = this.postBytes;
+		if(_g == null) {
+			if(_g1 == null) {
+				uri = null;
+			} else {
+				var bytes = _g1;
+				uri = new Blob([bytes.b.bufferValue]);
+			}
+		} else if(_g1 == null) {
+			var str = _g;
+			uri = str;
+		} else {
+			uri = null;
+		}
+		if(uri != null) {
+			post = true;
+		} else {
+			var _g = 0;
+			var _g1 = this.params;
+			while(_g < _g1.length) {
+				var p = _g1[_g];
+				++_g;
+				if(uri == null) {
+					uri = "";
+				} else {
+					uri = (uri == null ? "null" : Std.string(uri)) + "&";
+				}
+				var s = p.name;
+				var value = (uri == null ? "null" : Std.string(uri)) + encodeURIComponent(s) + "=";
+				var s1 = p.value;
+				uri = value + encodeURIComponent(s1);
+			}
+		}
+		try {
+			if(post) {
+				r.open("POST",this.url,this.async);
+			} else if(uri != null) {
+				var question = this.url.split("?").length <= 1;
+				r.open("GET",this.url + (question ? "?" : "&") + (uri == null ? "null" : Std.string(uri)),this.async);
+				uri = null;
+			} else {
+				r.open("GET",this.url,this.async);
+			}
+			r.responseType = "arraybuffer";
+		} catch( _g ) {
+			var e = haxe_Exception.caught(_g).unwrap();
+			this.req = null;
+			this.onError(e.toString());
+			return;
+		}
+		r.withCredentials = this.withCredentials;
+		if(!Lambda.exists(this.headers,function(h) {
+			return h.name == "Content-Type";
+		}) && post && this.postData == null) {
+			r.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		}
+		var _g = 0;
+		var _g1 = this.headers;
+		while(_g < _g1.length) {
+			var h = _g1[_g];
+			++_g;
+			r.setRequestHeader(h.name,h.value);
+		}
+		r.send(uri);
+		if(!this.async) {
+			onreadystatechange(null);
+		}
+	}
+	,__class__: haxe_http_HttpJs
+});
+var haxe_io_Bytes = function(data) {
+	this.length = data.byteLength;
+	this.b = new Uint8Array(data);
+	this.b.bufferValue = data;
+	data.hxBytes = this;
+	data.bytes = this.b;
+};
+haxe_io_Bytes.__name__ = "haxe.io.Bytes";
+haxe_io_Bytes.ofData = function(b) {
+	var hb = b.hxBytes;
+	if(hb != null) {
+		return hb;
+	}
+	return new haxe_io_Bytes(b);
+};
+haxe_io_Bytes.prototype = {
+	getString: function(pos,len,encoding) {
+		if(pos < 0 || len < 0 || pos + len > this.length) {
+			throw haxe_Exception.thrown(haxe_io_Error.OutsideBounds);
+		}
+		if(encoding == null) {
+			encoding = haxe_io_Encoding.UTF8;
+		}
+		var s = "";
+		var b = this.b;
+		var i = pos;
+		var max = pos + len;
+		switch(encoding._hx_index) {
+		case 0:
+			var debug = pos > 0;
+			while(i < max) {
+				var c = b[i++];
+				if(c < 128) {
+					if(c == 0) {
+						break;
+					}
+					s += String.fromCodePoint(c);
+				} else if(c < 224) {
+					var code = (c & 63) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(code);
+				} else if(c < 240) {
+					var c2 = b[i++];
+					var code1 = (c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(code1);
+				} else {
+					var c21 = b[i++];
+					var c3 = b[i++];
+					var u = (c & 15) << 18 | (c21 & 127) << 12 | (c3 & 127) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(u);
+				}
+			}
+			break;
+		case 1:
+			while(i < max) {
+				var c = b[i++] | b[i++] << 8;
+				s += String.fromCodePoint(c);
+			}
+			break;
+		}
+		return s;
+	}
+	,__class__: haxe_io_Bytes
+};
+var haxe_io_Encoding = $hxEnums["haxe.io.Encoding"] = { __ename__:true,__constructs__:null
+	,UTF8: {_hx_name:"UTF8",_hx_index:0,__enum__:"haxe.io.Encoding",toString:$estr}
+	,RawNative: {_hx_name:"RawNative",_hx_index:1,__enum__:"haxe.io.Encoding",toString:$estr}
+};
+haxe_io_Encoding.__constructs__ = [haxe_io_Encoding.UTF8,haxe_io_Encoding.RawNative];
+var haxe_io_Error = $hxEnums["haxe.io.Error"] = { __ename__:true,__constructs__:null
+	,Blocked: {_hx_name:"Blocked",_hx_index:0,__enum__:"haxe.io.Error",toString:$estr}
+	,Overflow: {_hx_name:"Overflow",_hx_index:1,__enum__:"haxe.io.Error",toString:$estr}
+	,OutsideBounds: {_hx_name:"OutsideBounds",_hx_index:2,__enum__:"haxe.io.Error",toString:$estr}
+	,Custom: ($_=function(e) { return {_hx_index:3,e:e,__enum__:"haxe.io.Error",toString:$estr}; },$_._hx_name="Custom",$_.__params__ = ["e"],$_)
+};
+haxe_io_Error.__constructs__ = [haxe_io_Error.Blocked,haxe_io_Error.Overflow,haxe_io_Error.OutsideBounds,haxe_io_Error.Custom];
 var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
 	this.array = array;
 };
-haxe_iterators_ArrayIterator.__name__ = true;
+haxe_iterators_ArrayIterator.__name__ = "haxe.iterators.ArrayIterator";
 haxe_iterators_ArrayIterator.prototype = {
 	hasNext: function() {
 		return this.current < this.array.length;
@@ -555,8 +1318,674 @@ haxe_iterators_ArrayIterator.prototype = {
 	}
 	,__class__: haxe_iterators_ArrayIterator
 };
+var haxe_xml__$Access_NodeAccess = {};
+haxe_xml__$Access_NodeAccess.resolve = function(this1,name) {
+	var x = this1.elementsNamed(name).next();
+	if(x == null) {
+		var xname;
+		if(this1.nodeType == Xml.Document) {
+			xname = "Document";
+		} else {
+			if(this1.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this1.nodeType == null ? "null" : XmlType.toString(this1.nodeType)));
+			}
+			xname = this1.nodeName;
+		}
+		throw haxe_Exception.thrown(xname + " is missing element " + name);
+	}
+	if(x.nodeType != Xml.Document && x.nodeType != Xml.Element) {
+		throw haxe_Exception.thrown("Invalid nodeType " + (x.nodeType == null ? "null" : XmlType.toString(x.nodeType)));
+	}
+	var this1 = x;
+	return this1;
+};
+var haxe_xml__$Access_AttribAccess = {};
+haxe_xml__$Access_AttribAccess.resolve = function(this1,name) {
+	if(this1.nodeType == Xml.Document) {
+		throw haxe_Exception.thrown("Cannot access document attribute " + name);
+	}
+	var v = this1.get(name);
+	if(v == null) {
+		if(this1.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this1.nodeType == null ? "null" : XmlType.toString(this1.nodeType)));
+		}
+		throw haxe_Exception.thrown(this1.nodeName + " is missing attribute " + name);
+	}
+	return v;
+};
+var haxe_xml__$Access_HasNodeAccess = {};
+haxe_xml__$Access_HasNodeAccess.resolve = function(this1,name) {
+	return this1.elementsNamed(name).hasNext();
+};
+var haxe_xml__$Access_NodeListAccess = {};
+haxe_xml__$Access_NodeListAccess.resolve = function(this1,name) {
+	var l = [];
+	var x = this1.elementsNamed(name);
+	while(x.hasNext()) {
+		var x1 = x.next();
+		if(x1.nodeType != Xml.Document && x1.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Invalid nodeType " + (x1.nodeType == null ? "null" : XmlType.toString(x1.nodeType)));
+		}
+		var this1 = x1;
+		l.push(this1);
+	}
+	return l;
+};
+var haxe_xml_Access = {};
+haxe_xml_Access.__properties__ = {get_innerData:"get_innerData"};
+haxe_xml_Access.get_innerData = function(this1) {
+	if(this1.nodeType != Xml.Document && this1.nodeType != Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (this1.nodeType == null ? "null" : XmlType.toString(this1.nodeType)));
+	}
+	var it_current = 0;
+	var it_array = this1.children;
+	if(it_current >= it_array.length) {
+		var tmp;
+		if(this1.nodeType == Xml.Document) {
+			tmp = "Document";
+		} else {
+			if(this1.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this1.nodeType == null ? "null" : XmlType.toString(this1.nodeType)));
+			}
+			tmp = this1.nodeName;
+		}
+		throw haxe_Exception.thrown(tmp + " does not have data");
+	}
+	var v = it_array[it_current++];
+	if(it_current < it_array.length) {
+		var n = it_array[it_current++];
+		var tmp;
+		if(v.nodeType == Xml.PCData && n.nodeType == Xml.CData) {
+			if(v.nodeType == Xml.Document || v.nodeType == Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, unexpected " + (v.nodeType == null ? "null" : XmlType.toString(v.nodeType)));
+			}
+			tmp = StringTools.trim(v.nodeValue) == "";
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			if(it_current >= it_array.length) {
+				if(n.nodeType == Xml.Document || n.nodeType == Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, unexpected " + (n.nodeType == null ? "null" : XmlType.toString(n.nodeType)));
+				}
+				return n.nodeValue;
+			}
+			var n2 = it_array[it_current++];
+			var tmp;
+			if(n2.nodeType == Xml.PCData) {
+				if(n2.nodeType == Xml.Document || n2.nodeType == Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, unexpected " + (n2.nodeType == null ? "null" : XmlType.toString(n2.nodeType)));
+				}
+				tmp = StringTools.trim(n2.nodeValue) == "";
+			} else {
+				tmp = false;
+			}
+			if(tmp && it_current >= it_array.length) {
+				if(n.nodeType == Xml.Document || n.nodeType == Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, unexpected " + (n.nodeType == null ? "null" : XmlType.toString(n.nodeType)));
+				}
+				return n.nodeValue;
+			}
+		}
+		var tmp;
+		if(this1.nodeType == Xml.Document) {
+			tmp = "Document";
+		} else {
+			if(this1.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this1.nodeType == null ? "null" : XmlType.toString(this1.nodeType)));
+			}
+			tmp = this1.nodeName;
+		}
+		throw haxe_Exception.thrown(tmp + " does not only have data");
+	}
+	if(v.nodeType != Xml.PCData && v.nodeType != Xml.CData) {
+		var tmp;
+		if(this1.nodeType == Xml.Document) {
+			tmp = "Document";
+		} else {
+			if(this1.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (this1.nodeType == null ? "null" : XmlType.toString(this1.nodeType)));
+			}
+			tmp = this1.nodeName;
+		}
+		throw haxe_Exception.thrown(tmp + " does not have data");
+	}
+	if(v.nodeType == Xml.Document || v.nodeType == Xml.Element) {
+		throw haxe_Exception.thrown("Bad node type, unexpected " + (v.nodeType == null ? "null" : XmlType.toString(v.nodeType)));
+	}
+	return v.nodeValue;
+};
+var haxe_xml_XmlParserException = function(message,xml,position) {
+	this.xml = xml;
+	this.message = message;
+	this.position = position;
+	this.lineNumber = 1;
+	this.positionAtLine = 0;
+	var _g = 0;
+	var _g1 = position;
+	while(_g < _g1) {
+		var i = _g++;
+		var c = xml.charCodeAt(i);
+		if(c == 10) {
+			this.lineNumber++;
+			this.positionAtLine = 0;
+		} else if(c != 13) {
+			this.positionAtLine++;
+		}
+	}
+};
+haxe_xml_XmlParserException.__name__ = "haxe.xml.XmlParserException";
+haxe_xml_XmlParserException.prototype = {
+	toString: function() {
+		var c = js_Boot.getClass(this);
+		return c.__name__ + ": " + this.message + " at line " + this.lineNumber + " char " + this.positionAtLine;
+	}
+	,__class__: haxe_xml_XmlParserException
+};
+var haxe_xml_Parser = function() { };
+haxe_xml_Parser.__name__ = "haxe.xml.Parser";
+haxe_xml_Parser.parse = function(str,strict) {
+	if(strict == null) {
+		strict = false;
+	}
+	var doc = Xml.createDocument();
+	haxe_xml_Parser.doParse(str,strict,0,doc);
+	return doc;
+};
+haxe_xml_Parser.doParse = function(str,strict,p,parent) {
+	if(p == null) {
+		p = 0;
+	}
+	var xml = null;
+	var state = 1;
+	var next = 1;
+	var aname = null;
+	var start = 0;
+	var nsubs = 0;
+	var nbrackets = 0;
+	var buf = new StringBuf();
+	var escapeNext = 1;
+	var attrValQuote = -1;
+	while(p < str.length) {
+		var c = str.charCodeAt(p);
+		switch(state) {
+		case 0:
+			switch(c) {
+			case 9:case 10:case 13:case 32:
+				break;
+			default:
+				state = next;
+				continue;
+			}
+			break;
+		case 1:
+			if(c == 60) {
+				state = 0;
+				next = 2;
+			} else {
+				start = p;
+				state = 13;
+				continue;
+			}
+			break;
+		case 2:
+			switch(c) {
+			case 33:
+				if(str.charCodeAt(p + 1) == 91) {
+					p += 2;
+					if(HxOverrides.substr(str,p,6).toUpperCase() != "CDATA[") {
+						throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected <![CDATA[",str,p));
+					}
+					p += 5;
+					state = 17;
+					start = p + 1;
+				} else if(str.charCodeAt(p + 1) == 68 || str.charCodeAt(p + 1) == 100) {
+					if(HxOverrides.substr(str,p + 2,6).toUpperCase() != "OCTYPE") {
+						throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected <!DOCTYPE",str,p));
+					}
+					p += 8;
+					state = 16;
+					start = p + 1;
+				} else if(str.charCodeAt(p + 1) != 45 || str.charCodeAt(p + 2) != 45) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected <!--",str,p));
+				} else {
+					p += 2;
+					state = 15;
+					start = p + 1;
+				}
+				break;
+			case 47:
+				if(parent == null) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected node name",str,p));
+				}
+				start = p + 1;
+				state = 0;
+				next = 10;
+				break;
+			case 63:
+				state = 14;
+				start = p;
+				break;
+			default:
+				state = 3;
+				start = p;
+				continue;
+			}
+			break;
+		case 3:
+			if(!(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <= 57 || c == 58 || c == 46 || c == 95 || c == 45)) {
+				if(p == start) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected node name",str,p));
+				}
+				xml = Xml.createElement(HxOverrides.substr(str,start,p - start));
+				parent.addChild(xml);
+				++nsubs;
+				state = 0;
+				next = 4;
+				continue;
+			}
+			break;
+		case 4:
+			switch(c) {
+			case 47:
+				state = 11;
+				break;
+			case 62:
+				state = 9;
+				break;
+			default:
+				state = 5;
+				start = p;
+				continue;
+			}
+			break;
+		case 5:
+			if(!(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <= 57 || c == 58 || c == 46 || c == 95 || c == 45)) {
+				if(start == p) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected attribute name",str,p));
+				}
+				var tmp = HxOverrides.substr(str,start,p - start);
+				aname = tmp;
+				if(xml.exists(aname)) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Duplicate attribute [" + aname + "]",str,p));
+				}
+				state = 0;
+				next = 6;
+				continue;
+			}
+			break;
+		case 6:
+			if(c == 61) {
+				state = 0;
+				next = 7;
+			} else {
+				throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected =",str,p));
+			}
+			break;
+		case 7:
+			switch(c) {
+			case 34:case 39:
+				buf = new StringBuf();
+				state = 8;
+				start = p + 1;
+				attrValQuote = c;
+				break;
+			default:
+				throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected \"",str,p));
+			}
+			break;
+		case 8:
+			switch(c) {
+			case 38:
+				var len = p - start;
+				buf.b += len == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len);
+				state = 18;
+				escapeNext = 8;
+				start = p + 1;
+				break;
+			case 60:case 62:
+				if(strict) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Invalid unescaped " + String.fromCodePoint(c) + " in attribute value",str,p));
+				} else if(c == attrValQuote) {
+					var len1 = p - start;
+					buf.b += len1 == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len1);
+					var val = buf.b;
+					buf = new StringBuf();
+					xml.set(aname,val);
+					state = 0;
+					next = 4;
+				}
+				break;
+			default:
+				if(c == attrValQuote) {
+					var len2 = p - start;
+					buf.b += len2 == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len2);
+					var val1 = buf.b;
+					buf = new StringBuf();
+					xml.set(aname,val1);
+					state = 0;
+					next = 4;
+				}
+			}
+			break;
+		case 9:
+			p = haxe_xml_Parser.doParse(str,strict,p,xml);
+			start = p;
+			state = 1;
+			break;
+		case 10:
+			if(!(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <= 57 || c == 58 || c == 46 || c == 95 || c == 45)) {
+				if(start == p) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected node name",str,p));
+				}
+				var v = HxOverrides.substr(str,start,p - start);
+				if(parent == null || parent.nodeType != 0) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Unexpected </" + v + ">, tag is not open",str,p));
+				}
+				if(parent.nodeType != Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, expected Element but found " + (parent.nodeType == null ? "null" : XmlType.toString(parent.nodeType)));
+				}
+				if(v != parent.nodeName) {
+					if(parent.nodeType != Xml.Element) {
+						throw haxe_Exception.thrown("Bad node type, expected Element but found " + (parent.nodeType == null ? "null" : XmlType.toString(parent.nodeType)));
+					}
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected </" + parent.nodeName + ">",str,p));
+				}
+				state = 0;
+				next = 12;
+				continue;
+			}
+			break;
+		case 11:
+			if(c == 62) {
+				state = 1;
+			} else {
+				throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected >",str,p));
+			}
+			break;
+		case 12:
+			if(c == 62) {
+				if(nsubs == 0) {
+					parent.addChild(Xml.createPCData(""));
+				}
+				return p;
+			} else {
+				throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Expected >",str,p));
+			}
+			break;
+		case 13:
+			if(c == 60) {
+				var len3 = p - start;
+				buf.b += len3 == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len3);
+				var child = Xml.createPCData(buf.b);
+				buf = new StringBuf();
+				parent.addChild(child);
+				++nsubs;
+				state = 0;
+				next = 2;
+			} else if(c == 38) {
+				var len4 = p - start;
+				buf.b += len4 == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len4);
+				state = 18;
+				escapeNext = 13;
+				start = p + 1;
+			}
+			break;
+		case 14:
+			if(c == 63 && str.charCodeAt(p + 1) == 62) {
+				++p;
+				var str1 = HxOverrides.substr(str,start + 1,p - start - 2);
+				parent.addChild(Xml.createProcessingInstruction(str1));
+				++nsubs;
+				state = 1;
+			}
+			break;
+		case 15:
+			if(c == 45 && str.charCodeAt(p + 1) == 45 && str.charCodeAt(p + 2) == 62) {
+				parent.addChild(Xml.createComment(HxOverrides.substr(str,start,p - start)));
+				++nsubs;
+				p += 2;
+				state = 1;
+			}
+			break;
+		case 16:
+			if(c == 91) {
+				++nbrackets;
+			} else if(c == 93) {
+				--nbrackets;
+			} else if(c == 62 && nbrackets == 0) {
+				parent.addChild(Xml.createDocType(HxOverrides.substr(str,start,p - start)));
+				++nsubs;
+				state = 1;
+			}
+			break;
+		case 17:
+			if(c == 93 && str.charCodeAt(p + 1) == 93 && str.charCodeAt(p + 2) == 62) {
+				var child1 = Xml.createCData(HxOverrides.substr(str,start,p - start));
+				parent.addChild(child1);
+				++nsubs;
+				p += 2;
+				state = 1;
+			}
+			break;
+		case 18:
+			if(c == 59) {
+				var s = HxOverrides.substr(str,start,p - start);
+				if(s.charCodeAt(0) == 35) {
+					var c1 = s.charCodeAt(1) == 120 ? Std.parseInt("0" + HxOverrides.substr(s,1,s.length - 1)) : Std.parseInt(HxOverrides.substr(s,1,s.length - 1));
+					buf.b += String.fromCodePoint(c1);
+				} else if(!Object.prototype.hasOwnProperty.call(haxe_xml_Parser.escapes.h,s)) {
+					if(strict) {
+						throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Undefined entity: " + s,str,p));
+					}
+					buf.b += Std.string("&" + s + ";");
+				} else {
+					buf.b += Std.string(haxe_xml_Parser.escapes.h[s]);
+				}
+				start = p + 1;
+				state = escapeNext;
+			} else if(!(c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <= 57 || c == 58 || c == 46 || c == 95 || c == 45) && c != 35) {
+				if(strict) {
+					throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Invalid character in entity: " + String.fromCodePoint(c),str,p));
+				}
+				buf.b += String.fromCodePoint(38);
+				var len5 = p - start;
+				buf.b += len5 == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len5);
+				--p;
+				start = p + 1;
+				state = escapeNext;
+			}
+			break;
+		}
+		++p;
+	}
+	if(state == 1) {
+		start = p;
+		state = 13;
+	}
+	if(state == 13) {
+		if(parent.nodeType == 0) {
+			if(parent.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (parent.nodeType == null ? "null" : XmlType.toString(parent.nodeType)));
+			}
+			throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Unclosed node <" + parent.nodeName + ">",str,p));
+		}
+		if(p != start || nsubs == 0) {
+			var len = p - start;
+			buf.b += len == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len);
+			parent.addChild(Xml.createPCData(buf.b));
+			++nsubs;
+		}
+		return p;
+	}
+	if(!strict && state == 18 && escapeNext == 13) {
+		buf.b += String.fromCodePoint(38);
+		var len = p - start;
+		buf.b += len == null ? HxOverrides.substr(str,start,null) : HxOverrides.substr(str,start,len);
+		parent.addChild(Xml.createPCData(buf.b));
+		++nsubs;
+		return p;
+	}
+	throw haxe_Exception.thrown(new haxe_xml_XmlParserException("Unexpected end",str,p));
+};
+var haxe_xml_Printer = function(pretty) {
+	this.output = new StringBuf();
+	this.pretty = pretty;
+};
+haxe_xml_Printer.__name__ = "haxe.xml.Printer";
+haxe_xml_Printer.print = function(xml,pretty) {
+	if(pretty == null) {
+		pretty = false;
+	}
+	var printer = new haxe_xml_Printer(pretty);
+	printer.writeNode(xml,"");
+	return printer.output.b;
+};
+haxe_xml_Printer.prototype = {
+	writeNode: function(value,tabs) {
+		switch(value.nodeType) {
+		case 0:
+			this.output.b += Std.string(tabs + "<");
+			if(value.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+			}
+			this.output.b += Std.string(value.nodeName);
+			var attribute = value.attributes();
+			while(attribute.hasNext()) {
+				var attribute1 = attribute.next();
+				this.output.b += Std.string(" " + attribute1 + "=\"");
+				var input = StringTools.htmlEscape(value.get(attribute1),true);
+				this.output.b += Std.string(input);
+				this.output.b += "\"";
+			}
+			if(this.hasChildren(value)) {
+				this.output.b += ">";
+				if(this.pretty) {
+					this.output.b += "\n";
+				}
+				if(value.nodeType != Xml.Document && value.nodeType != Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+				}
+				var _g_current = 0;
+				var _g_array = value.children;
+				while(_g_current < _g_array.length) {
+					var child = _g_array[_g_current++];
+					this.writeNode(child,this.pretty ? tabs + "\t" : tabs);
+				}
+				this.output.b += Std.string(tabs + "</");
+				if(value.nodeType != Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, expected Element but found " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+				}
+				this.output.b += Std.string(value.nodeName);
+				this.output.b += ">";
+				if(this.pretty) {
+					this.output.b += "\n";
+				}
+			} else {
+				this.output.b += "/>";
+				if(this.pretty) {
+					this.output.b += "\n";
+				}
+			}
+			break;
+		case 1:
+			if(value.nodeType == Xml.Document || value.nodeType == Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, unexpected " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+			}
+			var nodeValue = value.nodeValue;
+			if(nodeValue.length != 0) {
+				var input = tabs + StringTools.htmlEscape(nodeValue);
+				this.output.b += Std.string(input);
+				if(this.pretty) {
+					this.output.b += "\n";
+				}
+			}
+			break;
+		case 2:
+			this.output.b += Std.string(tabs + "<![CDATA[");
+			if(value.nodeType == Xml.Document || value.nodeType == Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, unexpected " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+			}
+			this.output.b += Std.string(value.nodeValue);
+			this.output.b += "]]>";
+			if(this.pretty) {
+				this.output.b += "\n";
+			}
+			break;
+		case 3:
+			if(value.nodeType == Xml.Document || value.nodeType == Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, unexpected " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+			}
+			var commentContent = value.nodeValue;
+			var _this_r = new RegExp("[\n\r\t]+","g".split("u").join(""));
+			commentContent = commentContent.replace(_this_r,"");
+			commentContent = "<!--" + commentContent + "-->";
+			this.output.b += tabs == null ? "null" : "" + tabs;
+			var input = StringTools.trim(commentContent);
+			this.output.b += Std.string(input);
+			if(this.pretty) {
+				this.output.b += "\n";
+			}
+			break;
+		case 4:
+			if(value.nodeType == Xml.Document || value.nodeType == Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, unexpected " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+			}
+			this.output.b += Std.string("<!DOCTYPE " + value.nodeValue + ">");
+			if(this.pretty) {
+				this.output.b += "\n";
+			}
+			break;
+		case 5:
+			if(value.nodeType == Xml.Document || value.nodeType == Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, unexpected " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+			}
+			this.output.b += Std.string("<?" + value.nodeValue + "?>");
+			if(this.pretty) {
+				this.output.b += "\n";
+			}
+			break;
+		case 6:
+			if(value.nodeType != Xml.Document && value.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+			}
+			var _g_current = 0;
+			var _g_array = value.children;
+			while(_g_current < _g_array.length) {
+				var child = _g_array[_g_current++];
+				this.writeNode(child,tabs);
+			}
+			break;
+		}
+	}
+	,hasChildren: function(value) {
+		if(value.nodeType != Xml.Document && value.nodeType != Xml.Element) {
+			throw haxe_Exception.thrown("Bad node type, expected Element or Document but found " + (value.nodeType == null ? "null" : XmlType.toString(value.nodeType)));
+		}
+		var _g_current = 0;
+		var _g_array = value.children;
+		while(_g_current < _g_array.length) {
+			var child = _g_array[_g_current++];
+			switch(child.nodeType) {
+			case 0:case 1:
+				return true;
+			case 2:case 3:
+				if(child.nodeType == Xml.Document || child.nodeType == Xml.Element) {
+					throw haxe_Exception.thrown("Bad node type, unexpected " + (child.nodeType == null ? "null" : XmlType.toString(child.nodeType)));
+				}
+				if(StringTools.ltrim(child.nodeValue).length != 0) {
+					return true;
+				}
+				break;
+			default:
+			}
+		}
+		return false;
+	}
+	,__class__: haxe_xml_Printer
+};
 var js_Boot = function() { };
-js_Boot.__name__ = true;
+js_Boot.__name__ = "js.Boot";
 js_Boot.getClass = function(o) {
 	if(o == null) {
 		return null;
@@ -766,8 +2195,27 @@ js_Boot.__isNativeObj = function(o) {
 js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
+var js_Browser = function() { };
+js_Browser.__name__ = "js.Browser";
+js_Browser.__properties__ = {get_supported:"get_supported"};
+js_Browser.get_supported = function() {
+	if(typeof(window) != "undefined" && typeof(window.location) != "undefined") {
+		return typeof(window.location.protocol) == "string";
+	} else {
+		return false;
+	}
+};
+js_Browser.createXMLHttpRequest = function() {
+	if(typeof XMLHttpRequest != "undefined") {
+		return new XMLHttpRequest();
+	}
+	if(typeof ActiveXObject != "undefined") {
+		return new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	throw haxe_Exception.thrown("Unable to create XMLHttpRequest object.");
+};
 var motion_actuators_IGenericActuator = function() { };
-motion_actuators_IGenericActuator.__name__ = true;
+motion_actuators_IGenericActuator.__name__ = "motion.actuators.IGenericActuator";
 motion_actuators_IGenericActuator.__isInterface__ = true;
 motion_actuators_IGenericActuator.prototype = {
 	__class__: motion_actuators_IGenericActuator
@@ -786,7 +2234,7 @@ var motion_actuators_GenericActuator = function(target,duration,properties) {
 	this.duration = duration;
 	this._ease = motion_Actuate.defaultEase;
 };
-motion_actuators_GenericActuator.__name__ = true;
+motion_actuators_GenericActuator.__name__ = "motion.actuators.GenericActuator";
 motion_actuators_GenericActuator.__interfaces__ = [motion_actuators_IGenericActuator];
 motion_actuators_GenericActuator.prototype = {
 	apply: function() {
@@ -979,7 +2427,7 @@ var motion_actuators_SimpleActuator = function(target,duration,properties) {
 		window.requestAnimationFrame(motion_actuators_SimpleActuator.stage_onEnterFrame);
 	}
 };
-motion_actuators_SimpleActuator.__name__ = true;
+motion_actuators_SimpleActuator.__name__ = "motion.actuators.SimpleActuator";
 motion_actuators_SimpleActuator.stage_onEnterFrame = function(deltaTime) {
 	var currentTime = deltaTime / 1000;
 	var actuator;
@@ -1316,14 +2764,14 @@ motion_actuators_SimpleActuator.prototype = $extend(motion_actuators_GenericActu
 	,__class__: motion_actuators_SimpleActuator
 });
 var motion_easing_IEasing = function() { };
-motion_easing_IEasing.__name__ = true;
+motion_easing_IEasing.__name__ = "motion.easing.IEasing";
 motion_easing_IEasing.__isInterface__ = true;
 motion_easing_IEasing.prototype = {
 	__class__: motion_easing_IEasing
 };
 var motion_easing__$Expo_ExpoEaseIn = function() {
 };
-motion_easing__$Expo_ExpoEaseIn.__name__ = true;
+motion_easing__$Expo_ExpoEaseIn.__name__ = "motion.easing._Expo.ExpoEaseIn";
 motion_easing__$Expo_ExpoEaseIn.__interfaces__ = [motion_easing_IEasing];
 motion_easing__$Expo_ExpoEaseIn.prototype = {
 	calculate: function(k) {
@@ -1344,7 +2792,7 @@ motion_easing__$Expo_ExpoEaseIn.prototype = {
 };
 var motion_easing__$Expo_ExpoEaseInOut = function() {
 };
-motion_easing__$Expo_ExpoEaseInOut.__name__ = true;
+motion_easing__$Expo_ExpoEaseInOut.__name__ = "motion.easing._Expo.ExpoEaseInOut";
 motion_easing__$Expo_ExpoEaseInOut.__interfaces__ = [motion_easing_IEasing];
 motion_easing__$Expo_ExpoEaseInOut.prototype = {
 	calculate: function(k) {
@@ -1375,7 +2823,7 @@ motion_easing__$Expo_ExpoEaseInOut.prototype = {
 };
 var motion_easing__$Expo_ExpoEaseOut = function() {
 };
-motion_easing__$Expo_ExpoEaseOut.__name__ = true;
+motion_easing__$Expo_ExpoEaseOut.__name__ = "motion.easing._Expo.ExpoEaseOut";
 motion_easing__$Expo_ExpoEaseOut.__interfaces__ = [motion_easing_IEasing];
 motion_easing__$Expo_ExpoEaseOut.prototype = {
 	calculate: function(k) {
@@ -1395,9 +2843,9 @@ motion_easing__$Expo_ExpoEaseOut.prototype = {
 	,__class__: motion_easing__$Expo_ExpoEaseOut
 };
 var motion_easing_Expo = function() { };
-motion_easing_Expo.__name__ = true;
+motion_easing_Expo.__name__ = "motion.easing.Expo";
 var motion_Actuate = function() { };
-motion_Actuate.__name__ = true;
+motion_Actuate.__name__ = "motion.Actuate";
 motion_Actuate.apply = function(target,properties,customActuator) {
 	motion_Actuate.stop(target,properties);
 	if(customActuator == null) {
@@ -1588,7 +3036,7 @@ motion_Actuate.update = function(target,duration,start,end,overwrite) {
 var motion__$Actuate_TweenTimer = function(progress) {
 	this.progress = progress;
 };
-motion__$Actuate_TweenTimer.__name__ = true;
+motion__$Actuate_TweenTimer.__name__ = "motion._Actuate.TweenTimer";
 motion__$Actuate_TweenTimer.prototype = {
 	__class__: motion__$Actuate_TweenTimer
 };
@@ -1597,7 +3045,7 @@ var motion_MotionPath = function() {
 	this._y = new motion__$MotionPath_ComponentPath();
 	this._rotation = null;
 };
-motion_MotionPath.__name__ = true;
+motion_MotionPath.__name__ = "motion.MotionPath";
 motion_MotionPath.prototype = {
 	bezier: function(x,y,controlX,controlY,strength) {
 		if(strength == null) {
@@ -1643,7 +3091,7 @@ motion_MotionPath.prototype = {
 	,__properties__: {get_y:"get_y",get_x:"get_x",get_rotation:"get_rotation"}
 };
 var motion_IComponentPath = function() { };
-motion_IComponentPath.__name__ = true;
+motion_IComponentPath.__name__ = "motion.IComponentPath";
 motion_IComponentPath.__isInterface__ = true;
 motion_IComponentPath.prototype = {
 	__class__: motion_IComponentPath
@@ -1653,7 +3101,7 @@ var motion__$MotionPath_ComponentPath = function() {
 	this.paths = [];
 	this.strength = 0;
 };
-motion__$MotionPath_ComponentPath.__name__ = true;
+motion__$MotionPath_ComponentPath.__name__ = "motion._MotionPath.ComponentPath";
 motion__$MotionPath_ComponentPath.__interfaces__ = [motion_IComponentPath];
 motion__$MotionPath_ComponentPath.prototype = {
 	addPath: function(path) {
@@ -1712,7 +3160,7 @@ var motion__$MotionPath_BezierPath = function(end,control,strength) {
 	this.control = control;
 	this.strength = strength;
 };
-motion__$MotionPath_BezierPath.__name__ = true;
+motion__$MotionPath_BezierPath.__name__ = "motion._MotionPath.BezierPath";
 motion__$MotionPath_BezierPath.__interfaces__ = [motion_IComponentPath];
 motion__$MotionPath_BezierPath.prototype = {
 	calculate: function(k) {
@@ -1760,7 +3208,7 @@ var motion__$MotionPath_BezierSplinePath = function(through,strength) {
 	this.through = through;
 	this.strength = strength;
 };
-motion__$MotionPath_BezierSplinePath.__name__ = true;
+motion__$MotionPath_BezierSplinePath.__name__ = "motion._MotionPath.BezierSplinePath";
 motion__$MotionPath_BezierSplinePath.__super__ = motion__$MotionPath_ComponentPath;
 motion__$MotionPath_BezierSplinePath.prototype = $extend(motion__$MotionPath_ComponentPath.prototype,{
 	computeControlPoints: function(start) {
@@ -1846,7 +3294,7 @@ var motion__$MotionPath_RotationPath = function(x,y) {
 	this.offset = 0;
 	this.set_start(this.calculate(0.0));
 };
-motion__$MotionPath_RotationPath.__name__ = true;
+motion__$MotionPath_RotationPath.__name__ = "motion._MotionPath.RotationPath";
 motion__$MotionPath_RotationPath.__interfaces__ = [motion_IComponentPath];
 motion__$MotionPath_RotationPath.prototype = {
 	calculate: function(k) {
@@ -1885,7 +3333,7 @@ var motion_actuators_MethodActuator = function(target,duration,properties) {
 		this.currentParameters.push(this.properties.start[i]);
 	}
 };
-motion_actuators_MethodActuator.__name__ = true;
+motion_actuators_MethodActuator.__name__ = "motion.actuators.MethodActuator";
 motion_actuators_MethodActuator.__super__ = motion_actuators_SimpleActuator;
 motion_actuators_MethodActuator.prototype = $extend(motion_actuators_SimpleActuator.prototype,{
 	apply: function() {
@@ -1955,7 +3403,7 @@ motion_actuators_MethodActuator.prototype = $extend(motion_actuators_SimpleActua
 var motion_actuators_MotionPathActuator = function(target,duration,properties) {
 	motion_actuators_SimpleActuator.call(this,target,duration,properties);
 };
-motion_actuators_MotionPathActuator.__name__ = true;
+motion_actuators_MotionPathActuator.__name__ = "motion.actuators.MotionPathActuator";
 motion_actuators_MotionPathActuator.__super__ = motion_actuators_SimpleActuator;
 motion_actuators_MotionPathActuator.prototype = $extend(motion_actuators_SimpleActuator.prototype,{
 	apply: function() {
@@ -2107,7 +3555,7 @@ var motion_actuators_PropertyDetails = function(target,propertyName,start,change
 	this.change = change;
 	this.isField = isField;
 };
-motion_actuators_PropertyDetails.__name__ = true;
+motion_actuators_PropertyDetails.__name__ = "motion.actuators.PropertyDetails";
 motion_actuators_PropertyDetails.prototype = {
 	__class__: motion_actuators_PropertyDetails
 };
@@ -2118,20 +3566,20 @@ var motion_actuators_PropertyPathDetails = function(target,propertyName,path,isF
 	motion_actuators_PropertyDetails.call(this,target,propertyName,0,0,isField);
 	this.path = path;
 };
-motion_actuators_PropertyPathDetails.__name__ = true;
+motion_actuators_PropertyPathDetails.__name__ = "motion.actuators.PropertyPathDetails";
 motion_actuators_PropertyPathDetails.__super__ = motion_actuators_PropertyDetails;
 motion_actuators_PropertyPathDetails.prototype = $extend(motion_actuators_PropertyDetails.prototype,{
 	__class__: motion_actuators_PropertyPathDetails
 });
 var motion_easing_Linear = function() { };
-motion_easing_Linear.__name__ = true;
+motion_easing_Linear.__name__ = "motion.easing.Linear";
 motion_easing_Linear.__properties__ = {get_easeNone:"get_easeNone"};
 motion_easing_Linear.get_easeNone = function() {
 	return new motion_easing_LinearEaseNone();
 };
 var motion_easing_LinearEaseNone = function() {
 };
-motion_easing_LinearEaseNone.__name__ = true;
+motion_easing_LinearEaseNone.__name__ = "motion.easing.LinearEaseNone";
 motion_easing_LinearEaseNone.__interfaces__ = [motion_easing_IEasing];
 motion_easing_LinearEaseNone.prototype = {
 	calculate: function(k) {
@@ -2142,310 +3590,16 @@ motion_easing_LinearEaseNone.prototype = {
 	}
 	,__class__: motion_easing_LinearEaseNone
 };
-var scenes_Scene1_$Awake = function() {
-	this.agataPerson = new common_Person("Агата","agata-portrait.jpg",{ surname : "Стоун", position : "медсестра"});
-	this.elizabetPerson = new common_Person("Элизабет","doctor-elizabeth.jpg",{ surname : "Томпсон", position : "доктор"});
-	this.unknownPerson2 = new common_Person("ВТОРАЯ НЕИЗВЕСТНАЯ","agata-portrait.jpg");
-	this.unknownPerson1 = new common_Person("ПЕРВАЯ НЕИЗВЕСТНАЯ","doctor-elizabeth.jpg");
-	common_Scene.call(this);
-};
-scenes_Scene1_$Awake.__name__ = true;
-scenes_Scene1_$Awake.__super__ = common_Scene;
-scenes_Scene1_$Awake.prototype = $extend(common_Scene.prototype,{
-	enter: function() {
-		var _gthis = this;
-		this.interactive.setSceneTitle("Часть 1. Пробуждение");
-		this.interactive.addText("Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Голос спокойный и не несёт в себе угрозы.");
-		this.elizabethPortrait = this.interactive.addPersonPortrait(this.unknownPerson1);
-		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, просыпайся.", waitTime : 100, onWaitComplete : function() {
-			_gthis.interactive.addWait(100,function() {
-				_gthis.interactive.addText("Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.");
-				_gthis.interactive.addWait(100,function() {
-					_gthis.agataPortrait = _gthis.interactive.addPersonPortrait(_gthis.unknownPerson2);
-					_gthis.interactive.addChoose({ select : ["Кто вы?","Что с моими руками и ногами? Они не двигаются.","Уходите, я хочу спать","[Раздражённо] Проваливайте! Что Вы делаете у меня дома?"], onSelect : $bind(_gthis,_gthis.processAnswer)});
-				});
-			});
-		}});
-	}
-	,actionDoctorHello: function() {
-		var _gthis = this;
-		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Я " + this.elizabetPerson.get_fullNameWithPosition() + ". Это " + this.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты знаешь, где находишься?", waitTime : 100, onWaitComplete : function() {
-			_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
-			_gthis.agataPortrait.set_person(_gthis.agataPerson);
-			_gthis.interactive.addChoose({ select : ["[Удивлённо] Доктор? Я что, в больнице?","[Интеллект] Элизабет и Агата? Мы что в Англии? (Усмехнутся)","Дома, дайте отдохнуть.","[Засмеятся] В дурдоме."], onSelect : $bind(_gthis,_gthis.processDoctorHello)});
-		}});
-	}
-	,actionWhatAboutMyArmsAndLegs: function() {
-		var _gthis = this;
-		this.interactive.addPersonText({ person : this.unknownPerson1, text : "Элис, ты не помнишь что было вчера? Нам пришлось привязать тебя к больничной койке и вколоть транквилизаторы, что бы ты успокоилась.", waitTime : 100, onWaitComplete : function() {
-			_gthis.interactive.addChoose({ select : ["Кто Вы?","[Испугано] Привязать? Транквилизаторы? Где я? Это похищение?","[Удивлённо] Кто такая Элис?","[Кричать] Отвяжите меня немедленно!"], onSelect : $bind(_gthis,_gthis.processAnswer_1)});
-		}});
-	}
-	,actionWhyHospital: function(onComplete) {
-		var _gthis = this;
-		this.interactive.addPersonText({ person : this.elizabetPerson, text : "Прохожие нашли тебя стоящую на краю моста. Ты кричала, что \"дьявол хочет забрать твою душу\". Бригада скорой помощи сняла тебя с моста и привезла к нам в отделение.", waitTime : 100, onWaitComplete : function() {
-			_gthis.interactive.addPersonText({ person : _gthis.agataPerson, text : "Когда тебя доставили к нам в состоянии психоза, ты пыталась ударить меня ногой.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addPersonText({ person : _gthis.elizabetPerson, text : "" + _gthis.agataPerson.name + ", не надо пока об этом.", waitTime : 100, onWaitComplete : onComplete});
-			}});
-		}});
-	}
-	,processAnswer: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.actionDoctorHello();
-			break;
-		case 1:
-			this.actionWhatAboutMyArmsAndLegs();
-			break;
-		case 2:
-			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Не переживай, мы не надолго. Узнаем как ты себя чувствуешь и уйдём.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Кто Вы?","Что с моими руками и ногами? Они не двигаются.","[Кричать] Убирайтесь из моего дома!"], onSelect : $bind(_gthis,_gthis.processAnswer_2)});
-			}});
-			break;
-		case 3:
-			this.interactive.addPersonText({ person : this.unknownPerson1, text : "Пожалуйста, не нервничай. Мы зададим несколько вопросов и уйдём.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson2, text : "Ты действительно думаешь что находишься дома?.", waitTime : 100, onWaitComplete : function() {
-					_gthis.interactive.addChoose({ select : ["Кто Вы?","Что с моими руками и ногами? Они не двигаются.","[Раздражённо] Конечно я дома, где же мне ещё быть?"], onSelect : $bind(_gthis,_gthis.processAnswer_3)});
-				}});
-			}});
-			break;
-		}
-	}
-	,processDoctorHello: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Элис, ты в психиатрической больнице, в отделении интенсивной терапии. Я твой лечащий врач.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Кто такая Элис?","Что я делаю в психиатрической больнице?","Почему я не могу пошевелится?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : $bind(_gthis,_gthis.processDoctorHello_0)});
-			}});
-			break;
-		case 1:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		}
-	}
-	,processDoctorHello_0: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.interactive.addPersonText({ person : this.agataPerson, text : "Ты не помнишь как тебя зовут?", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addText("Доктор некоторое время в замешательстве смотрит на медсестру, потом её взгляд возвращается к Вам. В руках доктора планшет, видимо в нём информация с Вашей медицинской картой.");
-				_gthis.interactive.addWait(100,function() {
-					_gthis.interactive.addPersonText({ person : _gthis.elizabetPerson, text : "Элис Вайт. 23 года. Родилась в Саттон-Колфилд в 1998 году. Родители...", waitTime : 100, onWaitComplete : function() {
-						_gthis.interactive.addWait(100,function() {
-							_gthis.interactive.addText("Находясь в недоумении, Вы прерываете уверенную речь доктора.");
-							_gthis.interactive.addChoose({ select : ["Тут какая то ошибка. Я не Элис. Меня зовут София.","[Рассмеятся] Вы наверное шутите? ","[Зло] Вы сошли с ума. Меня зовут София."], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0)});
-						});
-					}});
-				});
-			}});
-			break;
-		case 1:
-			this.actionWhyHospital(function() {
-				_gthis.interactive.addChoose({ select : ["Кто такая Элис?","Но я не больна.","Почему я не могу пошевелится?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : function(_,_1) {
-				}});
-			});
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		}
-	}
-	,processDoctorHello_0_0: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Хорошо. Мы обсудим это на сеансах терапии.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Почему я не могу пошевелится?","Почему я в психиатрической больнице?","[Зло] Какого чёрта тут происходит?"], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0_0)});
-			}});
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		}
-	}
-	,processDoctorHello_0_0_0: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.interactive.addPersonText({ person : this.agataPerson, text : "Ты представляла опасность для себя и окружающих. Нам пришлось обездвижить тебя. Будешь хорошо себя вести и я отвяжу тебя завтра.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Но я не опасна.","Можно меня отвязать?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0_0_0)});
-			}});
-			break;
-		case 1:
-			this.actionWhyHospital(function() {
-				_gthis.interactive.addChoose({ select : ["Но я не больна.","Почему я не могу пошевелить руками и ногами?","[Раздражённо] Что тут, мать вашу, происходит?"], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0_0_1)});
-			});
-			break;
-		case 2:
-			break;
-		}
-	}
-	,processDoctorHello_0_0_0_0: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Время покажет. На сегодня хватит. Сестра Агата даст тебе успокоительное и ты поспишь. Увидимся завтра.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["Пожалуйста, постойте. Можно мне в туалет? И ещё я хочу пить."], onSelect : $bind(_gthis,_gthis.processDoctorHello_0_0_0)});
-			}});
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		}
-	}
-	,processDoctorHello_0_0_0_1: function(select,index) {
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Это мы тоже обсудим на терапии.", waitTime : 100, onWaitComplete : function() {
-			}});
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		}
-	}
-	,processAnswer_1: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.actionDoctorHello();
-			break;
-		case 1:
-			this.interactive.addPersonText({ person : this.elizabetPerson, text : "Нет, что ты. Элис, ты в психиатрической больнице, в отделении интенсивной терапии. Я твой лечащий врач, " + this.elizabetPerson.get_fullName() + ". (Показывает на женщину рядом с собой) Это " + this.agataPerson.get_fullNameWithPosition() + ". Ты представляла опасность себе и окружающим. Нам пришлось тебя обездвижить.", waitTime : 100, onWaitComplete : function() {
-				_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
-				_gthis.agataPortrait.set_person(_gthis.agataPerson);
-				_gthis.interactive.addPersonText({ person : _gthis.agataPerson, text : "Не волнуйся, если будешь вести себя спокойно, то завтра мы тебя отвяжем.", waitTime : 100, onWaitComplete : function() {
-					_gthis.interactive.addChoose({ select : ["Кто такая Элис?","Я спокойна, пожалуйста, отвяжите меня!","[Раздражённо] Я спокойна, вашу мать! Отвяжите меня."], onSelect : function(_,index) {
-					}});
-				}});
-			}});
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		}
-	}
-	,processAnswer_2: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.actionDoctorHello();
-			break;
-		case 1:
-			this.actionWhatAboutMyArmsAndLegs();
-			break;
-		case 2:
-			this.interactive.addPersonText({ person : this.agataPerson, text : "[Сердито] Элис, перестань. Или мне придётся тебя успокоить.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addChoose({ select : ["[Кричать] Кто Вы, мать вашу?"], onSelect : $bind(_gthis,_gthis.processAnswer_2_2)});
-			}});
-			break;
-		}
-	}
-	,processAnswer_2_2: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		if(index == 0) {
-			this.interactive.addWait(100,function() {
-				_gthis.interactive.addText("Вы видите как женщина достаёт из кармана халата шприц и ампулу. Она освободила шприц от упаковки, набрала из ампулы неизвестную Вам жидкость.");
-				_gthis.interactive.addWait(100,function() {
-					_gthis.interactive.addPersonText({ person : _gthis.unknownPerson1, text : "Я " + _gthis.elizabetPerson.get_fullNameWithPosition() + ". Это " + _gthis.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты знаешь, где находишься?", waitTime : 100, onWaitComplete : function() {
-						_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
-						_gthis.agataPortrait.set_person(_gthis.agataPerson);
-						_gthis.interactive.addWait(100,function() {
-							_gthis.interactive.addText("Тем временем медсестра подошла к Вам вплотную и приготовилась сделать укол.");
-							_gthis.interactive.addChoose({ select : ["Стойте стойте. Я больше не буду.","Попытатся защитится от укола.","[Кричать] Прекратите."], onSelect : $bind(_gthis,_gthis.processAnswer_2_2_2)});
-						});
-					}});
-				});
-			});
-		}
-	}
-	,processAnswer_2_2_2: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.interactive.addPersonText({ person : this.agataPerson, text : "Это для твоего же блага.", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addWait(100,function() {
-					_gthis.interactive.addText("Вы пытаетесь уклонится от укола, но руки не двигаются.");
-					_gthis.interactive.addWait(100,function() {
-						_gthis.interactive.addText("Чувствуете укол.");
-						_gthis.interactive.addWait(100,function() {
-							_gthis.interactive.addPersonText({ person : _gthis.elizabetPerson, text : "Успокоилась? Теперь поговорим?", waitTime : 100, onWaitComplete : function() {
-								_gthis.interactive.addChoose({ select : ["Где я?","Зачем Вы это делаете?","Почему я не могу двигаться?"], onSelect : $bind(_gthis,_gthis.processAnswer_2_2_2_any)});
-							}});
-						});
-					});
-				});
-			}});
-			break;
-		case 1:
-			this.interactive.addWait(100,function() {
-				_gthis.interactive.addText("Вы пытаетесь со всей силы схватить руки со шприцом, но руки по прежнему не двигаются");
-				_gthis.interactive.addWait(100,function() {
-					_gthis.interactive.addText("Чувствуете укол.");
-					_gthis.interactive.addChoose({ select : ["Где я?","Почему я не могу двигаться?"], onSelect : $bind(_gthis,_gthis.processAnswer_2_2_2_any)});
-				});
-			});
-			break;
-		case 2:
-			break;
-		}
-	}
-	,processAnswer_2_2_2_any: function(select,index) {
-		this.interactive.addPlayerText(select[index]);
-	}
-	,processAnswer_3: function(select,index) {
-		var _gthis = this;
-		this.interactive.addPlayerText(select[index]);
-		switch(index) {
-		case 0:
-			this.actionDoctorHello();
-			break;
-		case 1:
-			this.actionWhatAboutMyArmsAndLegs();
-			break;
-		case 2:
-			this.interactive.addPersonText({ person : this.unknownPerson2, text : "Ты не помнишь что было вчера?", waitTime : 100, onWaitComplete : function() {
-				_gthis.interactive.addPersonText({ person : _gthis.unknownPerson1, text : "К сожалению ты не дома. Я " + _gthis.elizabetPerson.get_fullNameWithPosition() + ". Это " + _gthis.agataPerson.get_fullNameWithPosition() + " (показывает на женщину, стоящую рядом). Ты находишься в психиатрической больнице.", waitTime : 100, onWaitComplete : function() {
-					_gthis.elizabethPortrait.set_person(_gthis.elizabetPerson);
-					_gthis.agataPortrait.set_person(_gthis.agataPerson);
-					_gthis.interactive.addChoose({ select : ["Почему я в психиатрической больнице?"], onSelect : function(_,index) {
-					}});
-				}});
-			}});
-			break;
-		}
-	}
-	,__class__: scenes_Scene1_$Awake
-});
+function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
 	HxOverrides.now = performance.now.bind(performance);
 }
+if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c < 0x10000 ? String.fromCharCode(c) : String.fromCharCode((c>>10)+0xD7C0)+String.fromCharCode((c&0x3FF)+0xDC00); }
 String.prototype.__class__ = String;
-String.__name__ = true;
-Array.__name__ = true;
+String.__name__ = "String";
+Array.__name__ = "Array";
 var Int = { };
 var Dynamic = { };
 var Float = Number;
@@ -2454,6 +3608,24 @@ var Class = { };
 var Enum = { };
 haxe_ds_ObjectMap.count = 0;
 js_Boot.__toStr = ({ }).toString;
+Xml.Element = 0;
+Xml.PCData = 1;
+Xml.CData = 2;
+Xml.Comment = 3;
+Xml.DocType = 4;
+Xml.ProcessingInstruction = 5;
+Xml.Document = 6;
+haxe_xml_Parser.escapes = (function($this) {
+	var $r;
+	var h = new haxe_ds_StringMap();
+	h.h["lt"] = "<";
+	h.h["gt"] = ">";
+	h.h["amp"] = "&";
+	h.h["quot"] = "\"";
+	h.h["apos"] = "'";
+	$r = h;
+	return $r;
+}(this));
 motion_actuators_SimpleActuator.actuators = [];
 motion_actuators_SimpleActuator.actuatorsLength = 0;
 motion_actuators_SimpleActuator.addedEvent = false;
@@ -2463,8 +3635,6 @@ motion_easing_Expo.easeOut = new motion_easing__$Expo_ExpoEaseOut();
 motion_Actuate.defaultActuator = motion_actuators_SimpleActuator;
 motion_Actuate.defaultEase = motion_easing_Expo.easeOut;
 motion_Actuate.targetLibraries = new haxe_ds_ObjectMap();
-scenes_Scene1_$Awake.PERSON_WAIT = 100;
-scenes_Scene1_$Awake.LONG_WAIT = 100;
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
 
