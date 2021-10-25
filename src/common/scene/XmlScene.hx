@@ -11,6 +11,9 @@ class XmlScene extends BaseScene {
 	// Персонажи
 	private final persons = new Map<String, Person>();
 
+	// Состояние сцены
+	private var state:XmlSceneState;
+
 	// Название начальной части сцены
 	private var enterPartName:String;
 
@@ -60,6 +63,10 @@ class XmlScene extends BaseScene {
 					interactive.addPersonText(getPersonById(item.node.person.innerData), text);
 					addPartItem(items, wait);
 				});
+			case "action":
+				final name = item.innerData;
+				final field = Reflect.field(state, name);
+				Reflect.callMethod(state, field, []);
 			case "choose":
 				final items = new Array<String>();
 				final ids = new Array<String>();
@@ -122,6 +129,11 @@ class XmlScene extends BaseScene {
 			final partId = part.att.id;
 			parts[partId] = part;
 		}
+	}
+
+	// Устанавливает обработчик состояния
+	public function setState(state:XmlSceneState) {
+		this.state = state;
 	}
 
 	// Обрабатывает вход в сцену

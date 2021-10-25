@@ -1,3 +1,4 @@
+import scenestates.SceneAwakeState;
 import common.scene.XmlScene;
 import common.Game;
 
@@ -11,6 +12,7 @@ class AliceGame extends Game {
 	// Запускает игру
 	public function start() {		
 		XmlScene.load("scenes/scene_1.xml", (scene) -> {
+			scene.setState(new SceneAwakeState());
 			setScene(scene);
 		});				
 	}

@@ -29,6 +29,7 @@ AliceGame.prototype = $extend(common_Game.prototype,{
 	start: function() {
 		var _gthis = this;
 		common_scene_XmlScene.load("scenes/scene_1.xml",function(scene) {
+			scene.setState(new scenestates_SceneAwakeState());
 			_gthis.setScene(scene);
 		});
 	}
@@ -888,6 +889,14 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 			_g = item.nodeName;
 		}
 		switch(_g) {
+		case "action":
+			var name = haxe_xml_Access.get_innerData(item);
+			var field = Reflect.field(this.state,name);
+			console.log("src/common/scene/XmlScene.hx:69:",name);
+			console.log("src/common/scene/XmlScene.hx:70:",field);
+			field.apply(this.state,[]);
+			console.log("src/common/scene/XmlScene.hx:72:",name);
+			break;
 		case "choose":
 			var items1 = [];
 			var ids = [];
@@ -928,12 +937,17 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 	,addScenePart: function(part) {
 		this.addPartItem(part.elements(),0);
 	}
+	,setState: function(state) {
+		this.state = state;
+	}
 	,enter: function() {
 		var part = this.getPartById(this.enterPartName);
 		this.addScenePart(part);
 	}
 	,__class__: common_scene_XmlScene
 });
+var common_scene_XmlSceneState = function() { };
+common_scene_XmlSceneState.__name__ = "common.scene.XmlSceneState";
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = "haxe.IMap";
 haxe_IMap.__isInterface__ = true;
@@ -3590,6 +3604,16 @@ motion_easing_LinearEaseNone.prototype = {
 	}
 	,__class__: motion_easing_LinearEaseNone
 };
+var scenestates_SceneAwakeState = function() {
+};
+scenestates_SceneAwakeState.__name__ = "scenestates.SceneAwakeState";
+scenestates_SceneAwakeState.__super__ = common_scene_XmlSceneState;
+scenestates_SceneAwakeState.prototype = $extend(common_scene_XmlSceneState.prototype,{
+	addPersons: function() {
+		console.log("src/scenestates/SceneAwakeState.hx:12:","ADD PERSONS");
+	}
+	,__class__: scenestates_SceneAwakeState
+});
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
