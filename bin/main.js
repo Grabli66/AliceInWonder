@@ -28,8 +28,8 @@ AliceGame.__super__ = common_Game;
 AliceGame.prototype = $extend(common_Game.prototype,{
 	start: function() {
 		var _gthis = this;
-		common_scene_XmlScene.load("scenes/scene_1.xml",function(scene) {
-			scene.setState(new scenestates_SceneAwakeState());
+		common_scene_XmlScene.load("scenes/scene_1_awake.xml",function(scene) {
+			scene.setState(new scenestates_Scene_$1_$Awake_$State());
 			_gthis.setScene(scene);
 		});
 	}
@@ -884,7 +884,7 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		return this.persons.h[id];
 	}
 	,getTextWait: function(text) {
-		var wait = text.length * 15;
+		var wait = text.length * 40;
 		if(wait < 1300) {
 			wait = 1300;
 		}
@@ -3631,11 +3631,11 @@ motion_easing_LinearEaseNone.prototype = {
 	}
 	,__class__: motion_easing_LinearEaseNone
 };
-var scenestates_SceneAwakeState = function() {
+var scenestates_Scene_$1_$Awake_$State = function() {
 };
-scenestates_SceneAwakeState.__name__ = "scenestates.SceneAwakeState";
-scenestates_SceneAwakeState.__super__ = common_scene_XmlSceneState;
-scenestates_SceneAwakeState.prototype = $extend(common_scene_XmlSceneState.prototype,{
+scenestates_Scene_$1_$Awake_$State.__name__ = "scenestates.Scene_1_Awake_State";
+scenestates_Scene_$1_$Awake_$State.__super__ = common_scene_XmlSceneState;
+scenestates_Scene_$1_$Awake_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
 	addFirstUnknown: function() {
 		var unknown1 = this.getPersonById("Unknown1");
 		this.get_interactive().addPersonPortrait(unknown1);
@@ -3652,7 +3652,7 @@ scenestates_SceneAwakeState.prototype = $extend(common_scene_XmlSceneState.proto
 		this.get_interactive().setPersonPortrait(unknown1,elizabeth);
 		this.get_interactive().setPersonPortrait(unknown2,agata);
 	}
-	,__class__: scenestates_SceneAwakeState
+	,__class__: scenestates_Scene_$1_$Awake_$State
 });
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }

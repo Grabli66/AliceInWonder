@@ -40,7 +40,7 @@ class XmlScene extends BaseScene {
 		#if debug
 		return 0;
 		#else
-		var wait = text.length * 15; // 15 мс на каждое слово
+		var wait = text.length * 40; // 15 мс на каждое слово
 		if (wait < 1300)
 			wait = 1300;
 		trace(wait);
