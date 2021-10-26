@@ -883,15 +883,19 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 	,getPersonById: function(id) {
 		return this.persons.h[id];
 	}
-	,getTextWait: function(text) {
-		var wait = text.length * 40;
-		if(wait < 1300) {
-			wait = 1300;
+	,getTextWaitForNode: function(text) {
+		if(text == null) {
+			return null;
 		}
-		console.log("src/common/scene/XmlScene.hx:48:",wait);
+		console.log("src/common/scene/XmlScene.hx:45:",text);
+		var wait = text.length * 40;
+		if(wait < 1500) {
+			wait = 1500;
+		}
+		console.log("src/common/scene/XmlScene.hx:53:",wait);
 		return wait;
 	}
-	,addPartItem: function(items,prevWait) {
+	,addPartItem: function(items,prevText) {
 		var _gthis = this;
 		if(!items.hasNext()) {
 			return;
@@ -911,7 +915,7 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 			var name = haxe_xml_Access.get_innerData(item);
 			var field = Reflect.field(this.state,name);
 			field.apply(this.state,[]);
-			this.addPartItem(items,prevWait);
+			this.addPartItem(items,prevText);
 			break;
 		case "choose":
 			var items1 = [];
@@ -928,30 +932,29 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 				_gthis.interactive.addPlayerText(select[index]);
 				var partId = ids[index];
 				var part = _gthis.getPartById(partId);
-				_gthis.addScenePart(part);
+				_gthis.addScenePart(part,select[index]);
 			}});
 			break;
 		case "personText":
-			var text = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"text"));
-			var wait = this.getTextWait(text);
+			var wait = this.getTextWaitForNode(prevText);
 			this.interactive.addWait(wait,function() {
 				var text = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"text"));
 				_gthis.interactive.addPersonText(_gthis.getPersonById(haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"person"))),text);
-				_gthis.addPartItem(items,wait);
+				_gthis.addPartItem(items,text);
 			});
 			break;
 		case "text":
-			this.interactive.addWait(prevWait,function() {
+			var wait = this.getTextWaitForNode(prevText);
+			this.interactive.addWait(wait,function() {
 				var text = haxe_xml_Access.get_innerData(item);
 				_gthis.interactive.addText(text);
-				var wait = _gthis.getTextWait(text);
-				_gthis.addPartItem(items,wait);
+				_gthis.addPartItem(items,text);
 			});
 			break;
 		}
 	}
-	,addScenePart: function(part) {
-		this.addPartItem(part.elements(),0);
+	,addScenePart: function(part,prevText) {
+		this.addPartItem(part.elements(),prevText);
 	}
 	,setState: function(state) {
 		this.state = state;

@@ -38,46 +38,51 @@ class XmlScene extends BaseScene {
 	}
 
 	// Считает задержку для текста
-	private function getTextWait(text:String) {
+	private function getTextWaitForNode(text:String) {
+		if (text == null)
+			return null;
+
+		trace(text);
+
 		#if debug
 		return 0;
-		#else
-		var wait = text.length * 40; // 15 мс на каждое слово
-		if (wait < 1300)
-			wait = 1300;
+		#else		
+		var wait = text.length * 40; // 40 мс на каждый символ
+		if (wait < 1500)
+			wait = 1500;
 		trace(wait);
 		return wait;
 		#end
 	}
 
-	private function addPartItem(items:Iterator<Access>, prevWait:Int) {
+	private function addPartItem(items:Iterator<Access>, ?prevText:String) {
 		if (!items.hasNext())
 			return;
 
 		final item = items.next();
-
+		
 		switch item.name {
-			case "text":
-				interactive.addWait(prevWait, () -> {
+			case "text":				
+				final wait = getTextWaitForNode(prevText);
+
+				interactive.addWait(wait, () -> {
 					final text = item.innerData;
 					interactive.addText(text);
-					final wait = getTextWait(text);
-					addPartItem(items, wait);
+					addPartItem(items, text);
 				});
-			case "personText":
-				final text = item.node.text.innerData;
-				final wait = getTextWait(text);
+			case "personText":								
+				final wait = getTextWaitForNode(prevText);
 
 				interactive.addWait(wait, () -> {
 					final text = item.node.text.innerData;
 					interactive.addPersonText(getPersonById(item.node.person.innerData), text);
-					addPartItem(items, wait);
+					addPartItem(items, text);
 				});
 			case "action":
 				final name = item.innerData;
 				final field = Reflect.field(state, name);
 				Reflect.callMethod(state, field, []);
-				addPartItem(items, prevWait);
+				addPartItem(items, prevText);
 			case "choose":
 				final items = new Array<String>();
 				final ids = new Array<String>();
@@ -93,15 +98,15 @@ class XmlScene extends BaseScene {
 
 						final partId = ids[index];
 						final part = getPartById(partId);
-						addScenePart(part);
+						addScenePart(part, select[index]);
 					}
 				});
 		}
 	}
 
 	// Добавляет часть сцены
-	private function addScenePart(part:Access) {
-		addPartItem(part.elements, 0);
+	private function addScenePart(part:Access, ?prevText:String) {
+		addPartItem(part.elements, prevText);
 	}
 
 	public static function load(path:String, onComplete:XmlScene->Void) {
