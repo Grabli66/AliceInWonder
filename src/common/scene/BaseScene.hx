@@ -9,7 +9,7 @@ abstract class BaseScene {
 	private var game:Game;
 
 	// Для взаимодействия с пользователем
-	@:allow(common.Game)
+	@:allow(common.Game)	
 	private var interactive:InteractiveSystem;
 
 	// Конструктор

@@ -579,6 +579,7 @@ common_interactive_ColorHelper.getColorCss = function(color) {
 	return $hxEnums[color.__enum__].__constructs__[color._hx_index]._hx_name.toLowerCase() + "-color";
 };
 var common_interactive_InteractiveSystem = function() {
+	this.portraits = new haxe_ds_StringMap();
 	this.newElements = [];
 	this.sceneTitle = window.document.querySelector("#scene-title");
 	this.sceneContentNode = window.document.querySelector("#scene-content");
@@ -640,7 +641,6 @@ common_interactive_InteractiveSystem.prototype = {
 		var _gthis = this;
 		var element = new common_interactive_ChooseElement({ select : parameters.select, onSelect : function(index) {
 			_gthis.makeElementsOld();
-			console.log("src/common/interactive/InteractiveSystem.hx:129:",parameters);
 			parameters.onSelect(parameters.select,index);
 		}});
 		this.addElement(element);
@@ -654,6 +654,16 @@ common_interactive_InteractiveSystem.prototype = {
 		this.leftPageNode.appendChild(node);
 		element.set_opacity(0);
 		motion_Actuate.tween(element,1.0,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
+		var this1 = this.portraits;
+		var k = person.get_fullNameWithPosition();
+		this1.h[k] = element;
+		return element;
+	}
+	,setPersonPortrait: function(oldPerson,newPerson) {
+		var this1 = this.portraits;
+		var key = oldPerson.get_fullNameWithPosition();
+		var element = this1.h[key];
+		element.set_person(newPerson);
 		return element;
 	}
 	,addWait: function(waitTime,onComplete) {
@@ -864,14 +874,22 @@ common_scene_XmlScene.load = function(path,onComplete) {
 };
 common_scene_XmlScene.__super__ = common_scene_BaseScene;
 common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
-	getPersonById: function(id) {
-		return this.persons.h[id];
+	getInteractive: function() {
+		return this.interactive;
 	}
 	,getPartById: function(id) {
 		return this.parts.h[id];
 	}
+	,getPersonById: function(id) {
+		return this.persons.h[id];
+	}
 	,getTextWait: function(text) {
-		return 0;
+		var wait = text.length * 15;
+		if(wait < 1300) {
+			wait = 1300;
+		}
+		console.log("src/common/scene/XmlScene.hx:46:",wait);
+		return wait;
 	}
 	,addPartItem: function(items,prevWait) {
 		var _gthis = this;
@@ -892,10 +910,8 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		case "action":
 			var name = haxe_xml_Access.get_innerData(item);
 			var field = Reflect.field(this.state,name);
-			console.log("src/common/scene/XmlScene.hx:69:",name);
-			console.log("src/common/scene/XmlScene.hx:70:",field);
 			field.apply(this.state,[]);
-			console.log("src/common/scene/XmlScene.hx:72:",name);
+			this.addPartItem(items,prevWait);
 			break;
 		case "choose":
 			var items1 = [];
@@ -939,6 +955,7 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 	}
 	,setState: function(state) {
 		this.state = state;
+		state.scene = this;
 	}
 	,enter: function() {
 		var part = this.getPartById(this.enterPartName);
@@ -948,6 +965,16 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 });
 var common_scene_XmlSceneState = function() { };
 common_scene_XmlSceneState.__name__ = "common.scene.XmlSceneState";
+common_scene_XmlSceneState.prototype = {
+	get_interactive: function() {
+		return this.scene.getInteractive();
+	}
+	,getPersonById: function(id) {
+		return this.scene.getPersonById(id);
+	}
+	,__class__: common_scene_XmlSceneState
+	,__properties__: {get_interactive:"get_interactive"}
+};
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = "haxe.IMap";
 haxe_IMap.__isInterface__ = true;
@@ -3609,8 +3636,21 @@ var scenestates_SceneAwakeState = function() {
 scenestates_SceneAwakeState.__name__ = "scenestates.SceneAwakeState";
 scenestates_SceneAwakeState.__super__ = common_scene_XmlSceneState;
 scenestates_SceneAwakeState.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	addPersons: function() {
-		console.log("src/scenestates/SceneAwakeState.hx:12:","ADD PERSONS");
+	addFirstUnknown: function() {
+		var unknown1 = this.getPersonById("Unknown1");
+		this.get_interactive().addPersonPortrait(unknown1);
+	}
+	,addSecondUnknown: function() {
+		var unknown2 = this.getPersonById("Unknown2");
+		this.get_interactive().addPersonPortrait(unknown2);
+	}
+	,updateUnknownPersons: function() {
+		var unknown1 = this.getPersonById("Unknown1");
+		var unknown2 = this.getPersonById("Unknown2");
+		var elizabeth = this.getPersonById("Elizabeth");
+		var agata = this.getPersonById("Agata");
+		this.get_interactive().setPersonPortrait(unknown1,elizabeth);
+		this.get_interactive().setPersonPortrait(unknown2,agata);
 	}
 	,__class__: scenestates_SceneAwakeState
 });
@@ -3661,5 +3701,3 @@ motion_Actuate.defaultEase = motion_easing_Expo.easeOut;
 motion_Actuate.targetLibraries = new haxe_ds_ObjectMap();
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
-
-//# sourceMappingURL=main.js.map

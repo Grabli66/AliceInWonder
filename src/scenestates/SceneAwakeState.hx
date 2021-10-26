@@ -4,16 +4,28 @@ import common.interactive.InteractiveSystem;
 import common.scene.XmlSceneState;
 
 // Состояние сцены Пробуждение
-class SceneAwakeState extends XmlSceneState {    
-    // Конструктор
-    public function new() {        
-    }
+class SceneAwakeState extends XmlSceneState {
+	// Конструктор
+	public function new() {}
 
-    public function addPersons() {
+	public function addFirstUnknown() {
+		final unknown1 = getPersonById("Unknown1");
+		interactive.addPersonPortrait(unknown1);
+	}
+
+	public function addSecondUnknown() {
+		final unknown2 = getPersonById("Unknown2");
+		interactive.addPersonPortrait(unknown2);
+	}
+
+    public function updateUnknownPersons() {
+        final unknown1 = getPersonById("Unknown1");
+        final unknown2 = getPersonById("Unknown2");
+
         final elizabeth = getPersonById("Elizabeth");
         final agata = getPersonById("Agata");
 
-        interactive.addPersonPortrait(elizabeth);
-        interactive.addPersonPortrait(agata);
+        interactive.setPersonPortrait(unknown1, elizabeth);
+        interactive.setPersonPortrait(unknown2, agata);
     }
 }

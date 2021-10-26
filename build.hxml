@@ -1,5 +1,4 @@
 --class-path src
 --library actuate
---debug
 -m Main
 --js bin/main.js

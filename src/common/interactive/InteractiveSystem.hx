@@ -37,6 +37,9 @@ class InteractiveSystem {
 	// Список новых элементов
 	var newElements = new Array<InteractiveElement>();
 
+	// Словарь элементов с портретами
+	final portraits = new Map<String, PersonPortraitElement>();
+
 	// Обнавляет скроллинг что бы читалось
 	private function updateScroll() {
 		sceneContentNode.scrollTop = sceneContentNode.scrollHeight;
@@ -145,8 +148,16 @@ class InteractiveSystem {
 		leftPageNode.appendChild(node);
 		element.opacity = 0;
 		Actuate.tween(element, 1.0, {opacity: 1.0}).ease(Linear.easeNone);
+		portraits[person.fullNameWithPosition] = element;
 		return element;
 	}
+
+	// Устанавливает портрет персонажу
+	public function setPersonPortrait(oldPerson:Person, newPerson:Person):PersonPortraitElement {
+		final element = portraits[oldPerson.fullNameWithPosition];
+		element.person = newPerson;
+		return element;
+	}	
 
 	// Добавляет ожидание действия персонажа
 	public function addWait(waitTime:Float, onComplete:Void->Void):WaitPersonElement {

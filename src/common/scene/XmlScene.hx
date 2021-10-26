@@ -1,5 +1,6 @@
 package common.scene;
 
+import common.interactive.InteractiveSystem;
 import haxe.xml.Access;
 import haxe.Http;
 
@@ -17,14 +18,21 @@ class XmlScene extends BaseScene {
 	// Название начальной части сцены
 	private var enterPartName:String;
 
-	// Возвращает NPC по ID
-	private function getPersonById(id:String):Person {
-		return persons[id];
+	// Возвращает систему вывода
+	@:allow(common.scene.XmlSceneState)
+	private function getInteractive():InteractiveSystem {
+		return interactive;
 	}
 
 	// Возвращает часть сцены по id
 	private function getPartById(id:String):Access {
 		return parts[id];
+	}
+
+	// Возвращает NPC по ID
+	@:allow(common.scene.XmlSceneState)
+	private function getPersonById(id:String):Person {
+		return persons[id];
 	}
 
 	// Считает задержку для текста
@@ -67,6 +75,7 @@ class XmlScene extends BaseScene {
 				final name = item.innerData;
 				final field = Reflect.field(state, name);
 				Reflect.callMethod(state, field, []);
+				addPartItem(items, prevWait);
 			case "choose":
 				final items = new Array<String>();
 				final ids = new Array<String>();
@@ -134,6 +143,7 @@ class XmlScene extends BaseScene {
 	// Устанавливает обработчик состояния
 	public function setState(state:XmlSceneState) {
 		this.state = state;
+		state.scene = this;
 	}
 
 	// Обрабатывает вход в сцену
