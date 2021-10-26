@@ -828,7 +828,7 @@ var common_scene_XmlScene = function(access) {
 	this.persons = new haxe_ds_StringMap();
 	this.parts = new haxe_ds_StringMap();
 	common_scene_BaseScene.call(this);
-	this.enterPartName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(access,"enter"));
+	this.sceneNode = access;
 	var _g = 0;
 	var _g1 = haxe_xml__$Access_NodeListAccess.resolve(haxe_xml__$Access_NodeAccess.resolve(access,"persons"),"person");
 	while(_g < _g1.length) {
@@ -888,7 +888,7 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		if(wait < 1300) {
 			wait = 1300;
 		}
-		console.log("src/common/scene/XmlScene.hx:46:",wait);
+		console.log("src/common/scene/XmlScene.hx:48:",wait);
 		return wait;
 	}
 	,addPartItem: function(items,prevWait) {
@@ -958,7 +958,10 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		state.scene = this;
 	}
 	,enter: function() {
-		var part = this.getPartById(this.enterPartName);
+		var sceneCaption = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"caption"));
+		var enterPartName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"enter"));
+		this.interactive.setSceneTitle(sceneCaption);
+		var part = this.getPartById(enterPartName);
 		this.addScenePart(part);
 	}
 	,__class__: common_scene_XmlScene

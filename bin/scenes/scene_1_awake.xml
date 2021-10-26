@@ -1,4 +1,5 @@
 <scene id="scene_1">
+	<caption>Сцена 1. Пробуждение</caption>
 	<enter>main</enter>
 	<persons>
 		<person id="Unknown1">
@@ -34,6 +35,7 @@
 			<action>addSecondUnknown</action>
 			<choose>
 				<item link="WhoAreYou">Кто Вы?</item>
+				<item link="WhyMyLegs">Что с моими руками и ногами? Они не двигаются.</item>				
 			</choose>
 		</part>
 		<part id="WhoAreYou">
@@ -102,12 +104,12 @@
 				<person>Elizabeth</person>
 				<text>Да. Конечно. Сестра Агата поможет тебе.</text>
 			</personText>
-			<text>Агата ненадолго выходит из палаты и возвращается с двумя санитарами. Вместе они отвязывают Вас.</text>
+			<text>Медсестра ненадолго выходит из палаты и возвращается с двумя санитарами. Вместе они отвязывают Вас.</text>
 			<personText>
 				<person>Agata</person>
 				<text>Попробуй встать. Не торопись.</text>
 			</personText>
-			<text>Встаёте и пытаетесь идти, но с первым же шагом понимаете, Что сами не дойдёте. Вас трясёт от слабости.</text>
+			<text>Встаёте и пытаетесь идти, но с первым же шагом понимаете, что сами не дойдёте. Вас трясёт от слабости.</text>
 			<personText>
 				<person>Agata</person>
 				<text>Помогите ей.</text>
@@ -152,6 +154,15 @@
 				<text>Распоряжение твоего лечащего врача. Не беспокойся, всё будет хорошо. Ты отдохнёшь.</text>
 			</personText>
 			<text>Агата осторожно делает укол в Ваше плечо. Санитары и медсестра выходят из палаты, оставляя Вас наедине с собой в ожидании сна.</text>
+		</part>
+		<part id="WhyMyLegs">
+			<personText>
+				<person>Unknown2</person>
+				<text>Ты представляла опасность для себя и окружающих. Нам пришлось обездвижить тебя. Будешь хорошо себя вести и я отвяжу тебя завтра.</text>
+			</personText>	
+			<choose>
+				<item link="WhoAreYou">Кто Вы?</item>
+			</choose>		
 		</part>
 	</parts>
 </scene>

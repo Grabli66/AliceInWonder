@@ -15,10 +15,11 @@ class XmlScene extends BaseScene {
 	// Состояние сцены
 	private var state:XmlSceneState;
 
-	// Название начальной части сцены
-	private var enterPartName:String;
+	// Основной элемент XML сцены
+	private final sceneNode:Access;
 
 	// Возвращает систему вывода
+
 	@:allow(common.scene.XmlSceneState)
 	private function getInteractive():InteractiveSystem {
 		return interactive;
@@ -30,6 +31,7 @@ class XmlScene extends BaseScene {
 	}
 
 	// Возвращает NPC по ID
+
 	@:allow(common.scene.XmlSceneState)
 	private function getPersonById(id:String):Person {
 		return persons[id];
@@ -117,7 +119,7 @@ class XmlScene extends BaseScene {
 	public function new(access:Access) {
 		super();
 
-		enterPartName = access.node.enter.innerData;
+		sceneNode = access;
 
 		for (person in access.node.persons.nodes.person) {
 			var surname:String = null;
@@ -148,6 +150,10 @@ class XmlScene extends BaseScene {
 
 	// Обрабатывает вход в сцену
 	public function enter() {
+		final sceneCaption = sceneNode.node.caption.innerData;
+		final enterPartName = sceneNode.node.enter.innerData;
+
+		interactive.setSceneTitle(sceneCaption);
 		final part = getPartById(enterPartName);
 		addScenePart(part);
 	}
