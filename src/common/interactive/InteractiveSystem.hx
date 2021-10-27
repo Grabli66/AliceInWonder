@@ -73,6 +73,9 @@ class InteractiveSystem {
 	public function clear() {
 		sceneContentNode.innerHTML = "";
 		setSceneTitle("");
+		newElements = new Array<InteractiveElement>();
+		portraits.clear();
+		leftPageNode.innerHTML = "";
 	}
 
 	// Устанавливает заголовок сцены
@@ -142,8 +145,8 @@ class InteractiveSystem {
 	}
 
 	// Добавляет портрет NPC с которым ведётся разговор
-	public function addPersonPortrait(person:Person):PersonPortraitElement {
-		final element = new PersonPortraitElement(person);
+	public function addPersonPortrait(person:Person, ?showPosition = true):PersonPortraitElement {
+		final element = new PersonPortraitElement(person, showPosition);
 		final node = element.renderInternal();
 		leftPageNode.appendChild(node);
 		element.opacity = 0;
@@ -157,7 +160,7 @@ class InteractiveSystem {
 		final element = portraits[oldPerson.fullNameWithPosition];
 		element.person = newPerson;
 		return element;
-	}	
+	}
 
 	// Добавляет ожидание действия персонажа
 	public function addWait(waitTime:Float, onComplete:Void->Void):WaitPersonElement {
@@ -171,15 +174,15 @@ class InteractiveSystem {
 	}
 
 	// Добавляет кнопку "Продолжить"
-	public function addContinue(onClick:Void->Void) {
-		var continueNode = Browser.document.createDivElement();
-		continueNode.innerText = "<< ПРОДОЛЖИТЬ >>";
-		continueNode.className = "continue-click";
-		continueNode.onclick = () -> {
+	public function addLink(caption:String, onClick:Void->Void) {
+		var linkNode = Browser.document.createDivElement();
+		linkNode.innerText = caption;
+		linkNode.className = "link-click";
+		linkNode.onclick = () -> {
 			onClick();
 		};
 
-		sceneContentNode.appendChild(continueNode);
+		sceneContentNode.appendChild(linkNode);
 		updateScroll();
 	}
 }

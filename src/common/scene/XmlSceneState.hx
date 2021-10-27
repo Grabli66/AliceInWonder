@@ -3,6 +3,7 @@ package common.scene;
 import common.interactive.InteractiveSystem;
 
 // Базовое состояние XML сцены
+@:keepSub
 abstract class XmlSceneState {
     // Интерактивная система
     @:allow(common.scene.XmlScene)

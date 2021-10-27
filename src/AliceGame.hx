@@ -1,4 +1,3 @@
-import scenestates.Scene_1_Awake_State;
 import common.scene.XmlScene;
 import common.Game;
 
@@ -10,10 +9,17 @@ class AliceGame extends Game {
 	}
 
 	// Запускает игру
-	public function start() {		
-		XmlScene.load("scenes/scene_1_awake.xml", (scene) -> {
-			scene.setState(new Scene_1_Awake_State());
+	public function start() {
+		final resolvedClass = Type.resolveClass("scenestates.Scene_1_Awake_State");
+		trace(resolvedClass);
+
+		XmlScene.load("scenes/scene_0_choose_person.xml", (scene) -> {
 			setScene(scene);
-		});				
+		});
+
+		// XmlScene.load("scenes/scene_1_awake.xml", (scene) -> {
+		// 	scene.setState(new Scene_1_Awake_State());
+		// 	setScene(scene);
+		// });
 	}
 }

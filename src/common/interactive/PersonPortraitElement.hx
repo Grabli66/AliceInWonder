@@ -5,6 +5,9 @@ import js.html.Element;
 
 // Портрет NPC
 class PersonPortraitElement extends InteractiveElement {
+	// Показывать ли должность
+	private var showPosition:Bool;
+
 	// Данные персонажа
 	private var _person:Person;
 
@@ -31,9 +34,10 @@ class PersonPortraitElement extends InteractiveElement {
 	private var nameNode:js.html.Element;
 
 	// Конструктор
-	public function new(person:Person) {
+	public function new(person:Person, ?showPosition = true) {
 		super();
 
+		this.showPosition = showPosition;
 		_person = person;
 	}
 
@@ -48,7 +52,11 @@ class PersonPortraitElement extends InteractiveElement {
 
 		nameNode = Browser.document.createDivElement();
 		nameNode.className = "name grey-color";
-		nameNode.innerText = person.fullNameWithPosition.toUpperCase();
+		if (showPosition) {
+			nameNode.innerText = person.fullNameWithPosition.toUpperCase();
+		} else {
+			nameNode.innerText = person.fullName.toUpperCase();
+		}
 
 		mainNode.appendChild(portraitNode);
 		mainNode.appendChild(nameNode);

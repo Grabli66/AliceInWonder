@@ -1,0 +1,40 @@
+<scene id="scene_1_awake">
+    <caption>Выбор персонажа.</caption>
+    <enter>main</enter>
+    <state>scenestates.Scene_0_Choose_Person_State</state>
+    <persons>
+        <person id="Unknown">
+            <name>Неизвестный</name>
+            <portrait>unknown-portrait.jpg</portrait>
+        </person>
+        <person id="Sofia">
+            <name>София</name>
+            <surname>Новикова</surname>
+            <position>Консультант в магазине бытовой техники</position>
+            <portrait>sofi-portrait.jpg</portrait>
+        </person>
+    </persons>
+    <parts>
+        <part id="main">
+            <action>addUnknown</action>
+            <personText>
+                <person>Unknown</person>
+                <text>Добро пожаловать. Пожалуйста, выберите себе персонажа.</text>
+            </personText>
+            <action>addPersons</action>
+            <choose>
+                <item link="ChooseSofi">София Новикова. 23 года. Россия. Консультант в магазине бытовой техники.</item>
+            </choose>
+        </part>
+        <part id="ChooseSofi">
+            <personText>
+                <person>Unknown</person>
+                <text>Интересный выбор.</text>
+            </personText>
+            <link>
+                <text>ПРОДОЛЖИТЬ</text>
+                <link>scenes/scene_1_awake.xml</link>
+            </link>
+        </part>
+    </parts>
+</scene>

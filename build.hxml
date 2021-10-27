@@ -1,4 +1,5 @@
 --class-path src
 --library actuate
+--macro include('scenestates')
 -m Main
 --js bin/main.js

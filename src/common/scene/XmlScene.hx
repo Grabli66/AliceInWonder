@@ -46,7 +46,7 @@ class XmlScene extends BaseScene {
 
 		#if debug
 		return 0;
-		#else		
+		#else
 		var wait = text.length * 40; // 40 мс на каждый символ
 		if (wait < 1500)
 			wait = 1500;
@@ -63,9 +63,9 @@ class XmlScene extends BaseScene {
 		#if debug
 		trace(item.name);
 		#end
-		
+
 		switch item.name {
-			case "text":				
+			case "text":
 				final wait = getTextWaitForNode(prevText);
 
 				interactive.addWait(wait, () -> {
@@ -73,7 +73,7 @@ class XmlScene extends BaseScene {
 					interactive.addText(text);
 					addPartItem(items, text);
 				});
-			case "personText":								
+			case "personText":
 				final wait = getTextWaitForNode(prevText);
 
 				interactive.addWait(wait, () -> {
@@ -86,9 +86,9 @@ class XmlScene extends BaseScene {
 				final field = Reflect.field(state, name);
 				Reflect.callMethod(state, field, []);
 				addPartItem(items, prevText);
-			case "goto":				
+			case "goto":
 				final link = item.innerData;
-				final linkPart = getPartById(link);				
+				final linkPart = getPartById(link);
 				addScenePart(linkPart, prevText);
 			case "choose":
 				final items = new Array<String>();
@@ -107,6 +107,14 @@ class XmlScene extends BaseScene {
 						final part = getPartById(partId);
 						addScenePart(part, select[index]);
 					}
+				});
+			case "link":
+				final caption = item.node.text.innerData;
+				interactive.addLink(caption, () -> {
+					final link = item.node.link.innerData;
+					XmlScene.load(link, (scene) -> {						
+						game.setScene(scene);
+					});
 				});
 		}
 	}
@@ -164,6 +172,14 @@ class XmlScene extends BaseScene {
 	public function enter() {
 		final sceneCaption = sceneNode.node.caption.innerData;
 		final enterPartName = sceneNode.node.enter.innerData;
+
+		final stateName = sceneNode.node.state.innerData;
+		trace(stateName);
+		final resolvedClass = Type.resolveClass(stateName);
+		trace(resolvedClass);
+		final state = Type.createInstance(resolvedClass, []);
+		trace(state);
+		setState(state);
 
 		interactive.setSceneTitle(sceneCaption);
 		final part = getPartById(enterPartName);

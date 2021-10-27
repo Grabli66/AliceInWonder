@@ -1,10 +1,11 @@
-<scene id="scene_1">
+<scene id="scene_1_awake">
 	<caption>Сцена 1. Пробуждение</caption>
 	<enter>main</enter>
+	<state>scenestates.Scene_1_Awake_State</state>
 	<persons>
 		<person id="Unknown1">
 			<name>Первая неизвестная</name>
-			<portrait>doctor-elizabeth-portrait.jpg</portrait>
+			<portrait>elizabeth-portrait.jpg</portrait>
 		</person>
 		<person id="Unknown2">
 			<name>Вторая неизвестная</name>
@@ -20,7 +21,7 @@
 			<name>Элизабет</name>
 			<surname>Томсон</surname>
 			<position>Доктор</position>
-			<portrait>doctor-elizabeth-portrait.jpg</portrait>
+			<portrait>elizabeth-portrait.jpg</portrait>
 		</person>
 	</persons>
 	<parts>
@@ -127,7 +128,7 @@
 			</choose>
 		</part>
 		<part id="GoForward">
-			<text>Вас заводят в туалет. Видите кабинки и раковины. Санитары заводят в свободную кабинку.</text>
+			<text>Вас заводят в туалет. Видите кабинки и раковины. Санитары помогают зайти в свободную кабинку.</text>
 			<personText>
 				<person>Agata</person>
 				<text>Справишься сама?</text>

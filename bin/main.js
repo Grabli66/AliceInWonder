@@ -1,5 +1,5 @@
 (function ($global) { "use strict";
-var $estr = function() { return js_Boot.__string_rec(this,''); },$hxEnums = $hxEnums || {},$_;
+var $hxClasses = {},$estr = function() { return js_Boot.__string_rec(this,''); },$hxEnums = $hxEnums || {},$_;
 function $extend(from, fields) {
 	var proto = Object.create(from);
 	for (var name in fields) proto[name] = fields[name];
@@ -9,6 +9,7 @@ function $extend(from, fields) {
 var common_Game = function() {
 	this.interactive = new common_interactive_InteractiveSystem();
 };
+$hxClasses["common.Game"] = common_Game;
 common_Game.__name__ = "common.Game";
 common_Game.prototype = {
 	setScene: function(scene) {
@@ -23,13 +24,15 @@ common_Game.prototype = {
 var AliceGame = function() {
 	common_Game.call(this);
 };
+$hxClasses["AliceGame"] = AliceGame;
 AliceGame.__name__ = "AliceGame";
 AliceGame.__super__ = common_Game;
 AliceGame.prototype = $extend(common_Game.prototype,{
 	start: function() {
 		var _gthis = this;
-		common_scene_XmlScene.load("scenes/scene_1_awake.xml",function(scene) {
-			scene.setState(new scenestates_Scene_$1_$Awake_$State());
+		var resolvedClass = $hxClasses["scenestates.Scene_1_Awake_State"];
+		console.log("src/AliceGame.hx:14:",resolvedClass);
+		common_scene_XmlScene.load("scenes/scene_0_choose_person.xml",function(scene) {
 			_gthis.setScene(scene);
 		});
 	}
@@ -38,6 +41,7 @@ AliceGame.prototype = $extend(common_Game.prototype,{
 var EReg = function(r,opt) {
 	this.r = new RegExp(r,opt.split("u").join(""));
 };
+$hxClasses["EReg"] = EReg;
 EReg.__name__ = "EReg";
 EReg.prototype = {
 	match: function(s) {
@@ -51,6 +55,7 @@ EReg.prototype = {
 	,__class__: EReg
 };
 var HxOverrides = function() { };
+$hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = "HxOverrides";
 HxOverrides.cca = function(s,index) {
 	var x = s.charCodeAt(index);
@@ -83,6 +88,7 @@ HxOverrides.now = function() {
 	return Date.now();
 };
 var Lambda = function() { };
+$hxClasses["Lambda"] = Lambda;
 Lambda.__name__ = "Lambda";
 Lambda.exists = function(it,f) {
 	var x = $getIterator(it);
@@ -95,6 +101,7 @@ Lambda.exists = function(it,f) {
 	return false;
 };
 var Main = function() { };
+$hxClasses["Main"] = Main;
 Main.__name__ = "Main";
 Main.main = function() {
 	var game = new AliceGame();
@@ -102,6 +109,7 @@ Main.main = function() {
 };
 Math.__name__ = "Math";
 var Reflect = function() { };
+$hxClasses["Reflect"] = Reflect;
 Reflect.__name__ = "Reflect";
 Reflect.field = function(o,field) {
 	try {
@@ -177,6 +185,7 @@ Reflect.compareMethods = function(f1,f2) {
 	}
 };
 var Std = function() { };
+$hxClasses["Std"] = Std;
 Std.__name__ = "Std";
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
@@ -204,11 +213,13 @@ Std.parseInt = function(x) {
 var StringBuf = function() {
 	this.b = "";
 };
+$hxClasses["StringBuf"] = StringBuf;
 StringBuf.__name__ = "StringBuf";
 StringBuf.prototype = {
 	__class__: StringBuf
 };
 var StringTools = function() { };
+$hxClasses["StringTools"] = StringTools;
 StringTools.__name__ = "StringTools";
 StringTools.htmlEscape = function(s,quotes) {
 	var buf_b = "";
@@ -288,6 +299,7 @@ StringTools.trim = function(s) {
 	return StringTools.ltrim(StringTools.rtrim(s));
 };
 var Type = function() { };
+$hxClasses["Type"] = Type;
 Type.__name__ = "Type";
 Type.createInstance = function(cl,args) {
 	var ctor = Function.prototype.bind.apply(cl,[null].concat(args));
@@ -317,6 +329,7 @@ var Xml = function(nodeType) {
 	this.children = [];
 	this.attributeMap = new haxe_ds_StringMap();
 };
+$hxClasses["Xml"] = Xml;
 Xml.__name__ = "Xml";
 Xml.parse = function(str) {
 	return haxe_xml_Parser.parse(str);
@@ -488,6 +501,7 @@ var common_Person = function(name,portraitImage,optional) {
 		this.position = optional.position;
 	}
 };
+$hxClasses["common.Person"] = common_Person;
 common_Person.__name__ = "common.Person";
 common_Person.prototype = {
 	get_fullName: function() {
@@ -508,6 +522,7 @@ common_Person.prototype = {
 var common_interactive_InteractiveElement = function() {
 	this._opacity = 1.0;
 };
+$hxClasses["common.interactive.InteractiveElement"] = common_interactive_InteractiveElement;
 common_interactive_InteractiveElement.__name__ = "common.interactive.InteractiveElement";
 common_interactive_InteractiveElement.prototype = {
 	set_opacity: function(value) {
@@ -537,6 +552,7 @@ var common_interactive_ChooseElement = function(parameters) {
 	this.onSelect = parameters.onSelect;
 	this.select = parameters.select;
 };
+$hxClasses["common.interactive.ChooseElement"] = common_interactive_ChooseElement;
 common_interactive_ChooseElement.__name__ = "common.interactive.ChooseElement";
 common_interactive_ChooseElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_ChooseElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
@@ -574,6 +590,7 @@ var common_interactive_Color = $hxEnums["common.interactive.Color"] = { __ename_
 };
 common_interactive_Color.__constructs__ = [common_interactive_Color.Red,common_interactive_Color.Orange,common_interactive_Color.Blue,common_interactive_Color.Grey];
 var common_interactive_ColorHelper = function() { };
+$hxClasses["common.interactive.ColorHelper"] = common_interactive_ColorHelper;
 common_interactive_ColorHelper.__name__ = "common.interactive.ColorHelper";
 common_interactive_ColorHelper.getColorCss = function(color) {
 	return $hxEnums[color.__enum__].__constructs__[color._hx_index]._hx_name.toLowerCase() + "-color";
@@ -585,6 +602,7 @@ var common_interactive_InteractiveSystem = function() {
 	this.sceneContentNode = window.document.querySelector("#scene-content");
 	this.leftPageNode = window.document.querySelector("#left-page-panel");
 };
+$hxClasses["common.interactive.InteractiveSystem"] = common_interactive_InteractiveSystem;
 common_interactive_InteractiveSystem.__name__ = "common.interactive.InteractiveSystem";
 common_interactive_InteractiveSystem.prototype = {
 	updateScroll: function() {
@@ -609,6 +627,9 @@ common_interactive_InteractiveSystem.prototype = {
 	,clear: function() {
 		this.sceneContentNode.innerHTML = "";
 		this.setSceneTitle("");
+		this.newElements = [];
+		this.portraits.h = Object.create(null);
+		this.leftPageNode.innerHTML = "";
 	}
 	,setSceneTitle: function(title) {
 		this.sceneTitle.innerText = title;
@@ -648,8 +669,11 @@ common_interactive_InteractiveSystem.prototype = {
 		motion_Actuate.tween(element,1.0,{ opacity : 1.0}).ease(motion_easing_Linear.get_easeNone());
 		return element;
 	}
-	,addPersonPortrait: function(person) {
-		var element = new common_interactive_PersonPortraitElement(person);
+	,addPersonPortrait: function(person,showPosition) {
+		if(showPosition == null) {
+			showPosition = true;
+		}
+		var element = new common_interactive_PersonPortraitElement(person,showPosition);
 		var node = element.renderInternal();
 		this.leftPageNode.appendChild(node);
 		element.set_opacity(0);
@@ -676,22 +700,27 @@ common_interactive_InteractiveSystem.prototype = {
 		node.start();
 		return node;
 	}
-	,addContinue: function(onClick) {
-		var continueNode = window.document.createElement("div");
-		continueNode.innerText = "<< ПРОДОЛЖИТЬ >>";
-		continueNode.className = "continue-click";
-		continueNode.onclick = function() {
+	,addLink: function(caption,onClick) {
+		var linkNode = window.document.createElement("div");
+		linkNode.innerText = caption;
+		linkNode.className = "link-click";
+		linkNode.onclick = function() {
 			onClick();
 		};
-		this.sceneContentNode.appendChild(continueNode);
+		this.sceneContentNode.appendChild(linkNode);
 		this.updateScroll();
 	}
 	,__class__: common_interactive_InteractiveSystem
 };
-var common_interactive_PersonPortraitElement = function(person) {
+var common_interactive_PersonPortraitElement = function(person,showPosition) {
+	if(showPosition == null) {
+		showPosition = true;
+	}
 	common_interactive_InteractiveElement.call(this);
+	this.showPosition = showPosition;
 	this._person = person;
 };
+$hxClasses["common.interactive.PersonPortraitElement"] = common_interactive_PersonPortraitElement;
 common_interactive_PersonPortraitElement.__name__ = "common.interactive.PersonPortraitElement";
 common_interactive_PersonPortraitElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_PersonPortraitElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
@@ -716,7 +745,11 @@ common_interactive_PersonPortraitElement.prototype = $extend(common_interactive_
 		this.portraitNode.style.backgroundImage = tmp + ")";
 		this.nameNode = window.document.createElement("div");
 		this.nameNode.className = "name grey-color";
-		this.nameNode.innerText = this.get_person().get_fullNameWithPosition().toUpperCase();
+		if(this.showPosition) {
+			this.nameNode.innerText = this.get_person().get_fullNameWithPosition().toUpperCase();
+		} else {
+			this.nameNode.innerText = this.get_person().get_fullName().toUpperCase();
+		}
 		mainNode.appendChild(this.portraitNode);
 		mainNode.appendChild(this.nameNode);
 		return mainNode;
@@ -728,6 +761,7 @@ var common_interactive_PersonTextElement = function(parameters) {
 	common_interactive_InteractiveElement.call(this);
 	this.parameters = parameters;
 };
+$hxClasses["common.interactive.PersonTextElement"] = common_interactive_PersonTextElement;
 common_interactive_PersonTextElement.__name__ = "common.interactive.PersonTextElement";
 common_interactive_PersonTextElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_PersonTextElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
@@ -755,6 +789,7 @@ var common_interactive_TextElement = function(text) {
 	common_interactive_InteractiveElement.call(this);
 	this.text = text;
 };
+$hxClasses["common.interactive.TextElement"] = common_interactive_TextElement;
 common_interactive_TextElement.__name__ = "common.interactive.TextElement";
 common_interactive_TextElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_TextElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
@@ -772,6 +807,7 @@ var common_interactive_WaitPersonElement = function(waitTime,onComplete) {
 	this.waitTime = waitTime;
 	this.onComplete = onComplete;
 };
+$hxClasses["common.interactive.WaitPersonElement"] = common_interactive_WaitPersonElement;
 common_interactive_WaitPersonElement.__name__ = "common.interactive.WaitPersonElement";
 common_interactive_WaitPersonElement.__super__ = common_interactive_InteractiveElement;
 common_interactive_WaitPersonElement.prototype = $extend(common_interactive_InteractiveElement.prototype,{
@@ -820,6 +856,7 @@ common_interactive_WaitPersonElement.prototype = $extend(common_interactive_Inte
 });
 var common_scene_BaseScene = function() {
 };
+$hxClasses["common.scene.BaseScene"] = common_scene_BaseScene;
 common_scene_BaseScene.__name__ = "common.scene.BaseScene";
 common_scene_BaseScene.prototype = {
 	__class__: common_scene_BaseScene
@@ -856,6 +893,7 @@ var common_scene_XmlScene = function(access) {
 		this.parts.h[partId] = part;
 	}
 };
+$hxClasses["common.scene.XmlScene"] = common_scene_XmlScene;
 common_scene_XmlScene.__name__ = "common.scene.XmlScene";
 common_scene_XmlScene.load = function(path,onComplete) {
 	var req = new haxe_http_HttpJs(path);
@@ -940,6 +978,15 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 			var linkPart = this.getPartById(link);
 			this.addScenePart(linkPart,prevText);
 			break;
+		case "link":
+			var caption = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"text"));
+			this.interactive.addLink(caption,function() {
+				var link = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"link"));
+				common_scene_XmlScene.load(link,function(scene) {
+					_gthis.game.setScene(scene);
+				});
+			});
+			break;
 		case "personText":
 			var wait = this.getTextWaitForNode(prevText);
 			this.interactive.addWait(wait,function() {
@@ -968,6 +1015,13 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 	,enter: function() {
 		var sceneCaption = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"caption"));
 		var enterPartName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"enter"));
+		var stateName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"state"));
+		console.log("src/common/scene/XmlScene.hx:177:",stateName);
+		var resolvedClass = $hxClasses[stateName];
+		console.log("src/common/scene/XmlScene.hx:179:",resolvedClass);
+		var state = Type.createInstance(resolvedClass,[]);
+		console.log("src/common/scene/XmlScene.hx:181:",state);
+		this.setState(state);
 		this.interactive.setSceneTitle(sceneCaption);
 		var part = this.getPartById(enterPartName);
 		this.addScenePart(part);
@@ -975,6 +1029,7 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 	,__class__: common_scene_XmlScene
 });
 var common_scene_XmlSceneState = function() { };
+$hxClasses["common.scene.XmlSceneState"] = common_scene_XmlSceneState;
 common_scene_XmlSceneState.__name__ = "common.scene.XmlSceneState";
 common_scene_XmlSceneState.prototype = {
 	get_interactive: function() {
@@ -987,6 +1042,7 @@ common_scene_XmlSceneState.prototype = {
 	,__properties__: {get_interactive:"get_interactive"}
 };
 var haxe_IMap = function() { };
+$hxClasses["haxe.IMap"] = haxe_IMap;
 haxe_IMap.__name__ = "haxe.IMap";
 haxe_IMap.__isInterface__ = true;
 var haxe_Exception = function(message,previous,native) {
@@ -995,6 +1051,7 @@ var haxe_Exception = function(message,previous,native) {
 	this.__previousException = previous;
 	this.__nativeException = native != null ? native : this;
 };
+$hxClasses["haxe.Exception"] = haxe_Exception;
 haxe_Exception.__name__ = "haxe.Exception";
 haxe_Exception.caught = function(value) {
 	if(((value) instanceof haxe_Exception)) {
@@ -1030,6 +1087,7 @@ var haxe_ValueException = function(value,previous,native) {
 	haxe_Exception.call(this,String(value),previous,native);
 	this.value = value;
 };
+$hxClasses["haxe.ValueException"] = haxe_ValueException;
 haxe_ValueException.__name__ = "haxe.ValueException";
 haxe_ValueException.__super__ = haxe_Exception;
 haxe_ValueException.prototype = $extend(haxe_Exception.prototype,{
@@ -1041,6 +1099,7 @@ haxe_ValueException.prototype = $extend(haxe_Exception.prototype,{
 var haxe_ds_ObjectMap = function() {
 	this.h = { __keys__ : { }};
 };
+$hxClasses["haxe.ds.ObjectMap"] = haxe_ds_ObjectMap;
 haxe_ds_ObjectMap.__name__ = "haxe.ds.ObjectMap";
 haxe_ds_ObjectMap.__interfaces__ = [haxe_IMap];
 haxe_ds_ObjectMap.prototype = {
@@ -1083,6 +1142,7 @@ haxe_ds_ObjectMap.prototype = {
 var haxe_ds_StringMap = function() {
 	this.h = Object.create(null);
 };
+$hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
 haxe_ds_StringMap.__name__ = "haxe.ds.StringMap";
 haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
 haxe_ds_StringMap.prototype = {
@@ -1094,6 +1154,7 @@ var haxe_ds__$StringMap_StringMapKeyIterator = function(h) {
 	this.length = this.keys.length;
 	this.current = 0;
 };
+$hxClasses["haxe.ds._StringMap.StringMapKeyIterator"] = haxe_ds__$StringMap_StringMapKeyIterator;
 haxe_ds__$StringMap_StringMapKeyIterator.__name__ = "haxe.ds._StringMap.StringMapKeyIterator";
 haxe_ds__$StringMap_StringMapKeyIterator.prototype = {
 	hasNext: function() {
@@ -1110,6 +1171,7 @@ var haxe_http_HttpBase = function(url) {
 	this.params = [];
 	this.emptyOnData = $bind(this,this.onData);
 };
+$hxClasses["haxe.http.HttpBase"] = haxe_http_HttpBase;
 haxe_http_HttpBase.__name__ = "haxe.http.HttpBase";
 haxe_http_HttpBase.prototype = {
 	onData: function(data) {
@@ -1145,6 +1207,7 @@ var haxe_http_HttpJs = function(url) {
 	this.withCredentials = false;
 	haxe_http_HttpBase.call(this,url);
 };
+$hxClasses["haxe.http.HttpJs"] = haxe_http_HttpJs;
 haxe_http_HttpJs.__name__ = "haxe.http.HttpJs";
 haxe_http_HttpJs.__super__ = haxe_http_HttpBase;
 haxe_http_HttpJs.prototype = $extend(haxe_http_HttpBase.prototype,{
@@ -1288,6 +1351,7 @@ var haxe_io_Bytes = function(data) {
 	data.hxBytes = this;
 	data.bytes = this.b;
 };
+$hxClasses["haxe.io.Bytes"] = haxe_io_Bytes;
 haxe_io_Bytes.__name__ = "haxe.io.Bytes";
 haxe_io_Bytes.ofData = function(b) {
 	var hb = b.hxBytes;
@@ -1360,6 +1424,7 @@ var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
 	this.array = array;
 };
+$hxClasses["haxe.iterators.ArrayIterator"] = haxe_iterators_ArrayIterator;
 haxe_iterators_ArrayIterator.__name__ = "haxe.iterators.ArrayIterator";
 haxe_iterators_ArrayIterator.prototype = {
 	hasNext: function() {
@@ -1526,6 +1591,7 @@ var haxe_xml_XmlParserException = function(message,xml,position) {
 		}
 	}
 };
+$hxClasses["haxe.xml.XmlParserException"] = haxe_xml_XmlParserException;
 haxe_xml_XmlParserException.__name__ = "haxe.xml.XmlParserException";
 haxe_xml_XmlParserException.prototype = {
 	toString: function() {
@@ -1535,6 +1601,7 @@ haxe_xml_XmlParserException.prototype = {
 	,__class__: haxe_xml_XmlParserException
 };
 var haxe_xml_Parser = function() { };
+$hxClasses["haxe.xml.Parser"] = haxe_xml_Parser;
 haxe_xml_Parser.__name__ = "haxe.xml.Parser";
 haxe_xml_Parser.parse = function(str,strict) {
 	if(strict == null) {
@@ -1884,6 +1951,7 @@ var haxe_xml_Printer = function(pretty) {
 	this.output = new StringBuf();
 	this.pretty = pretty;
 };
+$hxClasses["haxe.xml.Printer"] = haxe_xml_Printer;
 haxe_xml_Printer.__name__ = "haxe.xml.Printer";
 haxe_xml_Printer.print = function(xml,pretty) {
 	if(pretty == null) {
@@ -2037,6 +2105,7 @@ haxe_xml_Printer.prototype = {
 	,__class__: haxe_xml_Printer
 };
 var js_Boot = function() { };
+$hxClasses["js.Boot"] = js_Boot;
 js_Boot.__name__ = "js.Boot";
 js_Boot.getClass = function(o) {
 	if(o == null) {
@@ -2248,6 +2317,7 @@ js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
 var js_Browser = function() { };
+$hxClasses["js.Browser"] = js_Browser;
 js_Browser.__name__ = "js.Browser";
 js_Browser.__properties__ = {get_supported:"get_supported"};
 js_Browser.get_supported = function() {
@@ -2267,6 +2337,7 @@ js_Browser.createXMLHttpRequest = function() {
 	throw haxe_Exception.thrown("Unable to create XMLHttpRequest object.");
 };
 var motion_actuators_IGenericActuator = function() { };
+$hxClasses["motion.actuators.IGenericActuator"] = motion_actuators_IGenericActuator;
 motion_actuators_IGenericActuator.__name__ = "motion.actuators.IGenericActuator";
 motion_actuators_IGenericActuator.__isInterface__ = true;
 motion_actuators_IGenericActuator.prototype = {
@@ -2286,6 +2357,7 @@ var motion_actuators_GenericActuator = function(target,duration,properties) {
 	this.duration = duration;
 	this._ease = motion_Actuate.defaultEase;
 };
+$hxClasses["motion.actuators.GenericActuator"] = motion_actuators_GenericActuator;
 motion_actuators_GenericActuator.__name__ = "motion.actuators.GenericActuator";
 motion_actuators_GenericActuator.__interfaces__ = [motion_actuators_IGenericActuator];
 motion_actuators_GenericActuator.prototype = {
@@ -2479,6 +2551,7 @@ var motion_actuators_SimpleActuator = function(target,duration,properties) {
 		window.requestAnimationFrame(motion_actuators_SimpleActuator.stage_onEnterFrame);
 	}
 };
+$hxClasses["motion.actuators.SimpleActuator"] = motion_actuators_SimpleActuator;
 motion_actuators_SimpleActuator.__name__ = "motion.actuators.SimpleActuator";
 motion_actuators_SimpleActuator.stage_onEnterFrame = function(deltaTime) {
 	var currentTime = deltaTime / 1000;
@@ -2816,6 +2889,7 @@ motion_actuators_SimpleActuator.prototype = $extend(motion_actuators_GenericActu
 	,__class__: motion_actuators_SimpleActuator
 });
 var motion_easing_IEasing = function() { };
+$hxClasses["motion.easing.IEasing"] = motion_easing_IEasing;
 motion_easing_IEasing.__name__ = "motion.easing.IEasing";
 motion_easing_IEasing.__isInterface__ = true;
 motion_easing_IEasing.prototype = {
@@ -2823,6 +2897,7 @@ motion_easing_IEasing.prototype = {
 };
 var motion_easing__$Expo_ExpoEaseIn = function() {
 };
+$hxClasses["motion.easing._Expo.ExpoEaseIn"] = motion_easing__$Expo_ExpoEaseIn;
 motion_easing__$Expo_ExpoEaseIn.__name__ = "motion.easing._Expo.ExpoEaseIn";
 motion_easing__$Expo_ExpoEaseIn.__interfaces__ = [motion_easing_IEasing];
 motion_easing__$Expo_ExpoEaseIn.prototype = {
@@ -2844,6 +2919,7 @@ motion_easing__$Expo_ExpoEaseIn.prototype = {
 };
 var motion_easing__$Expo_ExpoEaseInOut = function() {
 };
+$hxClasses["motion.easing._Expo.ExpoEaseInOut"] = motion_easing__$Expo_ExpoEaseInOut;
 motion_easing__$Expo_ExpoEaseInOut.__name__ = "motion.easing._Expo.ExpoEaseInOut";
 motion_easing__$Expo_ExpoEaseInOut.__interfaces__ = [motion_easing_IEasing];
 motion_easing__$Expo_ExpoEaseInOut.prototype = {
@@ -2875,6 +2951,7 @@ motion_easing__$Expo_ExpoEaseInOut.prototype = {
 };
 var motion_easing__$Expo_ExpoEaseOut = function() {
 };
+$hxClasses["motion.easing._Expo.ExpoEaseOut"] = motion_easing__$Expo_ExpoEaseOut;
 motion_easing__$Expo_ExpoEaseOut.__name__ = "motion.easing._Expo.ExpoEaseOut";
 motion_easing__$Expo_ExpoEaseOut.__interfaces__ = [motion_easing_IEasing];
 motion_easing__$Expo_ExpoEaseOut.prototype = {
@@ -2895,8 +2972,10 @@ motion_easing__$Expo_ExpoEaseOut.prototype = {
 	,__class__: motion_easing__$Expo_ExpoEaseOut
 };
 var motion_easing_Expo = function() { };
+$hxClasses["motion.easing.Expo"] = motion_easing_Expo;
 motion_easing_Expo.__name__ = "motion.easing.Expo";
 var motion_Actuate = function() { };
+$hxClasses["motion.Actuate"] = motion_Actuate;
 motion_Actuate.__name__ = "motion.Actuate";
 motion_Actuate.apply = function(target,properties,customActuator) {
 	motion_Actuate.stop(target,properties);
@@ -3088,6 +3167,7 @@ motion_Actuate.update = function(target,duration,start,end,overwrite) {
 var motion__$Actuate_TweenTimer = function(progress) {
 	this.progress = progress;
 };
+$hxClasses["motion._Actuate.TweenTimer"] = motion__$Actuate_TweenTimer;
 motion__$Actuate_TweenTimer.__name__ = "motion._Actuate.TweenTimer";
 motion__$Actuate_TweenTimer.prototype = {
 	__class__: motion__$Actuate_TweenTimer
@@ -3097,6 +3177,7 @@ var motion_MotionPath = function() {
 	this._y = new motion__$MotionPath_ComponentPath();
 	this._rotation = null;
 };
+$hxClasses["motion.MotionPath"] = motion_MotionPath;
 motion_MotionPath.__name__ = "motion.MotionPath";
 motion_MotionPath.prototype = {
 	bezier: function(x,y,controlX,controlY,strength) {
@@ -3143,6 +3224,7 @@ motion_MotionPath.prototype = {
 	,__properties__: {get_y:"get_y",get_x:"get_x",get_rotation:"get_rotation"}
 };
 var motion_IComponentPath = function() { };
+$hxClasses["motion.IComponentPath"] = motion_IComponentPath;
 motion_IComponentPath.__name__ = "motion.IComponentPath";
 motion_IComponentPath.__isInterface__ = true;
 motion_IComponentPath.prototype = {
@@ -3153,6 +3235,7 @@ var motion__$MotionPath_ComponentPath = function() {
 	this.paths = [];
 	this.strength = 0;
 };
+$hxClasses["motion._MotionPath.ComponentPath"] = motion__$MotionPath_ComponentPath;
 motion__$MotionPath_ComponentPath.__name__ = "motion._MotionPath.ComponentPath";
 motion__$MotionPath_ComponentPath.__interfaces__ = [motion_IComponentPath];
 motion__$MotionPath_ComponentPath.prototype = {
@@ -3212,6 +3295,7 @@ var motion__$MotionPath_BezierPath = function(end,control,strength) {
 	this.control = control;
 	this.strength = strength;
 };
+$hxClasses["motion._MotionPath.BezierPath"] = motion__$MotionPath_BezierPath;
 motion__$MotionPath_BezierPath.__name__ = "motion._MotionPath.BezierPath";
 motion__$MotionPath_BezierPath.__interfaces__ = [motion_IComponentPath];
 motion__$MotionPath_BezierPath.prototype = {
@@ -3260,6 +3344,7 @@ var motion__$MotionPath_BezierSplinePath = function(through,strength) {
 	this.through = through;
 	this.strength = strength;
 };
+$hxClasses["motion._MotionPath.BezierSplinePath"] = motion__$MotionPath_BezierSplinePath;
 motion__$MotionPath_BezierSplinePath.__name__ = "motion._MotionPath.BezierSplinePath";
 motion__$MotionPath_BezierSplinePath.__super__ = motion__$MotionPath_ComponentPath;
 motion__$MotionPath_BezierSplinePath.prototype = $extend(motion__$MotionPath_ComponentPath.prototype,{
@@ -3346,6 +3431,7 @@ var motion__$MotionPath_RotationPath = function(x,y) {
 	this.offset = 0;
 	this.set_start(this.calculate(0.0));
 };
+$hxClasses["motion._MotionPath.RotationPath"] = motion__$MotionPath_RotationPath;
 motion__$MotionPath_RotationPath.__name__ = "motion._MotionPath.RotationPath";
 motion__$MotionPath_RotationPath.__interfaces__ = [motion_IComponentPath];
 motion__$MotionPath_RotationPath.prototype = {
@@ -3385,6 +3471,7 @@ var motion_actuators_MethodActuator = function(target,duration,properties) {
 		this.currentParameters.push(this.properties.start[i]);
 	}
 };
+$hxClasses["motion.actuators.MethodActuator"] = motion_actuators_MethodActuator;
 motion_actuators_MethodActuator.__name__ = "motion.actuators.MethodActuator";
 motion_actuators_MethodActuator.__super__ = motion_actuators_SimpleActuator;
 motion_actuators_MethodActuator.prototype = $extend(motion_actuators_SimpleActuator.prototype,{
@@ -3455,6 +3542,7 @@ motion_actuators_MethodActuator.prototype = $extend(motion_actuators_SimpleActua
 var motion_actuators_MotionPathActuator = function(target,duration,properties) {
 	motion_actuators_SimpleActuator.call(this,target,duration,properties);
 };
+$hxClasses["motion.actuators.MotionPathActuator"] = motion_actuators_MotionPathActuator;
 motion_actuators_MotionPathActuator.__name__ = "motion.actuators.MotionPathActuator";
 motion_actuators_MotionPathActuator.__super__ = motion_actuators_SimpleActuator;
 motion_actuators_MotionPathActuator.prototype = $extend(motion_actuators_SimpleActuator.prototype,{
@@ -3607,6 +3695,7 @@ var motion_actuators_PropertyDetails = function(target,propertyName,start,change
 	this.change = change;
 	this.isField = isField;
 };
+$hxClasses["motion.actuators.PropertyDetails"] = motion_actuators_PropertyDetails;
 motion_actuators_PropertyDetails.__name__ = "motion.actuators.PropertyDetails";
 motion_actuators_PropertyDetails.prototype = {
 	__class__: motion_actuators_PropertyDetails
@@ -3618,12 +3707,14 @@ var motion_actuators_PropertyPathDetails = function(target,propertyName,path,isF
 	motion_actuators_PropertyDetails.call(this,target,propertyName,0,0,isField);
 	this.path = path;
 };
+$hxClasses["motion.actuators.PropertyPathDetails"] = motion_actuators_PropertyPathDetails;
 motion_actuators_PropertyPathDetails.__name__ = "motion.actuators.PropertyPathDetails";
 motion_actuators_PropertyPathDetails.__super__ = motion_actuators_PropertyDetails;
 motion_actuators_PropertyPathDetails.prototype = $extend(motion_actuators_PropertyDetails.prototype,{
 	__class__: motion_actuators_PropertyPathDetails
 });
 var motion_easing_Linear = function() { };
+$hxClasses["motion.easing.Linear"] = motion_easing_Linear;
 motion_easing_Linear.__name__ = "motion.easing.Linear";
 motion_easing_Linear.__properties__ = {get_easeNone:"get_easeNone"};
 motion_easing_Linear.get_easeNone = function() {
@@ -3631,6 +3722,7 @@ motion_easing_Linear.get_easeNone = function() {
 };
 var motion_easing_LinearEaseNone = function() {
 };
+$hxClasses["motion.easing.LinearEaseNone"] = motion_easing_LinearEaseNone;
 motion_easing_LinearEaseNone.__name__ = "motion.easing.LinearEaseNone";
 motion_easing_LinearEaseNone.__interfaces__ = [motion_easing_IEasing];
 motion_easing_LinearEaseNone.prototype = {
@@ -3642,8 +3734,25 @@ motion_easing_LinearEaseNone.prototype = {
 	}
 	,__class__: motion_easing_LinearEaseNone
 };
+var scenestates_Scene_$0_$Choose_$Person_$State = function() {
+};
+$hxClasses["scenestates.Scene_0_Choose_Person_State"] = scenestates_Scene_$0_$Choose_$Person_$State;
+scenestates_Scene_$0_$Choose_$Person_$State.__name__ = "scenestates.Scene_0_Choose_Person_State";
+scenestates_Scene_$0_$Choose_$Person_$State.__super__ = common_scene_XmlSceneState;
+scenestates_Scene_$0_$Choose_$Person_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
+	addUnknown: function() {
+		var unknown = this.getPersonById("Unknown");
+		this.get_interactive().addPersonPortrait(unknown);
+	}
+	,addPersons: function() {
+		var sofia = this.getPersonById("Sofia");
+		this.get_interactive().addPersonPortrait(sofia,false);
+	}
+	,__class__: scenestates_Scene_$0_$Choose_$Person_$State
+});
 var scenestates_Scene_$1_$Awake_$State = function() {
 };
+$hxClasses["scenestates.Scene_1_Awake_State"] = scenestates_Scene_$1_$Awake_$State;
 scenestates_Scene_$1_$Awake_$State.__name__ = "scenestates.Scene_1_Awake_State";
 scenestates_Scene_$1_$Awake_$State.__super__ = common_scene_XmlSceneState;
 scenestates_Scene_$1_$Awake_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
@@ -3671,9 +3780,11 @@ $global.$haxeUID |= 0;
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
 	HxOverrides.now = performance.now.bind(performance);
 }
+$hxClasses["Math"] = Math;
 if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c < 0x10000 ? String.fromCharCode(c) : String.fromCharCode((c>>10)+0xD7C0)+String.fromCharCode((c&0x3FF)+0xDC00); }
-String.prototype.__class__ = String;
+String.prototype.__class__ = $hxClasses["String"] = String;
 String.__name__ = "String";
+$hxClasses["Array"] = Array;
 Array.__name__ = "Array";
 var Int = { };
 var Dynamic = { };

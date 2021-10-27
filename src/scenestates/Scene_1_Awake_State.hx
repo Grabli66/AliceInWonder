@@ -1,6 +1,5 @@
 package scenestates;
 
-import common.interactive.InteractiveSystem;
 import common.scene.XmlSceneState;
 
 // Состояние сцены Пробуждение
