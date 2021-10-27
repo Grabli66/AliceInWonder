@@ -60,6 +60,9 @@ class XmlScene extends BaseScene {
 			return;
 
 		final item = items.next();
+		#if debug
+		trace(item.name);
+		#end
 		
 		switch item.name {
 			case "text":				
@@ -83,6 +86,10 @@ class XmlScene extends BaseScene {
 				final field = Reflect.field(state, name);
 				Reflect.callMethod(state, field, []);
 				addPartItem(items, prevText);
+			case "goto":				
+				final link = item.innerData;
+				final linkPart = getPartById(link);				
+				addScenePart(linkPart, prevText);
 			case "choose":
 				final items = new Array<String>();
 				final ids = new Array<String>();

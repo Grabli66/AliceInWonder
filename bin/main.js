@@ -935,6 +935,11 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 				_gthis.addScenePart(part,select[index]);
 			}});
 			break;
+		case "goto":
+			var link = haxe_xml_Access.get_innerData(item);
+			var linkPart = this.getPartById(link);
+			this.addScenePart(linkPart,prevText);
+			break;
 		case "personText":
 			var wait = this.getTextWaitForNode(prevText);
 			this.interactive.addWait(wait,function() {
