@@ -1,16 +1,22 @@
 <scene id="scene_1_awake">
-    <caption>Сцена 1. Пробуждение</caption>
+    <caption>Сцена 1. Размышления</caption>
     <enter>main</enter>
     <state>scenestates.Scene_1_Awake_State</state>
     <persons>
         <person id="YourMind">
-            <name>Ваше Я</name>
+            <name>Ваше собственное Я</name>
             <portrait>agata-portrait.jpg</portrait>
         </person>
     </persons>
     <parts>
         <part id="main">
-            
+            <personText>
+                <person>YourMind</person>
+                <text>Что за чертовщина тут творится?</text>
+            </personText>
+            <choose>
+				<item link="YouTieMe">Вы опять привяжите меня?</item>
+			</choose>
         </part>
     </parts>
 </scene>

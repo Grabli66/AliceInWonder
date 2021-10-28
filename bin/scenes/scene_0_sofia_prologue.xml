@@ -34,6 +34,43 @@
                 <item link="GetLost">[Зло] Отвали.</item>
             </choose>
         </part>
+        <part id="Yes">
+            <personText>
+                <person>Client</person>
+                <text>Мне какой-нибудь не дорогой со Смарт TV.</text>
+            </personText>
+            <choose>
+                <item link="GoWithMe">Проводить клиента к телевизорам.</item>
+            </choose>
+        </part>
+        <part id="GoWithMe">
+            <text>Вы даете понять клиенту, что ему нужно следовать за Вами. Отводите его в отдел видео техники и показываете недорогие модели телевизоров.</text>
+            <personText>
+                <person>Client</person>
+                <text>А расскажите мне про эту модель (показывает пальцем на телевизор)</text>
+            </personText>
+            <choose>
+                <item link="TellStory">Рассказать все что знаете про этот телевизор.</item>
+            </choose>
+        </part>
+        <part id="TellStory">
+            <personText>
+                <person>Client</person>
+                <text>Понятно.</text>
+            </personText>
+            <text>Вы смотрите минуты две на клиента. Похоже в его голове идут сложные мыслительные процессы.</text>
+            <personText>
+                <person>Client</person>
+                <text>Я возьму.</text>
+            </personText>
+            <choose>
+                <item link="LetBuy">Хорошо. Пойдемте на кассу.</item>
+            </choose>
+        </part>
+        <part id="LetBuy">
+            <text>Клиент оплачивает покупку и уходит. Вы смотрите на часы — рабочий день окончен. Переодеваетесь и выходите из магазина.</text>
+            <goto>End</goto>
+        </part>
         <part id="Maybe">
             <personText>
                 <person>Client</person>
@@ -52,7 +89,7 @@
             <text>Расстроенный клиент уходит. Вы видите как он нашёл другого консультанта, Вы стоите и ждете. На часах уже 19:00, конец рабочего дня, а администратор не подошёл. Облегченно вздыхаете и идете собираться домой.</text>
             <goto>End</goto>
         </part>
-        <part id="GoOn">            
+        <part id="GoOn">
             <text>Расстроенный клиент уходит в поисках администратора, бубня себе под нос ругательства. Вы видите как он нашёл другого консультанта, который показал ему где администратор. Спустя несколько минут клиент и администратор идут к Вам.</text>
             <action>addAdministrator</action>
             <personText>
@@ -61,7 +98,7 @@
             </personText>
             <personText>
                 <person>Administrator</person>
-                <text>Успокойтесь. Я разберусь. (Обращается к Вам) Это правда? Ты предложила клиенту утюг вместо телевизора?</text>
+                <text>Спокойно, я разберусь. (Обращается к Вам) Это правда? Ты предложила клиенту утюг вместо телевизора?</text>
             </personText>
             <choose>
                 <item link="SorryAgain">Простите меня. У меня был плохой день. Пожалуйста, не увольняйте меня.</item>

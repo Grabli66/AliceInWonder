@@ -23,7 +23,7 @@
             </personText>
             <action>addPersons</action>
             <choose>
-                <item link="ChooseSofi">София Новикова. 23 года. Россия.</item>
+                <item link="ChooseSofi">София Новикова. 27 лет. Россия.</item>
             </choose>
         </part>
         <part id="ChooseSofi">
