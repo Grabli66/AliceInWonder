@@ -1015,13 +1015,12 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 	,enter: function() {
 		var sceneCaption = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"caption"));
 		var enterPartName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"enter"));
-		var stateName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"state"));
-		console.log("src/common/scene/XmlScene.hx:177:",stateName);
-		var resolvedClass = $hxClasses[stateName];
-		console.log("src/common/scene/XmlScene.hx:179:",resolvedClass);
-		var state = Type.createInstance(resolvedClass,[]);
-		console.log("src/common/scene/XmlScene.hx:181:",state);
-		this.setState(state);
+		if(haxe_xml__$Access_HasNodeAccess.resolve(this.sceneNode,"state")) {
+			var stateName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(this.sceneNode,"state"));
+			var resolvedClass = $hxClasses[stateName];
+			var state = Type.createInstance(resolvedClass,[]);
+			this.setState(state);
+		}
 		this.interactive.setSceneTitle(sceneCaption);
 		var part = this.getPartById(enterPartName);
 		this.addScenePart(part);
@@ -3749,6 +3748,22 @@ scenestates_Scene_$0_$Choose_$Person_$State.prototype = $extend(common_scene_Xml
 		this.get_interactive().addPersonPortrait(sofia,false);
 	}
 	,__class__: scenestates_Scene_$0_$Choose_$Person_$State
+});
+var scenestates_Scene_$0_$Sofia_$Prologue_$State = function() {
+};
+$hxClasses["scenestates.Scene_0_Sofia_Prologue_State"] = scenestates_Scene_$0_$Sofia_$Prologue_$State;
+scenestates_Scene_$0_$Sofia_$Prologue_$State.__name__ = "scenestates.Scene_0_Sofia_Prologue_State";
+scenestates_Scene_$0_$Sofia_$Prologue_$State.__super__ = common_scene_XmlSceneState;
+scenestates_Scene_$0_$Sofia_$Prologue_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
+	addClient: function() {
+		var client = this.getPersonById("Client");
+		this.get_interactive().addPersonPortrait(client);
+	}
+	,addAdministrator: function() {
+		var administrator = this.getPersonById("Administrator");
+		this.get_interactive().addPersonPortrait(administrator);
+	}
+	,__class__: scenestates_Scene_$0_$Sofia_$Prologue_$State
 });
 var scenestates_Scene_$1_$Awake_$State = function() {
 };

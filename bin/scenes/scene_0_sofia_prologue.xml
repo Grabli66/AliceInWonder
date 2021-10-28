@@ -1,0 +1,95 @@
+<scene id="scene_0_sofia_prologue">
+    <caption>Сцена 0. Пролог</caption>
+    <enter>main</enter>
+    <state>scenestates.Scene_0_Sofia_Prologue_State</state>
+    <persons>
+        <person id="Client">
+            <name>Клиент</name>
+            <portrait>client-portrait.jpg</portrait>
+        </person>
+        <person id="Administrator">
+            <name>Игорь</name>
+            <surname>Владимирович</surname>
+            <position>Администратор</position>
+            <portrait>administrator-portrait.jpg</portrait>
+        </person>
+        <person id="Sofia">
+            <name>София</name>
+            <surname>Новикова</surname>
+            <position>Консультант в магазине бытовой техники</position>
+            <portrait>sofi-portrait.jpg</portrait>
+        </person>
+    </persons>
+    <parts>
+        <part id="main">
+            <action>addClient</action>
+            <text>Вы стоите в торговом зале, среди бытовой техники. На Вас одежда продавца-консультанта, а на бейдже написано «Новикова София». На часах 18:33. Меньше получаса до конца вашего рабочего дня. Видите как к Вам подходит клиент. Вероятно с вопросом.</text>
+            <personText>
+                <person>Client</person>
+                <text>Добрый день, девушка. Помогите мне выбрать телевизор.</text>
+            </personText>
+            <choose>
+                <item link="Yes">Да. Какой телевизор Вы хотите?</item>
+                <item link="Maybe">[Рассмеятся] А может купите утюг?</item>
+                <item link="GetLost">[Зло] Отвали.</item>
+            </choose>
+        </part>
+        <part id="Maybe">
+            <personText>
+                <person>Client</person>
+                <text>Утюг? Девушка, по Вашему это смешно? Вы сумасшедшая? Позовите администратора. Хотя нет, я лучше сам найду.</text>
+            </personText>
+            <choose>
+                <item link="Sorry">Постойте. Извините меня. Не знаю что на меня нашло.</item>
+                <item link="GoOn">Да пожалуйста. Мне всё равно тут не нравится работать.</item>
+            </choose>
+        </part>
+        <part id="Sorry">
+            <personText>
+                <person>Client</person>
+                <text>Я найду другого консультанта и сообщу Вашему администратору. А Вам рекомендую лечится.</text>
+            </personText>
+            <text>Расстроенный клиент уходит. Вы видите как он нашёл другого консультанта, Вы стоите и ждете. На часах уже 19:00, конец рабочего дня, а администратор не подошёл. Облегченно вздыхаете и идете собираться домой.</text>
+            <goto>End</goto>
+        </part>
+        <part id="GoOn">            
+            <text>Расстроенный клиент уходит в поисках администратора, бубня себе под нос ругательства. Вы видите как он нашёл другого консультанта, который показал ему где администратор. Спустя несколько минут клиент и администратор идут к Вам.</text>
+            <action>addAdministrator</action>
+            <personText>
+                <person>Client</person>
+                <text>Вот эта больная.</text>
+            </personText>
+            <personText>
+                <person>Administrator</person>
+                <text>Успокойтесь. Я разберусь. (Обращается к Вам) Это правда? Ты предложила клиенту утюг вместо телевизора?</text>
+            </personText>
+            <choose>
+                <item link="SorryAgain">Простите меня. У меня был плохой день. Пожалуйста, не увольняйте меня.</item>
+            </choose>
+        </part>
+        <part id="SorryAgain">
+            <personText>
+                <person>Administrator</person>
+                <text>[Кричит] Какой ещё плохой день? Ты стояла тут одна, практически до конца рабочей смены. София, ты в своём уме?</text>
+            </personText>
+            <choose>
+                <item link="LetMeTry">Я исправлюсь. Позвольте мне ещё раз.</item>
+            </choose>
+        </part>
+        <part id="LetMeTry">
+            <personText>
+                <person>Administrator</person>
+                <text>Никаких «ещё раз». Ты уволена. Выметайся.</text>
+            </personText>
+            <text>Вы идёте за своими вещами, переодеваетесь и выходите прочь из этого магазина.</text>
+            <goto>End</goto>
+        </part>
+        <part id="End">
+            <text>Вот Вы уже идёте по улице, думая о сегодняшнем дне. Переходите по пешеходному переходу, направляясь в метро. Тьма окутывает Ваше сознание. Пустота.</text>
+            <link>
+                <text>ПРОДОЛЖИТЬ</text>
+                <link>scenes/scene_1_awake.xml</link>
+            </link>
+        </part>
+    </parts>
+</scene>

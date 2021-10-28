@@ -112,7 +112,7 @@ class XmlScene extends BaseScene {
 				final caption = item.node.text.innerData;
 				interactive.addLink(caption, () -> {
 					final link = item.node.link.innerData;
-					XmlScene.load(link, (scene) -> {						
+					XmlScene.load(link, (scene) -> {
 						game.setScene(scene);
 					});
 				});
@@ -173,13 +173,12 @@ class XmlScene extends BaseScene {
 		final sceneCaption = sceneNode.node.caption.innerData;
 		final enterPartName = sceneNode.node.enter.innerData;
 
-		final stateName = sceneNode.node.state.innerData;
-		trace(stateName);
-		final resolvedClass = Type.resolveClass(stateName);
-		trace(resolvedClass);
-		final state = Type.createInstance(resolvedClass, []);
-		trace(state);
-		setState(state);
+		if (sceneNode.hasNode.state) {
+			final stateName = sceneNode.node.state.innerData;
+			final resolvedClass = Type.resolveClass(stateName);
+			final state = Type.createInstance(resolvedClass, []);
+			setState(state);
+		}
 
 		interactive.setSceneTitle(sceneCaption);
 		final part = getPartById(enterPartName);

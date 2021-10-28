@@ -195,6 +195,7 @@
 				<text>Распоряжение твоего лечащего врача. Не беспокойся, всё будет хорошо. Ты отдохнёшь.</text>
 			</personText>
 			<text>Агата осторожно делает укол в Ваше плечо. Санитары и медсестра выходят из палаты, оставляя Вас наедине с собой в ожидании сна.</text>
+			<goto>End</goto>
 		</part>
 		<part id="WhyMyLegs">
 			<personText>
@@ -204,6 +205,12 @@
 			<choose>
 				<item link="WhoAreYou">Кто Вы?</item>
 			</choose>
+		</part>
+		<part id="End">
+			<link>
+				<text>ПРОДОЛЖИТЬ</text>
+				<link>scenes/scene_1_thoughts.xml</link>
+			</link>
 		</part>
 	</parts>
 </scene>

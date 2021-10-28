@@ -1,0 +1,16 @@
+<scene id="scene_1_awake">
+    <caption>Сцена 1. Пробуждение</caption>
+    <enter>main</enter>
+    <state>scenestates.Scene_1_Awake_State</state>
+    <persons>
+        <person id="YourMind">
+            <name>Ваше Я</name>
+            <portrait>agata-portrait.jpg</portrait>
+        </person>
+    </persons>
+    <parts>
+        <part id="main">
+            
+        </part>
+    </parts>
+</scene>
