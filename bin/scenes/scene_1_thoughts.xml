@@ -5,7 +5,7 @@
     <persons>
         <person id="YourMind">
             <name>Ваше собственное Я</name>
-            <portrait>agata-portrait.jpg</portrait>
+            <portrait>sofi-portrait.jpg</portrait>
         </person>
     </persons>
     <parts>
@@ -15,8 +15,102 @@
                 <text>Что за чертовщина тут творится?</text>
             </personText>
             <choose>
-				<item link="YouTieMe">Вы опять привяжите меня?</item>
-			</choose>
+                <item link="WhoAreYou">Ты кто?</item>
+            </choose>
+        </part>
+        <part id="WhoAreYou">
+            <personText>
+                <person>YourMind</person>
+                <text>А ты как думаешь? Я это ты.</text>
+            </personText>
+            <choose>
+                <item link="Voices">Только не это. Я слышу голоса?</item>
+                <item link="StopTalk">Не разговаривай со мной.</item>
+            </choose>
+        </part>
+        <part id="Voices">
+            <personText>
+                <person>YourMind</person>
+                <text>[Смеется] Пока всего один.</text>
+            </personText>
+            <choose>
+                <item link="IAmMad">Черт. Они правы. Я сошла с ума.</item>
+            </choose>
+        </part>
+        <part id="IAmMad">
+            <personText>
+                <person>YourMind</person>
+                <text>Не драматизируй. Давай поговорим.</text>
+            </personText>
+            <choose>
+                <item link="LetsTalk">Хорошо. О чём?</item>
+            </choose>
+        </part>
+        <part id="LetsTalk">
+            <personText>
+                <person>YourMind</person>
+                <text>О том что здесь происходит. Почему ты здесь.</text>
+            </personText>
+            <choose>
+                <item link="DontKnow">Не знаю.</item>
+                <include link="block1"></include>
+            </choose>
+        </part>
+        <chooseblock id="block1">
+            <item link="Experiment">Научный эксперимент?</item>
+            <item link="Kidnapping">Похищение?</item>
+            <item link="Insane">Я сошла с ума?</item>
+            <item link="Enough">Довольно этого бреда. Я буду спать.</item>
+        </chooseblock>
+        <part id="Experiment">
+            <personText>
+                <person>YourMind</person>
+                <text>Что то в этом есть. Думаешь они хотят убедить тебя, что ты другой человек?</text>
+            </personText>
+            <choose>
+                <item link="More">Звучит как бред.</item>
+            </choose>
+        </part>
+        <part id="More">
+            <personText>
+                <person>YourMind</person>
+                <text>Ещё варианты?</text>
+            </personText>
+            <choose>
+                <include link="block1"></include>
+            </choose>
+        </part>
+        <part id="Kidnapping">
+            <personText>
+                <person>YourMind</person>
+                <text>Возможно. Но зачем весь этот цирк с больницей, врачами, санитарами?</text>
+            </personText>
+            <choose>
+                <item link="More">Для отвода глаз.</item>
+            </choose>
+        </part>
+        <part id="Insane">
+            <personText>
+                <person>YourMind</person>
+                <text>Это всё бы объяснило. Самое простое объяснение может быть самым верным.</text>
+            </personText>
+            <choose>
+                <item link="More">Я отказываюсь в это верить. Хотя всё указывает на сумасшествие.</item>
+            </choose>
+        </part>
+        <part id="Enough">
+            <condition check="checkDontKnow">
+                <true>
+                    <goto>End</goto>
+                </true>
+                <false>
+                    <personText>
+                        <person>YourMind</person>
+                        <text>Погоди. Ты помнишь, что было вчера?</text>
+                    </personText>
+                    <goto>block2</goto>
+                </false>
+            </condition>
         </part>
     </parts>
 </scene>
