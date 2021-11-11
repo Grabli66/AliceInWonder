@@ -19,4 +19,9 @@ abstract class XmlSceneState {
     private function getPersonById(id:String):Person {
         return scene.getPersonById(id);
     }
+
+    // Проверяет был ли выбран вариант ответа с идентификатором id
+    private function checkChoose(id:String):Bool {
+        return scene.choosed.exists(id);
+    }
 }

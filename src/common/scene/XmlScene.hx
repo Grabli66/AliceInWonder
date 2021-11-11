@@ -12,6 +12,10 @@ class XmlScene extends BaseScene {
 	// Персонажи
 	private final persons = new Map<String, Person>();
 
+	// Варианты которые были выбраны
+	@:allow(common.scene.XmlSceneState)
+	private final choosed = new Map<String, Bool>();
+
 	// Состояние сцены
 	private var state:XmlSceneState;
 
@@ -104,6 +108,7 @@ class XmlScene extends BaseScene {
 						interactive.addPlayerText(select[index]);
 
 						final partId = ids[index];
+						choosed[partId] = true;
 						final part = getPartById(partId);
 						addScenePart(part, select[index]);
 					}
@@ -116,6 +121,28 @@ class XmlScene extends BaseScene {
 						game.setScene(scene);
 					});
 				});
+			case "condition":
+				final checkChoose = item.att.checkChoose;
+				var partId:String;
+				if (checkChoose != null) {
+					partId = if (choosed.exists(checkChoose)) {
+						item.node.iftrue.innerData;
+					} else {
+						item.node.iffalse.innerData;
+					}
+				} else {
+					final checkFunc = item.att.checkFunc;
+					final field = Reflect.field(state, checkFunc);
+					final result = cast(Reflect.callMethod(state, field, []), Bool);
+					partId = if (result) {
+						item.node.iftrue.innerData;
+					} else {
+						partId = item.node.iffalse.innerData;
+					}
+				}
+
+				final part = getPartById(partId);
+				addScenePart(part, prevText);
 		}
 	}
 

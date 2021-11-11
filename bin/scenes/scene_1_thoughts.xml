@@ -53,10 +53,10 @@
             </personText>
             <choose>
                 <item link="DontKnow">Не знаю.</item>
-                <include link="block1"></include>
+                <include link="Block1"></include>
             </choose>
         </part>
-        <chooseblock id="block1">
+        <chooseblock id="Block1">
             <item link="Experiment">Научный эксперимент?</item>
             <item link="Kidnapping">Похищение?</item>
             <item link="Insane">Я сошла с ума?</item>
@@ -77,7 +77,7 @@
                 <text>Ещё варианты?</text>
             </personText>
             <choose>
-                <include link="block1"></include>
+                <include link="Block1"></include>
             </choose>
         </part>
         <part id="Kidnapping">
@@ -99,18 +99,55 @@
             </choose>
         </part>
         <part id="Enough">
-            <condition check="checkDontKnow">
-                <true>
-                    <goto>End</goto>
-                </true>
-                <false>
-                    <personText>
-                        <person>YourMind</person>
-                        <text>Погоди. Ты помнишь, что было вчера?</text>
-                    </personText>
-                    <goto>block2</goto>
-                </false>
+            <condition checkChoose="DontKnow">
+                <iftrue>End</iftrue>
+                <iffalse>EnoughFalse</iffalse>
             </condition>
+        </part>
+        <part id="EnoughFalse">
+            <personText>
+                <person>YourMind</person>
+                <text>Погоди. Ты помнишь, что было вчера?</text>
+            </personText>
+            <goto>Block2</goto>
+        </part>
+        <part id="Block2">
+            <choose>
+                <item link="WasHome">Я шла с работы. Я ведь доехала домой, так?</item>
+            </choose>
+        </part>
+        <part id="WasHome">
+            <personText>
+                <person>YourMind</person>
+                <text>У меня не спрашивай. Я это ты, знаю не больше чем ты знаешь.</text>
+            </personText>
+            <choose>
+                <item link="WhyTalk">Зачем я тогда с тобой разговариваю, если ты ничего не знаешь?</item>
+            </choose>
+        </part>
+        <part id="WhyTalk">
+            <personText>
+                <person>YourMind</person>
+                <text>Ну может я смогу подкинуть пару интересных идей.</text>
+            </personText>
+            <choose>
+                <item link="MaybeNot">Или нет.</item>
+            </choose>
+        </part>
+        <part id="MaybeNot">
+            <condition checkChoose="Enough">
+                <iftrue>End</iftrue>
+                <iffalse>MaybeNotFalse</iffalse>
+            </condition>
+        </part>
+        <part id="MaybeNotFalse">
+            <personText>
+                <person>YourMind</person>
+                <text>Верно. Но вернемся к делу. Что ещё думаешь про ситуацию?</text>
+            </personText>
+            <choose>
+                <include link="Block1"></include>
+            </choose>
         </part>
     </parts>
 </scene>
