@@ -9,6 +9,9 @@ class XmlScene extends BaseScene {
 	// Части сцен
 	private final parts = new Map<String, Access>();
 
+	// Информационные блоки с выбором
+	private final chooseblocks = new Map<String, ChooseStateBlock>();
+
 	// Персонажи
 	private final persons = new Map<String, Person>();
 
@@ -95,22 +98,35 @@ class XmlScene extends BaseScene {
 				final linkPart = getPartById(link);
 				addScenePart(linkPart, prevText);
 			case "choose":
-				final items = new Array<String>();
-				final ids = new Array<String>();
+				final items = new Map<String, String>();
 				for (item in item.nodes.item) {
-					items.push(item.innerData);
-					ids.push(item.att.link);
+					final link = item.att.link;
+					final text = item.innerData;
+					items[link] = text;
+				}
+
+				var chooseBlock:ChooseStateBlock = null;
+				if (item.hasNode.include) {
+					final link = item.node.include.att.link;
+					chooseBlock = chooseblocks[link];
+					for (item in chooseBlock.getActions().keyValueIterator()) {
+						items[item.key] = item.value;
+					}
 				}
 
 				interactive.addChoose({
 					select: items,
-					onSelect: (select, index) -> {
-						interactive.addPlayerText(select[index]);
+					onSelect: (select, id) -> {
+						interactive.addPlayerText(select[id]);
 
-						final partId = ids[index];
+						if (chooseBlock != null) {
+							chooseBlock.removeAction(id);
+						}
+
+						final partId = id;
 						choosed[partId] = true;
 						final part = getPartById(partId);
-						addScenePart(part, select[index]);
+						addScenePart(part, select[id]);
 					}
 				});
 			case "link":
@@ -186,6 +202,18 @@ class XmlScene extends BaseScene {
 		for (part in access.node.parts.nodes.part) {
 			final partId = part.att.id;
 			parts[partId] = part;
+		}
+
+		for (chooseblock in access.node.chooseblocks.nodes.chooseblock) {
+			final blockId = chooseblock.att.id;
+			final actions = new Map<String, String>();
+			for (action in chooseblock.nodes.item) {
+				final actionId = action.att.link;
+				final text = action.innerData;
+				actions[actionId] = text;
+			}
+
+			chooseblocks[blockId] = new ChooseStateBlock(actions);
 		}
 	}
 

@@ -6,18 +6,18 @@ import js.Browser;
 // Параметры конструктора
 typedef ChooseElementConstructorParameters = {
 	// Элементы выбора
-	select:Array<String>,
+	select:Map<String, String>,
 	// Обработчик выбора
-	onSelect:Int->Void
+	onSelect:String->Void
 }
 
 // Элемент выбора
 class ChooseElement extends InteractiveElement {
 	// Обрабатывает выбор
-	final onSelect:Int->Void;
+	final onSelect:String->Void;
 
 	// Варианты выбора
-	final select:Array<String>;
+	final select:Map<String, String>;
 
 	// Конструктор
 	public function new(parameters:ChooseElementConstructorParameters) {
@@ -32,13 +32,13 @@ class ChooseElement extends InteractiveElement {
 		chooseNode.className = "choose-root";
 
 		var i = 1;
-		for (variant in select) {
+		for (item in select.keyValueIterator()) {
 			var node = Browser.document.createDivElement();
-			node.innerText = '${i}. ${variant}';
+			node.innerText = '${i}. ${item.value}';
 			node.className = "choose-item";
 			node.onclick = () -> {
 				chooseNode.remove();
-				onSelect(select.indexOf(variant));
+				onSelect(item.key);
 			};
 			chooseNode.appendChild(node);
 			i += 1;

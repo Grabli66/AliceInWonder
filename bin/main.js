@@ -32,7 +32,7 @@ AliceGame.prototype = $extend(common_Game.prototype,{
 		var _gthis = this;
 		var resolvedClass = $hxClasses["scenestates.Scene_1_Awake_State"];
 		console.log("src/AliceGame.hx:14:",resolvedClass);
-		common_scene_XmlScene.load("scenes/scene_0_choose_person.xml",function(scene) {
+		common_scene_XmlScene.load("scenes/scene_1_thoughts.xml",function(scene) {
 			_gthis.setScene(scene);
 		});
 	}
@@ -561,20 +561,25 @@ common_interactive_ChooseElement.prototype = $extend(common_interactive_Interact
 		var chooseNode = window.document.createElement("div");
 		chooseNode.className = "choose-root";
 		var i = 1;
-		var _g = 0;
-		var _g1 = this.select;
-		while(_g < _g1.length) {
-			var variant = [_g1[_g]];
-			++_g;
+		var h = this.select.h;
+		var item_h = h;
+		var item_keys = Object.keys(h);
+		var item_length = item_keys.length;
+		var item_current = 0;
+		while(item_current < item_length) {
+			var item_key = [];
+			var key = item_keys[item_current++];
+			item_key[0] = key;
+			var item_value = item_h[key];
 			var node = window.document.createElement("div");
-			node.innerText = "" + i + ". " + variant[0];
+			node.innerText = "" + i + ". " + item_value;
 			node.className = "choose-item";
-			node.onclick = (function(variant) {
+			node.onclick = (function(item_key) {
 				return function() {
 					chooseNode.remove();
-					_gthis.onSelect(_gthis.select.indexOf(variant[0]));
+					_gthis.onSelect(item_key[0]);
 				};
-			})(variant);
+			})(item_key);
 			chooseNode.appendChild(node);
 			++i;
 		}
@@ -660,9 +665,9 @@ common_interactive_InteractiveSystem.prototype = {
 	}
 	,addChoose: function(parameters) {
 		var _gthis = this;
-		var element = new common_interactive_ChooseElement({ select : parameters.select, onSelect : function(index) {
+		var element = new common_interactive_ChooseElement({ select : parameters.select, onSelect : function(id) {
 			_gthis.makeElementsOld();
-			parameters.onSelect(parameters.select,index);
+			parameters.onSelect(parameters.select,id);
 		}});
 		this.addElement(element);
 		element.set_opacity(0);
@@ -861,8 +866,27 @@ common_scene_BaseScene.__name__ = "common.scene.BaseScene";
 common_scene_BaseScene.prototype = {
 	__class__: common_scene_BaseScene
 };
+var common_scene_ChooseStateBlock = function(actions) {
+	this.actions = actions;
+};
+$hxClasses["common.scene.ChooseStateBlock"] = common_scene_ChooseStateBlock;
+common_scene_ChooseStateBlock.__name__ = "common.scene.ChooseStateBlock";
+common_scene_ChooseStateBlock.prototype = {
+	removeAction: function(id) {
+		var _this = this.actions;
+		if(Object.prototype.hasOwnProperty.call(_this.h,id)) {
+			delete(_this.h[id]);
+		}
+	}
+	,getActions: function() {
+		return this.actions;
+	}
+	,__class__: common_scene_ChooseStateBlock
+};
 var common_scene_XmlScene = function(access) {
+	this.choosed = new haxe_ds_StringMap();
 	this.persons = new haxe_ds_StringMap();
+	this.chooseblocks = new haxe_ds_StringMap();
 	this.parts = new haxe_ds_StringMap();
 	common_scene_BaseScene.call(this);
 	this.sceneNode = access;
@@ -891,6 +915,26 @@ var common_scene_XmlScene = function(access) {
 		++_g;
 		var partId = haxe_xml__$Access_AttribAccess.resolve(part,"id");
 		this.parts.h[partId] = part;
+	}
+	var _g = 0;
+	var _g1 = haxe_xml__$Access_NodeListAccess.resolve(haxe_xml__$Access_NodeAccess.resolve(access,"chooseblocks"),"chooseblock");
+	while(_g < _g1.length) {
+		var chooseblock = _g1[_g];
+		++_g;
+		var blockId = haxe_xml__$Access_AttribAccess.resolve(chooseblock,"id");
+		var actions = new haxe_ds_StringMap();
+		var _g2 = 0;
+		var _g3 = haxe_xml__$Access_NodeListAccess.resolve(chooseblock,"item");
+		while(_g2 < _g3.length) {
+			var action = _g3[_g2];
+			++_g2;
+			var actionId = haxe_xml__$Access_AttribAccess.resolve(action,"link");
+			var text = haxe_xml_Access.get_innerData(action);
+			actions.h[actionId] = text;
+		}
+		var this1 = this.chooseblocks;
+		var v = new common_scene_ChooseStateBlock(actions);
+		this1.h[blockId] = v;
 	}
 };
 $hxClasses["common.scene.XmlScene"] = common_scene_XmlScene;
@@ -925,12 +969,12 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		if(text == null) {
 			return null;
 		}
-		console.log("src/common/scene/XmlScene.hx:45:",text);
+		console.log("src/common/scene/XmlScene.hx:52:",text);
 		var wait = text.length * 40;
 		if(wait < 1500) {
 			wait = 1500;
 		}
-		console.log("src/common/scene/XmlScene.hx:53:",wait);
+		console.log("src/common/scene/XmlScene.hx:60:",wait);
 		return wait;
 	}
 	,addPartItem: function(items,prevText) {
@@ -956,22 +1000,57 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 			this.addPartItem(items,prevText);
 			break;
 		case "choose":
-			var items1 = [];
-			var ids = [];
+			var items1 = new haxe_ds_StringMap();
 			var _g = 0;
 			var _g1 = haxe_xml__$Access_NodeListAccess.resolve(item,"item");
 			while(_g < _g1.length) {
 				var item1 = _g1[_g];
 				++_g;
-				items1.push(haxe_xml_Access.get_innerData(item1));
-				ids.push(haxe_xml__$Access_AttribAccess.resolve(item1,"link"));
+				var link = haxe_xml__$Access_AttribAccess.resolve(item1,"link");
+				var text = haxe_xml_Access.get_innerData(item1);
+				items1.h[link] = text;
 			}
-			this.interactive.addChoose({ select : items1, onSelect : function(select,index) {
-				_gthis.interactive.addPlayerText(select[index]);
-				var partId = ids[index];
+			var chooseBlock = null;
+			if(haxe_xml__$Access_HasNodeAccess.resolve(item,"include")) {
+				var link = haxe_xml__$Access_AttribAccess.resolve(haxe_xml__$Access_NodeAccess.resolve(item,"include"),"link");
+				chooseBlock = this.chooseblocks.h[link];
+				var h = chooseBlock.getActions().h;
+				var item_h = h;
+				var item_keys = Object.keys(h);
+				var item_length = item_keys.length;
+				var item_current = 0;
+				while(item_current < item_length) {
+					var key = item_keys[item_current++];
+					var item_key = key;
+					var item_value = item_h[key];
+					var v = item_value;
+					items1.h[item_key] = v;
+				}
+			}
+			this.interactive.addChoose({ select : items1, onSelect : function(select,id) {
+				_gthis.interactive.addPlayerText(select.h[id]);
+				if(chooseBlock != null) {
+					chooseBlock.removeAction(id);
+				}
+				var partId = id;
+				_gthis.choosed.h[partId] = true;
 				var part = _gthis.getPartById(partId);
-				_gthis.addScenePart(part,select[index]);
+				_gthis.addScenePart(part,select.h[id]);
 			}});
+			break;
+		case "condition":
+			var checkChoose = haxe_xml__$Access_AttribAccess.resolve(item,"checkChoose");
+			var partId;
+			if(checkChoose != null) {
+				partId = Object.prototype.hasOwnProperty.call(this.choosed.h,checkChoose) ? haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"iftrue")) : haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"iffalse"));
+			} else {
+				var checkFunc = haxe_xml__$Access_AttribAccess.resolve(item,"checkFunc");
+				var field = Reflect.field(this.state,checkFunc);
+				var result = js_Boot.__cast(field.apply(this.state,[]) , Bool);
+				partId = result ? haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"iftrue")) : haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(item,"iffalse"));
+			}
+			var part = this.getPartById(partId);
+			this.addScenePart(part,prevText);
 			break;
 		case "goto":
 			var link = haxe_xml_Access.get_innerData(item);
@@ -1036,6 +1115,9 @@ common_scene_XmlSceneState.prototype = {
 	}
 	,getPersonById: function(id) {
 		return this.scene.getPersonById(id);
+	}
+	,checkChoose: function(id) {
+		return Object.prototype.hasOwnProperty.call(this.scene.choosed.h,id);
 	}
 	,__class__: common_scene_XmlSceneState
 	,__properties__: {get_interactive:"get_interactive"}
@@ -3788,6 +3870,14 @@ scenestates_Scene_$1_$Awake_$State.prototype = $extend(common_scene_XmlSceneStat
 		this.get_interactive().setPersonPortrait(unknown2,agata);
 	}
 	,__class__: scenestates_Scene_$1_$Awake_$State
+});
+var scenestates_Scene_$1_$Thoughts_$State = function() {
+};
+$hxClasses["scenestates.Scene_1_Thoughts_State"] = scenestates_Scene_$1_$Thoughts_$State;
+scenestates_Scene_$1_$Thoughts_$State.__name__ = "scenestates.Scene_1_Thoughts_State";
+scenestates_Scene_$1_$Thoughts_$State.__super__ = common_scene_XmlSceneState;
+scenestates_Scene_$1_$Thoughts_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
+	__class__: scenestates_Scene_$1_$Thoughts_$State
 });
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }

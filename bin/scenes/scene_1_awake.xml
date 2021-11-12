@@ -52,7 +52,7 @@
 		<part id="MayBeHospital">
 			<personText>
 				<person>Elizabeth</person>
-				<text>Элис, ты в психиатрической больнице, в отделении интенсивной терапии. Я твой лечащий врач.</text>
+				<text>Элис, ты в психиатрической больнице, в отделении интенсивного наблюдения. Я твой лечащий врач.</text>
 			</personText>
 			<choose>
 				<item link="WhoAlice">Кто такая Элис?</item>

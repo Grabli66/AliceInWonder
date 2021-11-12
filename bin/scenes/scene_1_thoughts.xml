@@ -8,6 +8,14 @@
             <portrait>sofi-portrait.jpg</portrait>
         </person>
     </persons>
+    <chooseblocks>
+        <chooseblock id="Block1">
+            <item link="Experiment">Научный эксперимент?</item>
+            <item link="Kidnapping">Похищение?</item>
+            <item link="Insane">Я сошла с ума?</item>
+            <item link="Enough">Довольно этого бреда. Я буду спать.</item>
+        </chooseblock>
+    </chooseblocks>
     <parts>
         <part id="main">
             <personText>
@@ -56,12 +64,6 @@
                 <include link="Block1"></include>
             </choose>
         </part>
-        <chooseblock id="Block1">
-            <item link="Experiment">Научный эксперимент?</item>
-            <item link="Kidnapping">Похищение?</item>
-            <item link="Insane">Я сошла с ума?</item>
-            <item link="Enough">Довольно этого бреда. Я буду спать.</item>
-        </chooseblock>
         <part id="Experiment">
             <personText>
                 <person>YourMind</person>

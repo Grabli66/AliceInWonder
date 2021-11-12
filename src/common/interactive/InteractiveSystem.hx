@@ -18,9 +18,9 @@ typedef AddPersonTextParameters = {
 // Параметры для метода добавления элемента выбора
 typedef ChooseMethodParameters = {
 	// Варианты выбора
-	select:Array<String>,
+	select:Map<String, String>,
 	// Обработчик выбора
-	onSelect:(Array<String>, Int) -> Void,
+	onSelect:(Map<String, String>, String) -> Void,
 }
 
 // Взаимодействия с игроком
@@ -129,12 +129,12 @@ class InteractiveSystem {
 	public function addChoose(parameters:ChooseMethodParameters):ChooseElement {
 		final element = new ChooseElement({
 			select: parameters.select,
-			onSelect: (index) -> {
+			onSelect: (id) -> {
 				makeElementsOld();
 				#if debug
 				trace(parameters);
 				#end
-				parameters.onSelect(parameters.select, index);
+				parameters.onSelect(parameters.select, id);
 			}
 		});
 
