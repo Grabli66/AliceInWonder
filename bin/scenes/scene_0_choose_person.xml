@@ -16,12 +16,21 @@
     </persons>
     <parts>
         <part id="main">
-            <action>addUnknown</action>
+            <action>
+                <addPortrait>
+                    <person>Unknown</person>
+                </addPortrait>
+            </action>
             <personText>
                 <person>Unknown</person>
                 <text>Добро пожаловать. Пожалуйста, выберите себе персонажа.</text>
             </personText>
-            <action>addPersons</action>
+            <action>
+                <addPortrait>
+                    <person>Sofia</person>
+                    <showOption>fullname</showOption>
+                </addPortrait>
+            </action>
             <choose>
                 <item link="ChooseSofi">София Новикова. 27 лет. Россия.</item>
             </choose>

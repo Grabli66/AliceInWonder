@@ -26,14 +26,22 @@
 	</persons>
 	<parts>
 		<part id="main">
-			<action>addFirstUnknown</action>
+			<action>
+				<addPortrait>
+					<person>Unknown1</person>
+				</addPortrait>
+			</action>
 			<text>Ваше сознание постепенно возвращается из пустоты. Вы слышите приятный женский голос. Голос спокойный и не несёт в себе угрозы.</text>
 			<personText>
 				<person>Unknown1</person>
 				<text>Пожалуйста, просыпайся.</text>
 			</personText>
 			<text>Вы пытаетесь открыть глаза. Голова гудит, как от похмелья. Руками Вы пытаетесь дотянутся до глаз, но руки не поддаются. Пробуете пошевелить ногами - без результата. Становится страшно. Спустя несколько минут, Вам всё таки удаётся приоткрыть глаза. Ещё столько же потребовалось, что бы навести фокус на собеседника. Вы разглядели двух женщин. Их одежда очень похожа на больничные халаты. Возможно так и есть.</text>
-			<action>addSecondUnknown</action>
+			<action>
+				<addPortrait>
+					<person>Unknown2</person>
+				</addPortrait>
+			</action>
 			<choose>
 				<item link="WhoAreYou">Кто Вы?</item>
 				<item link="WhyMyLegs">Что с моими руками и ногами? Они не двигаются.</item>
@@ -44,7 +52,18 @@
 				<person>Unknown1</person>
 				<text>Я доктор Элизабет Томпсон. Это медсестра Агата Стоун (показывает на женщину, стоящую рядом). Ты знаешь, где находишься?</text>
 			</personText>
-			<action>updateUnknownPersons</action>
+			<action>
+				<setPortrait>
+					<from>Unknown1</from>
+					<to>Elizabeth</to>
+				</setPortrait>
+			</action>
+			<action>
+				<setPortrait>
+					<from>Unknown2</from>
+					<to>Agata</to>
+				</setPortrait>
+			</action>
 			<choose>
 				<item link="MayBeHospital">[Удивлённо] Доктор? Я что, в больнице?</item>
 			</choose>

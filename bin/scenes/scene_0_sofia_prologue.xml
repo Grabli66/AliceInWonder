@@ -22,7 +22,11 @@
     </persons>
     <parts>
         <part id="main">
-            <action>addClient</action>
+            <action>
+                <addPortrait>
+                    <person>Client</person>
+                </addPortrait>
+            </action>
             <text>Вы стоите в торговом зале, среди бытовой техники. На Вас одежда продавца-консультанта, а на бейдже написано «Новикова София». На часах 18:33. Меньше получаса до конца вашего рабочего дня. Видите как к Вам подходит клиент. Вероятно с вопросом.</text>
             <personText>
                 <person>Client</person>
@@ -91,7 +95,11 @@
         </part>
         <part id="GoOn">
             <text>Расстроенный клиент уходит в поисках администратора, бубня себе под нос ругательства. Вы видите как он нашёл другого консультанта, который показал ему где администратор. Спустя несколько минут клиент и администратор идут к Вам.</text>
-            <action>addAdministrator</action>
+            <action>
+                <addPortrait>
+                    <person>Administrator</person>
+                </addPortrait>
+            </action>
             <personText>
                 <person>Client</person>
                 <text>Вот эта больная.</text>

@@ -13,7 +13,7 @@ class AliceGame extends Game {
 		final resolvedClass = Type.resolveClass("scenestates.Scene_1_Awake_State");
 		trace(resolvedClass);
 
-		XmlScene.load("scenes/scene_1_thoughts.xml", (scene) -> {
+		XmlScene.load("scenes/scene_0_choose_person.xml", (scene) -> {
 			setScene(scene);
 		});		
 

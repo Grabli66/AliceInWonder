@@ -6,14 +6,4 @@ import common.scene.XmlSceneState;
 class Scene_0_Choose_Person_State extends XmlSceneState {
 	// Конструктор
 	public function new() {}
-
-	public function addUnknown() {
-		final unknown = getPersonById("Unknown");
-		interactive.addPersonPortrait(unknown);
-	}
-
-	public function addPersons() {
-		final sofia = getPersonById("Sofia");
-		interactive.addPersonPortrait(sofia, false);
-	}
 }

@@ -67,9 +67,23 @@ class XmlScene extends BaseScene {
 		final actionNode = node.elements.next();
 		switch actionNode.name {
 			case "addPortrait":
-				final personId = actionNode.innerData;
+				final personId = actionNode.node.person.innerData;
 				final person = getPersonById(personId);
-				interactive.addPersonPortrait(person);
+				var showPosition = true;
+				if (actionNode.hasNode.showOption) {
+					final showOption = actionNode.node.showOption.innerData;
+					trace(showOption);
+					if (showOption != "fullnameWithPosition") {
+						showPosition = false;
+					}
+				}
+				interactive.addPersonPortrait(person, showPosition);
+			case "setPortrait":
+				final fromPersonName = actionNode.node.from.innerData;
+				final toPersonName = actionNode.node.to.innerData;
+				final fromPerson = getPersonById(fromPersonName);
+				final toPerson = getPersonById(toPersonName);
+				interactive.setPersonPortrait(fromPerson, toPerson);
 			case "execute":
 				final name = actionNode.innerData;
 				final field = Reflect.field(state, name);

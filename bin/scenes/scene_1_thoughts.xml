@@ -19,7 +19,9 @@
     <parts>
         <part id="main">
             <action>
-                <addPortrait>YourMind</addPortrait>
+                <addPortrait>
+                    <person>YourMind</person>
+                </addPortrait>
             </action>
             <personText>
                 <person>YourMind</person>

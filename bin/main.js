@@ -32,7 +32,7 @@ AliceGame.prototype = $extend(common_Game.prototype,{
 		var _gthis = this;
 		var resolvedClass = $hxClasses["scenestates.Scene_1_Awake_State"];
 		console.log("src/AliceGame.hx:14:",resolvedClass);
-		common_scene_XmlScene.load("scenes/scene_1_thoughts.xml",function(scene) {
+		common_scene_XmlScene.load("scenes/scene_0_choose_person.xml",function(scene) {
 			_gthis.setScene(scene);
 		});
 	}
@@ -992,14 +992,29 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		}
 		switch(_g) {
 		case "addPortrait":
-			var personId = haxe_xml_Access.get_innerData(actionNode);
+			var personId = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(actionNode,"person"));
 			var person = this.getPersonById(personId);
-			this.interactive.addPersonPortrait(person);
+			var showPosition = true;
+			if(haxe_xml__$Access_HasNodeAccess.resolve(actionNode,"showOption")) {
+				var showOption = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(actionNode,"showOption"));
+				console.log("src/common/scene/XmlScene.hx:75:",showOption);
+				if(showOption != "fullnameWithPosition") {
+					showPosition = false;
+				}
+			}
+			this.interactive.addPersonPortrait(person,showPosition);
 			break;
 		case "execute":
 			var name = haxe_xml_Access.get_innerData(actionNode);
 			var field = Reflect.field(this.state,name);
 			field.apply(this.state,[]);
+			break;
+		case "setPortrait":
+			var fromPersonName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(actionNode,"from"));
+			var toPersonName = haxe_xml_Access.get_innerData(haxe_xml__$Access_NodeAccess.resolve(actionNode,"to"));
+			var fromPerson = this.getPersonById(fromPersonName);
+			var toPerson = this.getPersonById(toPersonName);
+			this.interactive.setPersonPortrait(fromPerson,toPerson);
 			break;
 		}
 		this.addPartItem(items,prevText);
@@ -3845,15 +3860,7 @@ $hxClasses["scenestates.Scene_0_Choose_Person_State"] = scenestates_Scene_$0_$Ch
 scenestates_Scene_$0_$Choose_$Person_$State.__name__ = "scenestates.Scene_0_Choose_Person_State";
 scenestates_Scene_$0_$Choose_$Person_$State.__super__ = common_scene_XmlSceneState;
 scenestates_Scene_$0_$Choose_$Person_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	addUnknown: function() {
-		var unknown = this.getPersonById("Unknown");
-		this.get_interactive().addPersonPortrait(unknown);
-	}
-	,addPersons: function() {
-		var sofia = this.getPersonById("Sofia");
-		this.get_interactive().addPersonPortrait(sofia,false);
-	}
-	,__class__: scenestates_Scene_$0_$Choose_$Person_$State
+	__class__: scenestates_Scene_$0_$Choose_$Person_$State
 });
 var scenestates_Scene_$0_$Sofia_$Prologue_$State = function() {
 };
@@ -3861,15 +3868,7 @@ $hxClasses["scenestates.Scene_0_Sofia_Prologue_State"] = scenestates_Scene_$0_$S
 scenestates_Scene_$0_$Sofia_$Prologue_$State.__name__ = "scenestates.Scene_0_Sofia_Prologue_State";
 scenestates_Scene_$0_$Sofia_$Prologue_$State.__super__ = common_scene_XmlSceneState;
 scenestates_Scene_$0_$Sofia_$Prologue_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	addClient: function() {
-		var client = this.getPersonById("Client");
-		this.get_interactive().addPersonPortrait(client);
-	}
-	,addAdministrator: function() {
-		var administrator = this.getPersonById("Administrator");
-		this.get_interactive().addPersonPortrait(administrator);
-	}
-	,__class__: scenestates_Scene_$0_$Sofia_$Prologue_$State
+	__class__: scenestates_Scene_$0_$Sofia_$Prologue_$State
 });
 var scenestates_Scene_$1_$Awake_$State = function() {
 };
@@ -3877,23 +3876,7 @@ $hxClasses["scenestates.Scene_1_Awake_State"] = scenestates_Scene_$1_$Awake_$Sta
 scenestates_Scene_$1_$Awake_$State.__name__ = "scenestates.Scene_1_Awake_State";
 scenestates_Scene_$1_$Awake_$State.__super__ = common_scene_XmlSceneState;
 scenestates_Scene_$1_$Awake_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	addFirstUnknown: function() {
-		var unknown1 = this.getPersonById("Unknown1");
-		this.get_interactive().addPersonPortrait(unknown1);
-	}
-	,addSecondUnknown: function() {
-		var unknown2 = this.getPersonById("Unknown2");
-		this.get_interactive().addPersonPortrait(unknown2);
-	}
-	,updateUnknownPersons: function() {
-		var unknown1 = this.getPersonById("Unknown1");
-		var unknown2 = this.getPersonById("Unknown2");
-		var elizabeth = this.getPersonById("Elizabeth");
-		var agata = this.getPersonById("Agata");
-		this.get_interactive().setPersonPortrait(unknown1,elizabeth);
-		this.get_interactive().setPersonPortrait(unknown2,agata);
-	}
-	,__class__: scenestates_Scene_$1_$Awake_$State
+	__class__: scenestates_Scene_$1_$Awake_$State
 });
 var scenestates_Scene_$1_$Thoughts_$State = function() {
 };
