@@ -1,0 +1,21 @@
+<scene id="scene_2_new_life">
+    <caption>Сцена 2. Новая жизнь.</caption>
+    <enter>main</enter>
+    <!-- <state>scenestates.Scene_0_Choose_Person_State</state> -->
+    <persons>        
+        <person id="Sofia">
+            <name>София</name>
+            <surname>Новикова</surname>
+            <position>Консультант в магазине бытовой техники</position>
+            <portrait>sofi-portrait.jpg</portrait>
+        </person>
+    </persons>
+    <parts>
+        <part id="main">            
+            <personText>
+                <person>Sofia</person>
+                <text>Добро пожаловать. Пожалуйста, выберите себе персонажа.</text>
+            </personText>
+        </part>        
+    </parts>
+</scene>

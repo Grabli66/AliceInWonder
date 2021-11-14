@@ -916,25 +916,27 @@ var common_scene_XmlScene = function(access) {
 		var partId = haxe_xml__$Access_AttribAccess.resolve(part,"id");
 		this.parts.h[partId] = part;
 	}
-	var _g = 0;
-	var _g1 = haxe_xml__$Access_NodeListAccess.resolve(haxe_xml__$Access_NodeAccess.resolve(access,"chooseblocks"),"chooseblock");
-	while(_g < _g1.length) {
-		var chooseblock = _g1[_g];
-		++_g;
-		var blockId = haxe_xml__$Access_AttribAccess.resolve(chooseblock,"id");
-		var actions = new haxe_ds_StringMap();
-		var _g2 = 0;
-		var _g3 = haxe_xml__$Access_NodeListAccess.resolve(chooseblock,"item");
-		while(_g2 < _g3.length) {
-			var action = _g3[_g2];
-			++_g2;
-			var actionId = haxe_xml__$Access_AttribAccess.resolve(action,"link");
-			var text = haxe_xml_Access.get_innerData(action);
-			actions.h[actionId] = text;
+	if(haxe_xml__$Access_HasNodeAccess.resolve(access,"chooseblocks")) {
+		var _g = 0;
+		var _g1 = haxe_xml__$Access_NodeListAccess.resolve(haxe_xml__$Access_NodeAccess.resolve(access,"chooseblocks"),"chooseblock");
+		while(_g < _g1.length) {
+			var chooseblock = _g1[_g];
+			++_g;
+			var blockId = haxe_xml__$Access_AttribAccess.resolve(chooseblock,"id");
+			var actions = new haxe_ds_StringMap();
+			var _g2 = 0;
+			var _g3 = haxe_xml__$Access_NodeListAccess.resolve(chooseblock,"item");
+			while(_g2 < _g3.length) {
+				var action = _g3[_g2];
+				++_g2;
+				var actionId = haxe_xml__$Access_AttribAccess.resolve(action,"link");
+				var text = haxe_xml_Access.get_innerData(action);
+				actions.h[actionId] = text;
+			}
+			var this1 = this.chooseblocks;
+			var v = new common_scene_ChooseStateBlock(actions);
+			this1.h[blockId] = v;
 		}
-		var this1 = this.chooseblocks;
-		var v = new common_scene_ChooseStateBlock(actions);
-		this1.h[blockId] = v;
 	}
 };
 $hxClasses["common.scene.XmlScene"] = common_scene_XmlScene;
@@ -977,6 +979,31 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		console.log("src/common/scene/XmlScene.hx:60:",wait);
 		return wait;
 	}
+	,processAction: function(items,node,prevText) {
+		var actionNode = node.elements().next();
+		var _g;
+		if(actionNode.nodeType == Xml.Document) {
+			_g = "Document";
+		} else {
+			if(actionNode.nodeType != Xml.Element) {
+				throw haxe_Exception.thrown("Bad node type, expected Element but found " + (actionNode.nodeType == null ? "null" : XmlType.toString(actionNode.nodeType)));
+			}
+			_g = actionNode.nodeName;
+		}
+		switch(_g) {
+		case "addPortrait":
+			var personId = haxe_xml_Access.get_innerData(actionNode);
+			var person = this.getPersonById(personId);
+			this.interactive.addPersonPortrait(person);
+			break;
+		case "execute":
+			var name = haxe_xml_Access.get_innerData(actionNode);
+			var field = Reflect.field(this.state,name);
+			field.apply(this.state,[]);
+			break;
+		}
+		this.addPartItem(items,prevText);
+	}
 	,addPartItem: function(items,prevText) {
 		var _gthis = this;
 		if(!items.hasNext()) {
@@ -994,10 +1021,7 @@ common_scene_XmlScene.prototype = $extend(common_scene_BaseScene.prototype,{
 		}
 		switch(_g) {
 		case "action":
-			var name = haxe_xml_Access.get_innerData(item);
-			var field = Reflect.field(this.state,name);
-			field.apply(this.state,[]);
-			this.addPartItem(items,prevText);
+			this.processAction(items,item,prevText);
 			break;
 		case "choose":
 			var items1 = new haxe_ds_StringMap();

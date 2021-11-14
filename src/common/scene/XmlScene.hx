@@ -62,6 +62,23 @@ class XmlScene extends BaseScene {
 		#end
 	}
 
+	// Обрабатывает дейтсвие
+	private function processAction(items:Iterator<Access>, node:Access, ?prevText:String) {
+		final actionNode = node.elements.next();
+		switch actionNode.name {
+			case "addPortrait":
+				final personId = actionNode.innerData;
+				final person = getPersonById(personId);
+				interactive.addPersonPortrait(person);
+			case "execute":
+				final name = actionNode.innerData;
+				final field = Reflect.field(state, name);
+				Reflect.callMethod(state, field, []);
+		}
+
+		addPartItem(items, prevText);
+	}
+
 	private function addPartItem(items:Iterator<Access>, ?prevText:String) {
 		if (!items.hasNext())
 			return;
@@ -89,10 +106,7 @@ class XmlScene extends BaseScene {
 					addPartItem(items, text);
 				});
 			case "action":
-				final name = item.innerData;
-				final field = Reflect.field(state, name);
-				Reflect.callMethod(state, field, []);
-				addPartItem(items, prevText);
+				processAction(items, item, prevText);
 			case "goto":
 				final link = item.innerData;
 				final linkPart = getPartById(link);
@@ -204,16 +218,18 @@ class XmlScene extends BaseScene {
 			parts[partId] = part;
 		}
 
-		for (chooseblock in access.node.chooseblocks.nodes.chooseblock) {
-			final blockId = chooseblock.att.id;
-			final actions = new Map<String, String>();
-			for (action in chooseblock.nodes.item) {
-				final actionId = action.att.link;
-				final text = action.innerData;
-				actions[actionId] = text;
-			}
+		if (access.hasNode.chooseblocks) {
+			for (chooseblock in access.node.chooseblocks.nodes.chooseblock) {
+				final blockId = chooseblock.att.id;
+				final actions = new Map<String, String>();
+				for (action in chooseblock.nodes.item) {
+					final actionId = action.att.link;
+					final text = action.innerData;
+					actions[actionId] = text;
+				}
 
-			chooseblocks[blockId] = new ChooseStateBlock(actions);
+				chooseblocks[blockId] = new ChooseStateBlock(actions);
+			}
 		}
 	}
 
