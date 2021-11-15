@@ -2,20 +2,56 @@
     <caption>Сцена 2. Новая жизнь.</caption>
     <enter>main</enter>
     <!-- <state>scenestates.Scene_0_Choose_Person_State</state> -->
-    <persons>        
+    <persons>
         <person id="Sofia">
             <name>София</name>
             <surname>Новикова</surname>
             <position>Консультант в магазине бытовой техники</position>
             <portrait>sofi-portrait.jpg</portrait>
         </person>
+        <person id="Agata">
+            <name>Агата</name>
+            <surname>Стоун</surname>
+            <position>Медсестра</position>
+            <portrait>agata-portrait.jpg</portrait>
+        </person>
+        <person id="Elizabeth">
+            <name>Элизабет</name>
+            <surname>Томсон</surname>
+            <position>Доктор</position>
+            <portrait>elizabeth-portrait.jpg</portrait>
+        </person>
     </persons>
     <parts>
-        <part id="main">            
+        <part id="main">
+            <action>
+                <addPortrait>
+                    <person>Agata</person>
+                </addPortrait>
+            </action>
+            <text>Вас будит открывающаяся дверь в палату и голос.</text>
             <personText>
-                <person>Sofia</person>
-                <text>Добро пожаловать. Пожалуйста, выберите себе персонажа.</text>
+                <person>Agata</person>
+                <text>Доброе утро, Элис. Как спала?</text>
             </personText>
-        </part>        
+            <text>Видите как в палату зашла медсестра и двое санитаров.</text>
+            <choose>
+                <item link="Normal">Ну если не считать того, что не могу пошевелится, то нормально.</item>
+            </choose>
+        </part>
+        <part id="main">
+            <personText>
+                <person>Agata</person>
+                <text>Вот и славно. Давай мы тебя развяжем. Только веди себя спокойно.</text>
+            </personText>
+            <text>Вас наконец то отвязывают от кровати. Вам страшно, сможете ли Вы самостоятельно встать и идти. Но на Ваше удивление спокойно встаёте, чувствуя только небольшую слабость.</text>
+            <personText>
+                <person>Agata</person>
+                <text>Как ты себя чувствуешь?</text>
+            </personText>
+            <choose>
+                <item link="MyHead">Голова немного кружится.</item>
+            </choose>
+        </part>
     </parts>
 </scene>

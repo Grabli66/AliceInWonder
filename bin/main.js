@@ -32,7 +32,7 @@ AliceGame.prototype = $extend(common_Game.prototype,{
 		var _gthis = this;
 		var resolvedClass = $hxClasses["scenestates.Scene_1_Awake_State"];
 		console.log("src/AliceGame.hx:14:",resolvedClass);
-		common_scene_XmlScene.load("scenes/scene_0_choose_person.xml",function(scene) {
+		common_scene_XmlScene.load("scenes/scene_2_new_life.xml",function(scene) {
 			_gthis.setScene(scene);
 		});
 	}
@@ -3854,38 +3854,6 @@ motion_easing_LinearEaseNone.prototype = {
 	}
 	,__class__: motion_easing_LinearEaseNone
 };
-var scenestates_Scene_$0_$Choose_$Person_$State = function() {
-};
-$hxClasses["scenestates.Scene_0_Choose_Person_State"] = scenestates_Scene_$0_$Choose_$Person_$State;
-scenestates_Scene_$0_$Choose_$Person_$State.__name__ = "scenestates.Scene_0_Choose_Person_State";
-scenestates_Scene_$0_$Choose_$Person_$State.__super__ = common_scene_XmlSceneState;
-scenestates_Scene_$0_$Choose_$Person_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	__class__: scenestates_Scene_$0_$Choose_$Person_$State
-});
-var scenestates_Scene_$0_$Sofia_$Prologue_$State = function() {
-};
-$hxClasses["scenestates.Scene_0_Sofia_Prologue_State"] = scenestates_Scene_$0_$Sofia_$Prologue_$State;
-scenestates_Scene_$0_$Sofia_$Prologue_$State.__name__ = "scenestates.Scene_0_Sofia_Prologue_State";
-scenestates_Scene_$0_$Sofia_$Prologue_$State.__super__ = common_scene_XmlSceneState;
-scenestates_Scene_$0_$Sofia_$Prologue_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	__class__: scenestates_Scene_$0_$Sofia_$Prologue_$State
-});
-var scenestates_Scene_$1_$Awake_$State = function() {
-};
-$hxClasses["scenestates.Scene_1_Awake_State"] = scenestates_Scene_$1_$Awake_$State;
-scenestates_Scene_$1_$Awake_$State.__name__ = "scenestates.Scene_1_Awake_State";
-scenestates_Scene_$1_$Awake_$State.__super__ = common_scene_XmlSceneState;
-scenestates_Scene_$1_$Awake_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	__class__: scenestates_Scene_$1_$Awake_$State
-});
-var scenestates_Scene_$1_$Thoughts_$State = function() {
-};
-$hxClasses["scenestates.Scene_1_Thoughts_State"] = scenestates_Scene_$1_$Thoughts_$State;
-scenestates_Scene_$1_$Thoughts_$State.__name__ = "scenestates.Scene_1_Thoughts_State";
-scenestates_Scene_$1_$Thoughts_$State.__super__ = common_scene_XmlSceneState;
-scenestates_Scene_$1_$Thoughts_$State.prototype = $extend(common_scene_XmlSceneState.prototype,{
-	__class__: scenestates_Scene_$1_$Thoughts_$State
-});
 function $getIterator(o) { if( o instanceof Array ) return new haxe_iterators_ArrayIterator(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;

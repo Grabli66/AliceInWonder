@@ -1,7 +1,7 @@
 <scene id="scene_0_sofia_prologue">
     <caption>Сцена 0. Пролог</caption>
     <enter>main</enter>
-    <state>scenestates.Scene_0_Sofia_Prologue_State</state>
+    <!-- <state>scenestates.Scene_0_Sofia_Prologue_State</state> -->
     <persons>
         <person id="Client">
             <name>Клиент</name>
