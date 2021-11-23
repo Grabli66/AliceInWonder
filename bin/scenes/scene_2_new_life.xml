@@ -21,6 +21,40 @@
             <position>Доктор</position>
             <portrait>elizabeth-portrait.jpg</portrait>
         </person>
+        <person id="Lora">
+            <name>Лиза</name>
+            <portrait>lora-portrait.jpg</portrait>
+        </person>
+        <person id="UnknownPatient1">
+            <name>Неизвестная пациентка</name>
+            <portrait>lora-portrait.jpg</portrait>
+        </person>
+        <person id="Barmaid">
+            <name>Буфетчица</name>
+            <portrait>bitsi-portrait.jpg</portrait>
+        </person>
+        <person id="Bitsi">
+            <name>Битси</name>
+            <position>Буфетчица</position>
+            <portrait>bitsi-portrait.jpg</portrait>
+        </person>
+        <person id="Lisa">
+            <name>Лиза</name>
+            <portrait>lisa-portrait.jpg</portrait>
+        </person>
+        <person id="Astrid">
+            <name>Астрид</name>
+            <portrait>astrid-portrait.jpg</portrait>
+        </person>
+        <person id="Ingrid">
+            <name>Ингрид</name>
+            <position>Медсестра</position>
+            <portrait>ingrid-portrait.jpg</portrait>
+        </person>
+        <person id="YourMind">
+            <name>Ваше собственное Я</name>
+            <portrait>sofi-portrait.jpg</portrait>
+        </person>
     </persons>
     <parts>
         <part id="main">
@@ -39,7 +73,7 @@
                 <item link="Normal">Ну если не считать того, что не могу пошевелится, то нормально.</item>
             </choose>
         </part>
-        <part id="main">
+        <part id="Normal">
             <personText>
                 <person>Agata</person>
                 <text>Вот и славно. Давай мы тебя развяжем. Только веди себя спокойно.</text>
@@ -51,6 +85,328 @@
             </personText>
             <choose>
                 <item link="MyHead">Голова немного кружится.</item>
+            </choose>
+        </part>
+        <part id="MyHead">
+            <personText>
+                <person>Agata</person>
+                <text>Это пройдет. Давай я провожу тебя до туалета и покажу где душ.</text>
+            </personText>
+            <choose>
+                <item link="WhatNext">А потом?</item>
+            </choose>
+        </part>
+        <part id="WhatNext">
+            <personText>
+                <person>Agata</person>
+                <text>Отведу тебя в столовую, а затем на прием к доктору.</text>
+            </personText>
+            <choose>
+                <item link="Great">Хорошо. Я объясню доктору, что произошла ошибка.</item>
+            </choose>
+        </part>
+        <part id="Great">
+            <personText>
+                <person>Agata</person>
+                <text>Не сомневаюсь. Пойдем.</text>
+            </personText>
+            <text>Медсестра ведет Вас в знакомый уже туалет. Санитары не идут за Вами, а уходят по своим делам.</text>
+            <personText>
+                <person>Agata</person>
+                <text>Приступай. Пожалуйста, у меня ещё много дел.</text>
+            </personText>
+            <choose>
+                <item link="Piss">Справить нужду.</item>
+            </choose>
+        </part>
+        <part id="Piss">
+            <text>Заходите в свободную кабинку и делаете свое дело.</text>
+            <choose>
+                <item link="WashHands">Помыть руки.</item>
+            </choose>
+        </part>
+        <part id="WashHands">
+            <text>Выходите из кабинки и подходите к раковине. Смотрите в зеркало у раковины и вскрикиваете от увиденного. Перед Вами лицо совершенно неизвестной девушки. От испуга Вы замираете на месте, глазами разглядывая лицо незнакомки.</text>
+            <personText>
+                <person>Agata</person>
+                <text>Что с тобой, Элис? Тебе плохо?</text>
+            </personText>
+            <text>Руки Агаты нырнули в карман за успокоительным.</text>
+            <action>
+                <addPortrait>
+                    <person>YourMind</person>
+                </addPortrait>
+            </action>
+            <personText>
+                <person>YourMind</person>
+                <text>Соври что-то. Иначе опять будешь валятся бревном в кровати.</text>
+            </personText>
+            <choose>
+                <item link="LieNormal">[Соврать] Всё нормально.</item>
+            </choose>
+        </part>
+        <part id="LieNormal">
+            <personText>
+                <person>Agata</person>
+                <text>Хорошо. Пойдем покажу душ.</text>
+            </personText>
+            <text>Выходите обратно в коридор и заходите  в дверь напротив. В комнате под душем уже моется две пациентки. Все открыто, все видно. Вам становится не по себе от мысли, что нужно будет мыться когда все Вас видят.</text>
+            <personText>
+                <person>Agata</person>
+                <text>Раздевайся. Пока ты моешься я принесу тебе чистую одежду.</text>
+            </personText>
+            <choose>
+                <item link="BeginWash">Раздеться и начать мыться.</item>
+            </choose>
+        </part>
+        <part id="BeginWash">
+            <text>Медсестра забрала грязную одежду и пошла за новой.</text>
+            <action>
+                <addPortrait>
+                    <person>UnknownPatient1</person>
+                </addPortrait>
+            </action>
+            <personText>
+                <person>UnknownPatient1</person>
+                <text>Эй, буйная.</text>
+            </personText>
+            <text>Вы немного удивлены, что с Вами заговорили в таком месте, когда Вы моетесь. Ответили первое, что пришло в голову.</text>
+            <choose>
+                <item link="NotMad">Я не буйная.</item>
+            </choose>
+        </part>
+        <part id="NotMad">
+            <personText>
+                <person>UnknownPatient1</person>
+                <text>Не хочешь мне ничего сказать?</text>
+            </personText>
+            <choose>
+                <item link="NoWhat">Нет. А должна?</item>
+            </choose>
+        </part>
+        <part id="NoWhat">
+            <personText>
+                <person>UnknownPatient1</person>
+                <text>Ты что, ничего не помнишь?</text>
+            </personText>
+            <choose>
+                <item link="DontUnderstand">Не понимаю о чем ты.</item>
+            </choose>
+        </part>
+        <part id="NoWhat">
+            <personText>
+                <person>UnknownPatient1</person>
+                <text>Ну ладно.</text>
+            </personText>
+            <text>Незнакомка хочет сказать ещё, но входит Агата.</text>
+            <personText>
+                <person>Agata</person>
+                <text>Лора приставала к тебе, Элис?</text>
+            </personText>
+            <choose>
+                <item link="SarcasmFriends">[Сарказм] Кажется мы подружились?</item>
+            </choose>
+        </part>
+        <part id="SarcasmFriends">
+            <personText>
+                <person>Agata</person>
+                <text>Ну и замечательно. Пожалуйста, заканчивай мыться. И пойдем в столовую.</text>
+            </personText>
+            <text>Вы выключаете воду, вытираетесь и надеваете чистую одежду. Медсестра выводит Вас в коридор и ведёт в столовую.</text>
+            <choose>
+                <item link="WhoIsLora">А кто эта Лора?</item>
+            </choose>
+        </part>
+        <part id="WhoIsLora">
+            <personText>
+                <person>Agata</person>
+                <text>Извини, я не хочу обсуждать с тобой других пациентов. Просто, постарайся не задевать её.</text>
+            </personText>
+            <text>Скоро дошли до столовой. Вы осмотрели помещение в которое зашли. В центре обеденного зала столики, за которыми уже сидели пациентки. У одной стены была линия раздачи, за которой стояла очередь, а на линии работала буфетчица. Полная женщина, лет 50-ти</text>
+            <choose>
+                <item link="WhoIsLora">А кто эта Лора?</item>
+            </choose>
+            <personText>
+                <person>Agata</person>
+                <text>Элис, вставай в очередь.</text>
+            </personText>
+            <choose>
+                <item link="GetInLine">Встать в очередь за едой.</item>
+            </choose>
+        </part>
+        <part id="GetInLine">
+            <text>Очередь медленно двигается. Перед Вами осталась одна девушка. Она подошла к подготовленному подносу с едой и застыла.</text>
+            <action>
+                <addPortrait>
+                    <person>Barmaid</person>
+                </addPortrait>
+            </action>
+            <personText>
+                <person>Barmaid</person>
+                <text>Привет, Эрика, всё нормально?</text>
+            </personText>
+            <text>Девушка ничего не ответила. Она стояла с поникшей головой и смотрела в пол.</text>
+            <choose>
+                <item link="HurryUp">Пожалуйста, можно побыстрее?</item>
+            </choose>
+        </part>
+        <part id="HurryUp">
+            <text>К застывшей пациентке подходит незнакомая Вам медсестра.</text>
+            <personText>
+                <person>UnknownNurse1</person>
+                <text>Элис, потерпи немного. Сейчас я её отведу за стол.</text>
+            </personText>
+            <text>Медсестра взялась руками за плечи девушки, развернула в сторону зала и повела к столику. Затем вернулась за едой и отнесла её пациентке. Наконец наступает Ваша очередь. </text>
+            <choose>
+                <item link="Hello">Добрый день.</item>
+            </choose>
+        </part>
+        <part id="Hello">
+            <personText>
+                <person>Barmaid</person>
+                <text>Привет. Ты новенькая? Как тебя зовут? Меня Битси.</text>
+            </personText>
+            <choose>
+                <item link="MyNameSofi">София.</item>
+            </choose>
+        </part>
+        <part id="MyNameSofi">
+            <personText>
+                <person>Bitsi</person>
+                <text>Какую кашу любишь? Есть манная, овсяная и гречневая с молоком.</text>
+            </personText>
+            <choose>
+                <item link="Buckwheat">Гречневую с молоком.</item>
+            </choose>
+        </part>
+        <part id="Buckwheat">
+            <text>Битси принесла тарелку с кашей. Поставила кашу, стакан с компотом и кусок белого хлеба на поднос.</text>
+            <choose>
+                <item link="Thanks">Спасибо.</item>
+            </choose>
+        </part>
+        <part id="Thanks">
+            <personText>
+                <person>Bitsi</person>
+                <text>На здоровье, Элис.</text>
+            </personText>
+            <text>Вы берете поднос с едой и разворачиваетесь в зал. Видите Агату, она жестами приглашала сесть за столик, рядом с которым она стояла.</text>
+            <choose>
+                <item link="GoAgata">Подойти к столику Агаты.</item>
+            </choose>
+        </part>
+        <part id="GoAgata">
+            <text>Медленно, пытаясь не растерять еду и уклоняясь от других пациентов, Вы подходите к месту где стоит медсестра. Столик был на шесть мест. За столиком сидели три пациентки и одна медсестра. Одну пациентку Вы уже видели, это была «застывшая» Эрика.</text>
+            <personText>
+                <person>Agata</person>
+                <text>Элис, присаживайся.</text>
+            </personText>
+            <text>Вы садитесь за стол.</text>
+            <choose>
+                <item link="Eat">Начать есть.</item>
+            </choose>
+        </part>
+        <part id="Eat">
+            <personText>
+                <person>Agata</person>
+                <text>Элис, подожди. Я представлю Вас. Это медсестра Ингрид. Эрику ты знаешь. (Обращается к остальным) Девушки, представьтесь.</text>
+            </personText>
+            <personText>
+                <person>Astrid</person>
+                <text>Меня зовут Астрид.</text>
+            </personText>
+            <personText>
+                <person>Lisa</person>
+                <text>Я Лиза и ты мне не нравишься. Бог говорит, ты не та за кого себя выдаешь.</text>
+            </personText>
+            <personText>
+                <person>Agata</person>
+                <text>Лиза, веди себя прилично. Не заставляй меня сообщать доктору Элизабет о твоем поведении?</text>
+            </personText>
+            <personText>
+                <person>Lisa</person>
+                <text>Да пожалуйста. Мне всё равно.</text>
+            </personText>
+            <choose>
+                <item link="Allright">Все нормально. Я не обиделась.</item>
+            </choose>
+        </part>
+        <part id="Allright">
+            <personText>
+                <person>Agata</person>
+                <text>Дело не в обиде. Лиза должна научится контролировать себя в обществе.</text>
+            </personText>
+            <personText>
+                <person>Lisa</person>
+                <text>Где ты нашла тут общество, Агата. Сборище чокнутых безбожников.</text>
+            </personText>
+            <personText>
+                <person>Astrid</person>
+                <text>Лиза, прекрати, чего ты добиваешься?</text>
+            </personText>
+            <personText>
+                <person>Lisa</person>
+                <text>Что бы она ушла (показывает на Вас)</text>
+            </personText>
+            <personText>
+                <person>Agata</person>
+                <text>Ну все, достаточно, Элис никуда не пойдет, а вот ты пойдешь в свою палату.</text>
+            </personText>
+            <choose>
+                <item link="ICanGo">Нет проблем, я могу уйти.</item>
+            </choose>
+        </part>
+        <part id="ICanGo">
+            <personText>
+                <person>Agata</person>
+                <text>Элис, сиди. Уйдет Лиза.</text>
+            </personText>
+            <personText>
+                <person>Lisa</person>
+                <text>Ладно. Я уйду. Горите в аду.</text>
+            </personText>
+            <text>Лиза вскакивает из-за стола и быстро выходит за дверь столовой.</text>
+            <choose>
+                <item link="WhatMatter">Что это с ней?</item>
+            </choose>
+        </part>
+        <part id="WhatMatter">
+            <personText>
+                <person>Agata</person>
+                <text>Не обращай внимания. Обычно она не такая…</text>
+            </personText>
+            <personText>
+                <person>Astrid</person>
+                <text>Сестра Ингрид, пожалуйста, присмотрите за ними, я должна поговорить с доктором о Лизе. Похоже она прекратила пить лекарства. Я быстро.</text>
+            </personText>
+            <personText>
+                <person>Ingrid</person>
+                <text>Да, конечно, идите, я посмотрю.</text>
+            </personText>
+            <choose>
+                <item link="WhatHappen">А что бывает, если не принимать лекарства?</item>
+            </choose>
+        </part>
+        <part id="WhatHappen">
+            <personText>
+                <person>Astrid</person>
+                <text>Станешь как Эрика.</text>
+            </personText>
+            <choose>
+                <item link="ItsJoke">Прикалываешься?</item>
+            </choose>
+        </part>
+        <part id="WhatHappen">
+            <personText>
+                <person>Astrid</person>
+                <text>Да. Видела бы ты свое лицо.(Смеется)</text>
+            </personText>
+            <personText>
+                <person>Ingrid</person>
+                <text>Астрид шутит. У Эрики аутизм. Она с рождения такая. А если тебя уличат, что не пьешь лекарства - в первый раз назначат уколы. Потом наказание может быть более серьезным.</text>
+            </personText>
+            <choose>
+                <item link="GetCaught">Понятно. Лучше не попадаться.</item>
             </choose>
         </part>
     </parts>
